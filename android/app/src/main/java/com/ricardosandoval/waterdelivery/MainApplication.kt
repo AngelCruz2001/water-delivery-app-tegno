@@ -1,4 +1,4 @@
-package com.waterdelivery
+package com.ricardosandoval.waterdelivery
 
 import android.app.Application
 import com.facebook.react.PackageList
