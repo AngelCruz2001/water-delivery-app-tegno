@@ -16,6 +16,7 @@ import { paddingMap } from "../../../config/theme/globalstyle";
 import { fontSizeMap } from "../../components/shared/sizes";
 import { Pressable } from "react-native";
 import { useHeaderRightGoBack } from "../../hooks/useHeaderRightGoBack";
+import { showErrorToast } from "./CreateClientScreen";
 
 
 type Props = NativeStackScreenProps<ClientStackProps, 'Editar Cliente'>;
@@ -34,7 +35,7 @@ export const EditClientScreen = ({ route }: Props) => {
 
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (clientPayload: TPostClient) => {
-            return api.post<{ client: TDisplayClient }>('/clients', clientPayload, {
+            return api.put<{ client: TDisplayClient }>('/clients', clientPayload, {
                 headers: {
                     authorization: await getToken(),
                 },
@@ -47,7 +48,9 @@ export const EditClientScreen = ({ route }: Props) => {
     })
 
     const onSubmit = (data: TPostClient) => {
-        mutate(data)
+        // mutate(data)
+        //TODO: implementar esta funcionalidad
+        showErrorToast("Función no implementada")
     }
 
     useHeaderRightGoBack(navigation, 'cancelar');

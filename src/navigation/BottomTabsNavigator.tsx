@@ -1,5 +1,4 @@
 import { BottomTabBarProps, BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { OrdersScreen } from '../presentation/screens/orders/OrdersScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LayoutChangeEvent, Pressable, StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
@@ -18,6 +17,7 @@ import { ClientStackNavigator } from './clients/ClientsStackNavigator';
 import { ProductsStackNavigator } from './products/ProductsStackNavigator';
 import { useUserStore } from '../store/users/useUserStore';
 import { UsersClientsTabsNavigator } from './users/UsersClientsTabsNavigator';
+import { RoutesStackNavigator } from './routes/RoutesStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -118,17 +118,17 @@ export function BottomTabsNavigator() {
                 )
             }
             <Tab.Screen
-                name="Órdenes"
-                component={OrdersScreen}
+                name="Rutas"
+                component={RoutesStackNavigator}
                 options={{
                     tabBarIcon: (props) => {
-
                         return (
                             !props.focused ?
                                 <OrdersIcon /> :
                                 <OrdersIconSelected />
                         )
-                    }
+                    },
+                    headerShown: false
                 }}
             />
         </Tab.Navigator>

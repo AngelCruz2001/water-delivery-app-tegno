@@ -8,7 +8,6 @@ import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { ClientStackProps } from '../../../navigation/clients/ClientsStackNavigator'
 import { useClientsStore } from '../../../store/clients/useClientsStore'
 import { colors } from '../../../config/theme/colors';
-import { useUserStore } from '../../../store/users/useUserStore';
 
 export const ClientsScreen = () => {
 
