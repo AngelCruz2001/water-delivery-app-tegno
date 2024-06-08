@@ -135,6 +135,13 @@ export const CreateClientScreen = () => {
 }
 
 
+export const showLoadingToast = (message = 'Cargando...') => {
+    Toast.show({
+        type: 'loading',
+        text1: message,
+        visibilityTime: 4000,
+    });
+}
 
 export const showCreatedToast = (message = 'Cliente registrado') => {
     Toast.show({
