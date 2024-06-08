@@ -13,7 +13,7 @@ import { Input } from '../../components/shared/input/Input'
 import { useMutation } from '@tanstack/react-query'
 import { TPostUser, TUser, TUserType } from '../../../interfaces/user'
 import { api, getToken } from '../../api/api'
-import { showCreatedToast } from '../clients/CreateClientScreen'
+import { showCreatedToast, showErrorToast, showLoadingToast } from '../clients/CreateClientScreen'
 import { AppButton } from '../../components/shared'
 
 type Props = {}
@@ -23,7 +23,7 @@ export const CreateUserScreen = (props: Props) => {
     const navigation = useNavigation<NavigationProp<UserStackProps>>();
     const addUser = useUserStore(state => state.addUser);
 
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const { control, handleSubmit, formState: { errors, isValid },  } = useForm({
         defaultValues: {
             name: '',
             phoneNumber: '618',
@@ -41,6 +41,10 @@ export const CreateUserScreen = (props: Props) => {
                 },
             })
         },
+        onError(error, variables, context) {
+            console.log("Error creating user", { error, variables, context })
+            showErrorToast('Error creando usuario');
+        },
         onSuccess: ({ data }) => {
             addUser(data.user);
             showCreatedToast('Usuario creado con éxito');
@@ -53,12 +57,16 @@ export const CreateUserScreen = (props: Props) => {
         mutate(data);
     }
 
+    const onInvalid = () => {
+        console.log("Form is invalid")
+    }
+
     return (
         <ScreenScrollContainer>
             <Form
                 buttons={
                     <AppButton
-                        onPress={handleSubmit(onSubmit)}
+                        onPress={handleSubmit(onSubmit, onInvalid)}
                     >
                         Crear usuario
                     </AppButton>
