@@ -53,8 +53,13 @@ export const CreateUserScreen = (props: Props) => {
     })
 
     const onSubmit = (data: TPostUser) => {
-        console.log("Data from create user form", { data })
         mutate(data);
+        // console.log(control._formValues)
+        // mutate(control._formValues as TPostUser);
+    }
+
+    const onInvalid = () => {
+        console.log("Form is invalid")
     }
 
     const onInvalid = () => {
