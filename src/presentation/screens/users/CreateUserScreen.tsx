@@ -62,10 +62,6 @@ export const CreateUserScreen = (props: Props) => {
         console.log("Form is invalid")
     }
 
-    const onInvalid = () => {
-        console.log("Form is invalid")
-    }
-
     return (
         <ScreenScrollContainer>
             <Form
