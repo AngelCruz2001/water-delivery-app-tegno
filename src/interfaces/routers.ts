@@ -10,6 +10,10 @@ export interface TDisplayRoute {
   routePauses: TDisplayRoutePause[];
 }
 
+export interface TDisplayEnrichedRoute extends TDisplayRoute {
+  driverName: string;
+}
+
 export interface TDisplayRoutePause {
   location: Location;
   startTime: string;

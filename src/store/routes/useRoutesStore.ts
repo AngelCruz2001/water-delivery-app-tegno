@@ -1,15 +1,15 @@
 import {create} from 'zustand';
-import {TDisplayRoute} from '../../interfaces/routers';
+import {TDisplayEnrichedRoute} from '../../interfaces/routers';
 
 export type RouteState = {
-  routes: TDisplayRoute[];
-  activeRoute: TDisplayRoute | null;
+  routes: TDisplayEnrichedRoute[];
+  activeRoute: TDisplayEnrichedRoute | null;
 
   // Methods
-  setRoutes: (routes: TDisplayRoute[]) => void;
-  addRoute: (route: TDisplayRoute) => void;
-  setActiveRoute: (route: TDisplayRoute | null) => void;
-  switchRoute: (route: TDisplayRoute) => void;
+  setRoutes: (routes: TDisplayEnrichedRoute[]) => void;
+  addRoute: (route: TDisplayEnrichedRoute) => void;
+  setActiveRoute: (route: TDisplayEnrichedRoute | null) => void;
+  switchRoute: (route: TDisplayEnrichedRoute) => void;
 };
 
 export const useRoutesStore = create<RouteState>()(set => ({
@@ -17,11 +17,12 @@ export const useRoutesStore = create<RouteState>()(set => ({
   activeRoute: null,
 
   // Methods
-  setRoutes: (routes: TDisplayRoute[]) => set({routes}),
-  addRoute: (route: TDisplayRoute) =>
+  setRoutes: (routes: TDisplayEnrichedRoute[]) => set({routes}),
+  addRoute: (route: TDisplayEnrichedRoute) =>
     set(state => ({routes: [...state.routes, route]})),
-  setActiveRoute: (route: TDisplayRoute | null) => set({activeRoute: route}),
-  switchRoute: (route: TDisplayRoute) =>
+  setActiveRoute: (route: TDisplayEnrichedRoute | null) =>
+    set({activeRoute: route}),
+  switchRoute: (route: TDisplayEnrichedRoute) =>
     set(state => ({
       routes: state.routes.map(r => (r._id === route._id ? route : r)),
     })),

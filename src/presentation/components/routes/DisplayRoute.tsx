@@ -9,7 +9,7 @@ import { paddingMap } from '../../../config/theme/globalstyle';
 import { AppText } from '../shared/AppText';
 import { AppButton } from '../shared/AppButton';
 import { formatPhoneNumber } from '../../../helpers/phone';
-import { TDisplayRoute } from '../../../interfaces/routers';
+import { TDisplayEnrichedRoute, TDisplayRoute } from '../../../interfaces/routers';
 import { useClientsStore } from '../../../store/clients/useClientsStore';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ClientStackProps } from '../../../navigation/clients/ClientsStackNavigator';
@@ -20,7 +20,7 @@ import { useRoutesStore } from '../../../store/routes/useRoutesStore';
 
 type Props = {
     isLast?: boolean,
-    route: TDisplayRoute
+    route: TDisplayEnrichedRoute
 }
 
 export const DisplayRoute = ({
@@ -31,6 +31,7 @@ export const DisplayRoute = ({
         programedDate,
         status,
         driverId,
+        driverName,
         totalOrders,
         estimatedTimeInMinutes,
         startTime,
@@ -43,6 +44,7 @@ export const DisplayRoute = ({
 
     const setActiveRoute = useRoutesStore(state => state.setActiveRoute);
 
+    console.log(route)
     return (
         <Pressable
             style={{
@@ -66,7 +68,7 @@ export const DisplayRoute = ({
                 }}>
                     <View style={{ gap: 2, justifyContent: 'space-between' }}>
                         <AppText weight='bold'>
-                            {programedDate}
+                            Ruta 1
                         </AppText>
                         <AppText size='sm' style={{ color: colors.primary }}>
                             {_id}

@@ -3,7 +3,7 @@ import React from 'react'
 import { ScreenScrollContainer } from '../../components/shared/ScreenScrollContainer'
 import { Card } from '../../components/shared/Card'
 import { DataItem } from '../../components/shared/DataItem'
-import { TDisplayRoute } from '../../../interfaces/routers'
+import { TDisplayRoute, TDisplayEnrichedRoute } from '../../../interfaces/routers'
 import { useRoutesStore } from '../../../store/routes/useRoutesStore';
 import { useGetRouters } from '../../hooks/routers/useGetRoutes'
 import { RoutesStackProps } from '../../../navigation/routes/RoutesStackNavigator'
@@ -28,7 +28,7 @@ export const RoutesScreen = (props: Props) => {
 
             <ScreenScrollContainer>
                 {
-                    routes.map((route: TDisplayRoute) => (
+                    routes.map((route: TDisplayEnrichedRoute) => (
                         <DisplayRoute
                             key={route._id}
                             route={route}

@@ -10,7 +10,7 @@ export function useGetRouters(): {
   isError: boolean;
 } {
   const {data, isLoading, isError} = useQuery({
-    queryKey: ['routes'],
+    queryKey: ['routes/enriched'],
     queryFn: fetchRoutes,
     refetchOnMount: 'always',
   });
