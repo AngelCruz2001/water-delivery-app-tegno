@@ -91,7 +91,6 @@ export const SetAddressMap = (props: Props) => {
                 lng: location.longitude
             }, clientId, address: locationName
         });
-
     }
 
     return (
@@ -218,6 +217,13 @@ export const GooglePlacesInput = ({ hanldeOnPress }: { hanldeOnPress: (data: Goo
                     color: colors.primary,
                     paddingHorizontal: paddingMap.horizontalCard
                 },
+                listView: {
+                    position: 'absolute',
+                    top: 40,  // Ajusta según sea necesario
+                    zIndex: 2,
+                    backgroundColor: colors.white,
+                },
+
             }}
             fetchDetails
             ref={ref}

@@ -4,7 +4,7 @@
 
 
 import { PropsWithChildren } from 'react'
-import { StyleProp, ViewStyle, View } from 'react-native'
+import { StyleProp, ViewStyle, View, KeyboardAvoidingView, Platform } from 'react-native'
 import { paddingMap } from '../../../config/theme/globalstyle'
 
 
@@ -14,12 +14,19 @@ type Props = PropsWithChildren & {
 
 export const ScreenContainer = ({ children, style }: Props) => {
     return (
-        <View style={[{
-            flex: 1,
-            paddingHorizontal: paddingMap.horizontalContainer,
-            paddingTop: paddingMap.verticalContainer,
-        }, style]}>
-            {children}
-        </View>
+        <KeyboardAvoidingView
+            style={{
+                flex: 1,
+                paddingBottom: 20
+            }}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+            <View style={[{
+                flex: 1,
+                paddingHorizontal: paddingMap.horizontalContainer,
+                paddingTop: paddingMap.verticalContainer,
+            }, style]}>
+                {children}
+            </View>
+        </KeyboardAvoidingView>
     )
 }
