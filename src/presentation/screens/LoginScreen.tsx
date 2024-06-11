@@ -15,6 +15,7 @@ import Toast from 'react-native-toast-message';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackProps } from '../../navigation/RootStackNavigator';
 import { AppButton } from '../components/shared';
+import { useUserStore } from '../../store/users/useUserStore';
 
 type Props = {}
 
@@ -22,7 +23,7 @@ export const LoginScreen = (props: Props) => {
 
     const { top } = useSafeAreaInsets();
     const navigation = useNavigation<NavigationProp<RootStackProps>>();
-
+    const verifyToken = useUserStore(state => state.verifyToken);
     const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             username: '',
@@ -34,14 +35,16 @@ export const LoginScreen = (props: Props) => {
         mutationFn: (clientPayload: TLogin) => {
             return api.post('/login', clientPayload)
         },
-        onSuccess: (res) => {
+        onSuccess: async (res) => {
             const token = res.headers.authorization;
             saveToken(token);
-            Toast.show({
-                type: 'createdToast',
-                text1: '¡Hola!',
-                text2: 'Que tengas un excelente día',
-            });
+            const appToken = await verifyToken()
+            // Toast.show({
+            //     type: 'createdToast',
+            //     text1: '¡Hola!',
+            //     text2: 'Que tengas un excelente día',
+            // });
+            console.log({ appToken })
             navigation.reset({
                 routes: [{ name: 'App Navigator' }],
             });

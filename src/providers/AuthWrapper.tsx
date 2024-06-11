@@ -1,19 +1,16 @@
 
 import React, { PropsWithChildren, useEffect } from 'react'
 import { useUserStore } from '../store/users/useUserStore';
-import { getToken } from '../presentation/api/api';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { RootStackNavigator, RootStackProps } from '../navigation/RootStackNavigator';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 type Props = PropsWithChildren & {}
 
-const Drawer = createDrawerNavigator();
-
 export const AuthWrapper = ({ children }: Props) => {
 
     const navigation = useNavigation<NavigationProp<RootStackProps>>();
     const verifyToken = useUserStore(state => state.verifyToken);
+    const user = useUserStore(state => state.user);
 
     useEffect(() => {
         const verify = async () => {
@@ -30,7 +27,7 @@ export const AuthWrapper = ({ children }: Props) => {
             }
         }
         verify();
-    }, [])
+    }, [user?.type])
 
     return (
         <RootStackNavigator />

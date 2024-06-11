@@ -2,7 +2,7 @@ import { BottomTabBarProps, BottomTabNavigationOptions, createBottomTabNavigator
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LayoutChangeEvent, Pressable, StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import Animated, { useAnimatedStyle, useDerivedValue, withTiming } from 'react-native-reanimated';
 import { HomeIcon, HomeIconSelected } from '../presentation/components/icons/HomeIcon';
 import { PersonIcon, PersonIconSelected } from '../presentation/components/icons/PersonIcon';
@@ -28,7 +28,7 @@ export function BottomTabsNavigator() {
     const navigation = useNavigation();
     const user = useUserStore(state => state.user);
 
-
+    console.log({ user })
     // useEffect(() => {
     //     navigation.setOptions({
     //         headerShown: false

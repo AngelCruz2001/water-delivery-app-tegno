@@ -6,14 +6,13 @@ import {
   saveToken,
 } from '../../presentation/api/api';
 import {TUser} from '../../interfaces/user';
-import {DisplayUser} from '../../presentation/components/users/DisplayUser';
 
 type UserState = {
-  user: TUser;
+  user: TUser | null;
   users: TUser[];
-  verifyToken: () => Promise<boolean>;
 
   // Methods
+  verifyToken: () => Promise<boolean>;
   setUser: (user: TUser) => void;
   setUsers: (users: TUser[]) => void;
   setToken: (token: string, user: TUser) => void;
@@ -21,25 +20,8 @@ type UserState = {
 };
 
 export const useUserStore = create<UserState>()(set => ({
-  user: {
-    _id: '0',
-    name: 'Ricardito',
-    username: 'Ricks',
-    type: 'super',
-    createdAt: Date.now().toString(),
-    phoneNumber: '123456789',
-  },
-
-  users: [
-    {
-      _id: '01231',
-      name: 'Ricardito',
-      username: 'Ricks',
-      type: 'super',
-      createdAt: Date.now().toString(),
-      phoneNumber: '123456789',
-    },
-  ],
+  user: null,
+  users: [],
 
   // methods
 
