@@ -28,7 +28,6 @@ export function BottomTabsNavigator() {
     const navigation = useNavigation();
     const user = useUserStore(state => state.user);
 
-    console.log({ user })
     // useEffect(() => {
     //     navigation.setOptions({
     //         headerShown: false

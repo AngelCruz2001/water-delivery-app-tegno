@@ -36,7 +36,11 @@ export const useUserStore = create<UserState>()(set => ({
     const token = await getToken();
     if (!token) return false;
     try {
-      const {data} = await api.get<{user: TUser}>(`/login/${token}`);
+      const {data} = await api.get<{user: TUser}>(`/login/verify`, {
+        headers: {
+          Authorization: token,
+        },
+      });
       set(() => ({user: data.user}));
       return true;
     } catch (error) {

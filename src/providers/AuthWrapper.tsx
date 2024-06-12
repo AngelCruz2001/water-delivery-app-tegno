@@ -15,6 +15,7 @@ export const AuthWrapper = ({ children }: Props) => {
     useEffect(() => {
         const verify = async () => {
             const token = await verifyToken();
+            console.log({ token })
             if (token) {
                 navigation.reset({
                     routes: [{ name: 'App Navigator' }],

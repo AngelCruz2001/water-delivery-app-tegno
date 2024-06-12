@@ -1,18 +1,22 @@
+import React from "react";
 import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
 import { ProfileScreen } from "../presentation/screens/profile/ProfileScreen";
 import { BottomTabsNavigator } from "./BottomTabsNavigator";
 import { PermissionsChecker } from "../providers/PermissionsChecker";
 import { AppButton, AppText } from "../presentation/components/shared";
-import { removeToken } from "../presentation/api/api";
+import { getToken, removeToken } from "../presentation/api/api";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Alert, Pressable, View } from "react-native";
 import { RootStackProps } from "./RootStackNavigator";
 import { useUserStore } from "../store/users/useUserStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Drawer = createDrawerNavigator();
 
 export function AppNavigator() {
+
+
 
     return (
         <PermissionsChecker>
@@ -40,6 +44,8 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
     const verifyToken = useUserStore(state => state.verifyToken);
     const { bottom } = useSafeAreaInsets()
 
+    
+
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>
             <DrawerItemList {...props} />
@@ -53,7 +59,6 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
                     }}
                     onPress={() => {
                         removeToken();
-                        verifyToken();
                         navigation.reset({
                             index: 0,
                             routes: [{ name: 'LoginScreen' }],

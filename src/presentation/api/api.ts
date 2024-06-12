@@ -26,6 +26,8 @@ export const api = axios.create({
 export const saveToken = async (token: string) => {
   try {
     await AsyncStorage.setItem('token', token);
+
+    console.log('Token', token);
     console.log('Token guardado con éxito');
   } catch (error) {
     console.error('Error al guardar el token:', error);
@@ -38,7 +40,7 @@ export const getToken = async () => {
     return token;
   } catch (error) {
     console.error('Error al obtener el token:', error);
-    return false;
+    return null;
   }
 };
 
