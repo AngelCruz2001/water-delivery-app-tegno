@@ -1,16 +1,14 @@
-import { Text, View } from 'react-native'
+
 import React from 'react'
 import { ScreenScrollContainer } from '../../components/shared/ScreenScrollContainer'
-import { Card } from '../../components/shared/Card'
-import { DataItem } from '../../components/shared/DataItem'
-import { TDisplayRoute, TDisplayEnrichedRoute } from '../../../interfaces/routers'
+import { TDisplayEnrichedRoute } from '../../../interfaces/routers'
 import { useRoutesStore } from '../../../store/routes/useRoutesStore';
 import { useGetRouters } from '../../hooks/routers/useGetRoutes'
 import { RoutesStackProps } from '../../../navigation/routes/RoutesStackNavigator'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { DisplayRoute } from '../../components/routes/DisplayRoute'
 import { FAB } from '../../components/shared/fab/Fab'
-import { colors } from '../../../config/theme/colors'
+
 
 
 type Props = {}
@@ -37,27 +35,15 @@ export const RoutesScreen = (props: Props) => {
                 }
             </ScreenScrollContainer>
             <FAB
-                iconProvider='Ionicons'
-                iconName="person-add"
+                // iconProvider='Ionicons'
+                iconName="plus"
                 onPress={() => {
-                    navigation.navigate('Crear Cliente')
+                    navigation.navigate('CreateRouteScreen')
                 }}
                 style={{
                     bottom: 15,
                     right: 15
                 }}
-            />
-            <FAB
-                iconName="map"
-                onPress={() => {
-                    navigation.navigate('Mapa de Clientes')
-                }}
-                style={{
-                    bottom: 75,
-                    right: 15,
-                    backgroundColor: colors.primary
-                }}
-            // iconColor={colors.white}
             />
         </>
     )

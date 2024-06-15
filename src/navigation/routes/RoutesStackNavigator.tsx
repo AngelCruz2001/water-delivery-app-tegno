@@ -2,31 +2,23 @@
 
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { useEffect } from "react";
 import { colors } from "../../config/theme/colors";
-import { ClientsScreen } from "../../presentation/screens/clients/ClientsScreen";
-import { CreateClientScreen } from "../../presentation/screens/clients/CreateClientScreen";
-import { SetAddressMap } from "../../presentation/screens/clients/SetAddressMap";
-import { ClientScreen } from "../../presentation/screens/clients/ClientScreen";
-import { TDisplayClient } from "../../interfaces/clients";
-import { ClientsMap } from "../../presentation/screens/clients/ClientsMap";
-import { EditClientScreen } from "../../presentation/screens/clients/EditClientScreen";
-import { fontSizeMap } from "../../presentation/components/shared/sizes";
 import { RoutesScreen } from "../../presentation/screens/routes/RoutesScreen";
+import { CreateRouteScreen } from "../../presentation/screens/routes/CreateRouteScreen";
+import { AddOrdersScreen } from "../../presentation/screens/routes/AddOrdersScreen/AddOrdersScreen";
 
 export type RoutesStackProps = {
-    Routes: undefined
+    RoutesScreen: undefined;
+    CreateRouteScreen: undefined;
+    AddOrdersScreen: undefined;
 }
 
 const Stack = createStackNavigator<RoutesStackProps>();
 
 export function RoutesStackNavigator() {
-
-    const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
-
     return (
         <Stack.Navigator
-            initialRouteName='Routes'
+            initialRouteName='RoutesScreen'
             screenOptions={{
                 cardStyle: { backgroundColor: colors.background },
                 headerStyle: {
@@ -36,8 +28,14 @@ export function RoutesStackNavigator() {
                 },
             }}
         >
-            <Stack.Screen name="Routes" component={RoutesScreen} options={{
+            <Stack.Screen name="RoutesScreen" component={RoutesScreen} options={{
                 title: 'Rutas y Órdenes',
+            }} />
+            <Stack.Screen name="CreateRouteScreen" component={CreateRouteScreen} options={{
+                title: 'Nueva Ruta',
+            }} />
+            <Stack.Screen name="AddOrdersScreen" component={AddOrdersScreen} options={{
+                title: 'Anadir Órdenes',
             }} />
         </Stack.Navigator>
     );
