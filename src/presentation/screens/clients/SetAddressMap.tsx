@@ -117,10 +117,9 @@ export const SetAddressMap = (props: Props) => {
             )}
 
             <Card style={{ padding: 0, marginTop: 5, position: 'relative', flex: .85 }}>
-                <View style={{ backgroundColor: colors.white, position: 'absolute', width: '100%', top: 0, zIndex: 2, borderRadius: roundedMap.md }}>
-                    <GooglePlacesInput hanldeOnPress={hanldeOnPress}
-                    />
-                </View>
+                {/* <View style={{ backgroundColor: colors.white, position: 'absolute', width: '100%', top: 0, zIndex: 2, borderRadius: roundedMap.md }}>
+                    <GooglePlacesInput hanldeOnPress={hanldeOnPress} />
+                </View> */}
                 <MapView
                     ref={(map) => mapRef.current = map!}
                     provider={PROVIDER_GOOGLE}

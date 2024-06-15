@@ -51,10 +51,10 @@ export const clearWatchLocation = (watchId: number) => {
 export const reverseGeocoding = async (
   location: TLocation,
 ): Promise<string> => {
-  const key = Platform.OS === 'ios' ? iOSGoogleApiKey : androidGoogleApiKey;
-  const {latitude, longitude} = location;
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${key}`;
   try {
+    const key = Platform.OS === 'ios' ? iOSGoogleApiKey : androidGoogleApiKey;
+    const {latitude, longitude} = location;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${key}`;
     const {data} = await axios.get<TApiResponse>(url);
     const res = data.results[0].formatted_address;
     console.log(JSON.stringify(data.results[0], null, 2));

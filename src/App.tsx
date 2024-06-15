@@ -14,6 +14,7 @@ import Toast from 'react-native-toast-message';
 import { toastConfig } from './presentation/components/toasts/toasts';
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { AuthWrapper } from './providers/AuthWrapper';
+import { WebsocketLocationProvider } from './providers/WebsocketLocationProvider';
 
 
 
@@ -23,7 +24,9 @@ function App(): React.JSX.Element {
     <NavigationContainer>
       <QueryProvider>
         <AuthWrapper>
+          {/* <WebsocketLocationProvider> */}
           <RootStackNavigator />
+          {/* </WebsocketLocationProvider> */}
         </AuthWrapper>
         {/* <SideMenuNavigator /> */}
         <Toast config={toastConfig} />

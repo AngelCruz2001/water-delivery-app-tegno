@@ -18,7 +18,7 @@ export type RootStackProps = {
 const Stack = createStackNavigator<RootStackProps>();
 
 export function RootStackNavigator() {
-  
+
   return (
     <>
       <Stack.Navigator

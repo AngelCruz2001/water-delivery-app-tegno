@@ -30,7 +30,5 @@ export const AuthWrapper = ({ children }: Props) => {
         verify();
     }, [user?.type])
 
-    return (
-        <RootStackNavigator />
-    )
+    return children
 }

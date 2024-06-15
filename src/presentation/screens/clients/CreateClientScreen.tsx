@@ -48,10 +48,12 @@ export const CreateClientScreen = () => {
         },
         onSuccess: ({ data }) => {
             showCreatedToast();
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'Clientes' }],
-            })
+            // navigation.reset({
+            //     index: 0,
+            //     routes: [{ name: 'Clientes' }],
+            // })
+            navigation.navigate('Clientes');
+            // navigation.goBack();
         }
     })
 
@@ -67,7 +69,6 @@ export const CreateClientScreen = () => {
             addClient(data.client);
             const location = marker as TLocation;
             const { reference } = getValues()
-            console.log({ reference })
             mutateLocation({
                 reference, location: {
                     lat: location.latitude,
@@ -76,8 +77,6 @@ export const CreateClientScreen = () => {
             })
         },
     })
-
-    console.log({ values: getValues() })
 
     const onSubmit = (data: TPostClient) => {
         mutate(data)
@@ -130,12 +129,42 @@ export const CreateClientScreen = () => {
 
         getCurrentLocation().then((location) => {
             moveCameraToLocation(location)
+            const { latitude, longitude } = location;
+            setMarker({ latitude: latitude, longitude: longitude })
         })
 
         return () => {
 
         }
     }, [])
+
+    const getCenterCoordinates = async (): Promise<{ latitude: number, longitude: number }> => {
+
+        let latitude = 0;
+        let longitude = 0;
+        try {
+            if (mapRef.current) {
+                const camera = await mapRef.current.getCamera();
+                if (camera && camera.center) {
+                    const { center } = camera;
+                    latitude = center.latitude;
+                    longitude = center.longitude;
+                    setMarker({
+                        latitude: center.latitude,
+                        longitude: center.longitude
+                    });
+                } else {
+                    console.error("Camera or center property is missing.");
+                }
+            } else {
+                console.error("mapRef.current is not initialized.");
+            }
+        } catch (error) {
+            console.error("Error getting center coordinates:", error);
+        }
+        return { latitude, longitude };
+    };
+
     return (
         <ScreenScrollContainer>
             <Form
@@ -218,37 +247,41 @@ export const CreateClientScreen = () => {
                         longitudeDelta: 0.02,
                     }}
                     showsUserLocation
-                    onPress={async (e: MapPressEvent) => {
-                        e.persist();
-                        const { latitude, longitude } = e.nativeEvent.coordinate
-                        const locationStr = await reverseGeocoding({ latitude, longitude });
-                        setLocationName(locationStr);
-                        moveCameraToLocation({
-                            latitude: e.nativeEvent.coordinate.latitude,
-                            longitude: e.nativeEvent.coordinate.longitude
-                        })
-                        setMarker({ latitude, longitude })
+                    // onPress={async (e: MapPressEvent) => {
+                    //     e.persist();
+                    //     const { latitude, longitude } = e.nativeEvent.coordinate
+                    //     const locationStr = await reverseGeocoding({ latitude, longitude });
+                    //     setLocationName(locationStr);
+                    //     moveCameraToLocation({
+                    //         latitude: e.nativeEvent.coordinate.latitude,
+                    //         longitude: e.nativeEvent.coordinate.longitude
+                    //     })
+                    //     setMarker({ latitude, longitude })
+                    // }}
+                    // onTouchMove={(e) => {
+                    //     e.persist();
+                    //     console.log("event: ", { e })
+                    // }}
+                    onRegionChange={getCenterCoordinates}
+                    onRegionChangeComplete={async () => {
+                        try {
+                            const { latitude, longitude } = await getCenterCoordinates()
+                            const locationStr = await reverseGeocoding({ latitude, longitude });
+                            setLocationName(locationStr);
+                        } catch (reverseGeocodingError) {
+                            console.error("Error in reverseGeocoding:", reverseGeocodingError);
+                        }
                     }}
+                // onTouchEndCapture={() => getCenterCoordinates()}
+                // onResponderEnd={() => getCenterCoordinates()}
                 >
 
                     {marker && (
                         <Marker
-                            draggable
-                            onDragEnd={async (e) => {
-                                e.persist();
-                                const { latitude, longitude } = e.nativeEvent.coordinate;
-                                const locationStr = await reverseGeocoding({ latitude, longitude });
-                                setLocationName(locationStr);
-                                moveCameraToLocation({
-                                    latitude: e.nativeEvent.coordinate.latitude,
-                                    longitude: e.nativeEvent.coordinate.longitude
-                                })
-                                setMarker({ latitude, longitude })
-                            }}
+                            image={require('../../../assets/marker.png')}
                             coordinate={{
                                 latitude: marker.latitude, longitude: marker.longitude,
                             }}
-                        // title={client?.businessName}
                         />
                     )}
                 </MapView>
@@ -271,7 +304,10 @@ export const CreateClientScreen = () => {
                 />
                 {marker && (
                     <AppButton
-                        onPress={handleSubmit(onSubmit)}
+                        onPress={() => {
+                            console.log('submitting')
+                            handleSubmit(onSubmit)
+                        }}
                     >
                         Guardar cliente
                     </AppButton>

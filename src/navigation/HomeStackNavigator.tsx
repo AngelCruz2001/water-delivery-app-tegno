@@ -5,8 +5,16 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { LoadingScreen } from '../presentation/screens/loading/LoadingScreen';
 import { colors } from '../config/theme/colors';
+import { CreateClientScreen } from '../presentation/screens/clients/CreateClientScreen';
 
-const Stack = createStackNavigator();
+
+export type HomeStackProps = {
+    "HomeScreen": undefined,
+    "LoadingScreen": undefined,
+    "HomeCreateClient": undefined,
+    "PermissionScreen": undefined,
+}
+const Stack = createStackNavigator<HomeStackProps>();
 
 export function HomeStackNavigator() {
     const navigation = useNavigation()
@@ -21,11 +29,14 @@ export function HomeStackNavigator() {
         <Stack.Navigator
             initialRouteName='LoadingScreen'
             screenOptions={{
-                headerShown: false,
+                // headerShown: false,
                 cardStyle: { backgroundColor: colors.background },
             }}
         >
-            <Stack.Screen name="HomeScreen" component={HomeScreen} />
+            <Stack.Screen name="HomeScreen" options={{
+                title: 'Inicio'
+            }} component={HomeScreen} />
+            <Stack.Screen name="HomeCreateClient" options={{ title: 'Crear cliente' }} component={CreateClientScreen} />
             <Stack.Screen name="PermissionScreen" component={PermissionScreen} />
             <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
         </Stack.Navigator>
