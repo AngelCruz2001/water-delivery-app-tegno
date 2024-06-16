@@ -16,6 +16,7 @@ import { ClientStackProps } from '../../../navigation/clients/ClientsStackNaviga
 import { Card } from '../shared/Card';
 import { RoutesStackProps } from '../../../navigation/routes/RoutesStackNavigator';
 import { useRoutesStore } from '../../../store/routes/useRoutesStore';
+import { formatDate } from '../../../helpers/date';
 
 
 type Props = {
@@ -30,6 +31,7 @@ export const DisplayRoute = ({
         _id,
         programedDate,
         status,
+        routeName,
         driverId,
         driverName,
         totalOrders,
@@ -41,7 +43,6 @@ export const DisplayRoute = ({
 }: Props) => {
 
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
-
     const setActiveRoute = useRoutesStore(state => state.setActiveRoute);
 
     console.log(route)
@@ -68,10 +69,10 @@ export const DisplayRoute = ({
                 }}>
                     <View style={{ gap: 2, justifyContent: 'space-between' }}>
                         <AppText weight='bold'>
-                            Ruta 1
+                            {routeName}
                         </AppText>
                         <AppText size='sm' style={{ color: colors.primary }}>
-                            {_id}
+                            {formatDate(new Date(programedDate))}
                         </AppText>
 
                     </View>

@@ -1,5 +1,6 @@
 export interface TDisplayRoute {
   _id: string;
+  routeName: string;
   programedDate: string;
   status: string;
   driverId: string;
@@ -12,6 +13,13 @@ export interface TDisplayRoute {
 
 export interface TDisplayEnrichedRoute extends TDisplayRoute {
   driverName: string;
+}
+
+export interface TPostRoute {
+  programedDate: string;
+  driverId: string;
+  driverName: string;
+  routeName: string;
 }
 
 export interface TDisplayRoutePause {
