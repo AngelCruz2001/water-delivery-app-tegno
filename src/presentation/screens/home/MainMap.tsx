@@ -9,15 +9,20 @@ import { paddingMap } from '../../../config/theme/globalstyle'
 import { FAB } from '../../components/shared/fab/Fab'
 import { HomeStackProps } from '../../../navigation/HomeStackNavigator'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { useDriverStore } from '../../../store/driver/useDriverStore'
 
 type Props = {}
 
 
 export const MainMap = (props: Props) => {
 
+    const drivers = useDriverStore((state) => state.drivers);
+
     const [location, setLocation] = useState({ latitude: 24.015575981424856, longitude: -104.65724498033524 });
 
     const [marker, setMarker] = useState<TMarker | null>();
+
+    console.log(drivers)
 
     useEffect(() => {
 
@@ -82,7 +87,19 @@ export const MainMap = (props: Props) => {
                                 description={marker.description}
                             />
                         )
+
                     }
+
+                    {
+                        drivers.map((driver) => (
+                            <Marker
+                                key={driver._id}
+                                coordinate={driver.location}
+                                title={driver.name}
+                            />
+                        ))
+                    }
+
                     {/* <Marker
                     draggable
                     onDragEnd={async (e) => {

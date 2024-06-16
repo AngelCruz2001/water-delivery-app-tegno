@@ -24,9 +24,9 @@ function App(): React.JSX.Element {
     <NavigationContainer>
       <QueryProvider>
         <AuthWrapper>
-          {/* <WebsocketLocationProvider> */}
-          <RootStackNavigator />
-          {/* </WebsocketLocationProvider> */}
+          <WebsocketLocationProvider>
+            <RootStackNavigator />
+          </WebsocketLocationProvider>
         </AuthWrapper>
         {/* <SideMenuNavigator /> */}
         <Toast config={toastConfig} />

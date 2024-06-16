@@ -44,7 +44,6 @@ export const LoginScreen = (props: Props) => {
             //     text1: '¡Hola!',
             //     text2: 'Que tengas un excelente día',
             // });
-            console.log({ appToken })
             navigation.reset({
                 routes: [{ name: 'App Navigator' }],
             });
