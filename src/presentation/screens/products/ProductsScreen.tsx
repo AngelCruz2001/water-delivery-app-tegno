@@ -89,8 +89,7 @@ export const ProductsScreen = () => {
             </ScreenScrollContainer>
 
             <FAB
-                iconProvider="Ionicons"
-                iconName="add"
+                iconName="plus"
                 onPress={() => {
                     navigation.navigate("Crear producto")
                 }}

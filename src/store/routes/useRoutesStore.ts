@@ -1,20 +1,30 @@
 import {create} from 'zustand';
-import {TDisplayEnrichedRoute} from '../../interfaces/routers';
+import {TDisplayEnrichedRoute, TPostRoute} from '../../interfaces/routers';
+import dayjs from 'dayjs';
 
 export type RouteState = {
   routes: TDisplayEnrichedRoute[];
   activeRoute: TDisplayEnrichedRoute | null;
+
+  newRoute: TPostRoute;
 
   // Methods
   setRoutes: (routes: TDisplayEnrichedRoute[]) => void;
   addRoute: (route: TDisplayEnrichedRoute) => void;
   setActiveRoute: (route: TDisplayEnrichedRoute | null) => void;
   switchRoute: (route: TDisplayEnrichedRoute) => void;
+  setNewRoute: (route: TPostRoute) => void;
 };
 
 export const useRoutesStore = create<RouteState>()(set => ({
   routes: [],
   activeRoute: null,
+  newRoute: {
+    driverId: '',
+    programedDate: dayjs().toString(),
+    routeName: '',
+    driverName: '',
+  },
 
   // Methods
   setRoutes: (routes: TDisplayEnrichedRoute[]) => set({routes}),
@@ -26,4 +36,6 @@ export const useRoutesStore = create<RouteState>()(set => ({
     set(state => ({
       routes: state.routes.map(r => (r._id === route._id ? route : r)),
     })),
+
+  setNewRoute: (route: TPostRoute) => set({newRoute: route}),
 }));

@@ -13,7 +13,6 @@ import { FAB } from '../../components/shared/fab/Fab'
 
 type Props = {}
 
-//TODO: Create routes to add in the icons
 
 export const RoutesScreen = (props: Props) => {
 
@@ -38,7 +37,7 @@ export const RoutesScreen = (props: Props) => {
                 // iconProvider='Ionicons'
                 iconName="plus"
                 onPress={() => {
-                    navigation.navigate('CreateRouteScreen')
+                    navigation.navigate('DateTab')
                 }}
                 style={{
                     bottom: 15,
