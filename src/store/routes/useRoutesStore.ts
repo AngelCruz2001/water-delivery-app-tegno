@@ -21,7 +21,7 @@ export const useRoutesStore = create<RouteState>()(set => ({
   activeRoute: null,
   newRoute: {
     driverId: '',
-    programedDate: dayjs().toString(),
+    programedDate: dayjs(),
     routeName: '',
     driverName: '',
   },

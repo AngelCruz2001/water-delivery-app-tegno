@@ -17,13 +17,13 @@ export const RouteFormDriver = () => {
 
     const { isLoading, isError, refetch } = useGetUsers();
     const users = useUserStore(state => state.users);
-    const drivers = useMemo(() => users.filter(user => user.type === 'driver'), [users]);
-    // const [selectedDriverId, setSelectedDriverId] = useState<string>('');
+    const drivers = users.filter(user => user.type === 'driver');
+    // const drivers = useMemo(() => users.filter(user => user.type === 'driver'), [users]);
     const newRoute = useRoutesStore(state => state.newRoute);
     const setNewRoute = useRoutesStore(state => state.setNewRoute);
 
-    const navigation = useNavigation<NavigationProp<RoutesStackProps>>()
-    console.log({ newRoute })
+    const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
+
     return (
         <ScreenContainer>
             <AppText weight='bold'

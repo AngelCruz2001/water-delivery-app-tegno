@@ -15,6 +15,7 @@ import { TPostRoute } from '../../../../interfaces/routers'
 import { postRoute } from '../../../../store/routes/api/postRoute'
 import { useMutation } from '@tanstack/react-query'
 import { showCreatedToast, showErrorToast } from '../../clients/CreateClientScreen'
+import dayjs from 'dayjs'
 
 export const RouteFormName = () => {
 
@@ -24,11 +25,12 @@ export const RouteFormName = () => {
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
     const { control, formState: { errors }, getValues } = useForm({
         defaultValues: {
-            routeName: newRoute.driverName + ' - ' + formatDate(new Date(newRoute.programedDate))
+            routeName: newRoute.driverName + ' - ' + formatDate(newRoute.programedDate.toDate())
         }
     })
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (routePayload: TPostRoute) => {
+            console.log({ routePayload });
             return postRoute(routePayload)
         },
         onError(error, variables, context) {
@@ -41,7 +43,7 @@ export const RouteFormName = () => {
             setNewRoute({
                 driverId: '',
                 driverName: '',
-                programedDate: '',
+                programedDate: dayjs(),
                 routeName: '',
             });
             showCreatedToast('Ruta creado con éxito');
@@ -61,7 +63,10 @@ export const RouteFormName = () => {
                         onPress={() => {
                             const routeName = getValues('routeName');
                             // console.log({ ...newRoute, routeName });
-                            mutate({ ...newRoute, routeName });
+                            // mutate({ ...newRoute, routeName });
+                            console.log({ ...newRoute, routeName });
+                            // mutate({ ...newRoute, routeName })
+                            mutate({ ...newRoute, routeName })
                         }}
                     >
                         Crear ruta

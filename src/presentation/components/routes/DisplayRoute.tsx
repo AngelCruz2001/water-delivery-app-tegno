@@ -5,7 +5,7 @@
 import React from 'react'
 import { Pressable, View } from 'react-native';
 import { colors } from '../../../config/theme/colors';
-import { paddingMap } from '../../../config/theme/globalstyle';
+import { paddingMap, roundedMap } from '../../../config/theme/globalstyle';
 import { AppText } from '../shared/AppText';
 import { AppButton } from '../shared/AppButton';
 import { formatPhoneNumber } from '../../../helpers/phone';
@@ -66,7 +66,7 @@ export const DisplayRoute = ({
                     flexDirection: 'row',
                     gap: 5,
                 }}>
-                    <View style={{ gap: 2, justifyContent: 'space-between' }}>
+                    <View style={{ gap: 2, justifyContent: 'space-between', flex: 1 }}>
                         <AppText weight='bold'>
                             {routeName}
                         </AppText>
@@ -79,16 +79,40 @@ export const DisplayRoute = ({
                         style={{
                             alignItems: 'flex-end',
                             justifyContent: 'flex-end',
-                            flex: 1,
+                            flex: .4,
                         }}
 
                     >
-                        <AppText weight='bold' style={{ color: colors.primary }}>
-                            {status}
-                        </AppText>
+                        <DisplayRouteStatus status={status} />
                     </View>
                 </View>
             </Card>
         </Pressable>
+    )
+}
+
+type StatusProps = {
+    status: string
+}
+const DisplayRouteStatus = ({ status }: StatusProps) => {
+    const color = status === 'pending' ? colors.warning : status ===
+        'completed' ? colors.success : colors.primaryDark;
+    const statusText = status === 'pending' ? 'pendiente' : status ===
+        'completed' ? 'completada' : 'en ruta';
+    return (
+        <View
+            style={{
+                backgroundColor: color,
+                borderRadius: roundedMap.full,
+                paddingHorizontal: paddingMap.horizontalCard,
+                paddingVertical: 4,
+            }}
+        >
+            <AppText size='sm' style={{
+                color: colors.white,
+            }}>
+                {statusText}
+            </AppText>
+        </View>
     )
 }

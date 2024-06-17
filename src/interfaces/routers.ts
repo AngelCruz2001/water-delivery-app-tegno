@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export interface TDisplayRoute {
   _id: string;
   routeName: string;
@@ -16,7 +18,7 @@ export interface TDisplayEnrichedRoute extends TDisplayRoute {
 }
 
 export interface TPostRoute {
-  programedDate: string;
+  programedDate: dayjs.Dayjs;
   driverId: string;
   driverName: string;
   routeName: string;
