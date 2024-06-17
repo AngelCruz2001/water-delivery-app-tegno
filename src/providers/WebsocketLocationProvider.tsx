@@ -25,6 +25,7 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
     // const url = "ws://localhost:8080/ws";
     const url = "ws://192.168.1.85:8080/ws";
 
+
     useEffect(() => {
         let socket: WebSocket | null = null;
 

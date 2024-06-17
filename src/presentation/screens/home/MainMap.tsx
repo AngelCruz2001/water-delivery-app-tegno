@@ -96,6 +96,7 @@ export const MainMap = (props: Props) => {
                                 key={driver._id}
                                 coordinate={driver.location}
                                 title={driver.name}
+                                image={require('../../../assets/truck.png')}
                             />
                         ))
                     }
