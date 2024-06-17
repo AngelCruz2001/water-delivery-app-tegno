@@ -15,8 +15,6 @@ export function useGetRouters(): {
     refetchOnMount: 'always',
   });
 
-  console.log({routes: data});
-
   const {routes, setRoutes} = useRoutesStore((state: RouteState) => state);
 
   useEffect(() => {

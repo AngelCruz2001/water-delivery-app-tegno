@@ -5,19 +5,17 @@ export const postRoute = async (
   createRouteDTO: TPostRoute,
 ): Promise<TDisplayEnrichedRoute> => {
   const programmedDate = new Date(createRouteDTO.programedDate);
-  const {data} = await api.post<TDisplayEnrichedRoute>(
-    '/routes',
-    {
-      routeName: createRouteDTO.routeName,
-      driverId: createRouteDTO.driverId,
-      programedDate: String(programmedDate),
+  const postData = {
+    routeName: createRouteDTO.routeName,
+    driverId: createRouteDTO.driverId,
+    programedDate: String(programmedDate),
+  };
+  console.log({postData});
+  const {data} = await api.post<TDisplayEnrichedRoute>('/routes', postData, {
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: await getToken(),
     },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: await getToken(),
-      },
-    },
-  );
+  });
   return data;
 };

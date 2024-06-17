@@ -23,7 +23,7 @@ export const RouteFormDriver = () => {
     const setNewRoute = useRoutesStore(state => state.setNewRoute);
 
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>()
-
+    console.log({ newRoute })
     return (
         <ScreenContainer>
             <AppText weight='bold'

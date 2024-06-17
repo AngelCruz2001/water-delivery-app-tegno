@@ -29,6 +29,14 @@ export const RouteFormDate = () => {
                 <DateTimePicker
                     mode="single"
                     date={newRoute.programedDate}
+                    // onChange={(params) => () => {
+                    //     const programedDate = dayjs(params.date).toString();
+                    //     console.log({ programedDate });
+                    //     return setNewRoute({
+                    //         ...newRoute,
+                    //         programedDate,
+                    //     })
+                    // }}
                     onChange={(params) => setNewRoute({
                         ...newRoute,
                         programedDate: dayjs(params.date).toString(),

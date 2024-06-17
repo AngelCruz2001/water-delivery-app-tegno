@@ -45,7 +45,6 @@ export const DisplayRoute = ({
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
     const setActiveRoute = useRoutesStore(state => state.setActiveRoute);
 
-    console.log(route)
     return (
         <Pressable
             style={{
