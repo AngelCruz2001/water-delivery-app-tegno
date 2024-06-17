@@ -6,6 +6,7 @@ import { createWebSocket } from '../actions/websocket/websocket';
 import { useDriverStore } from '../store/driver/useDriverStore';
 import { getCurrentLocation } from '../actions/location/location';
 import { useUserStore } from '../store/users/useUserStore';
+import { LocationUpdate, SocketMessage } from '../interfaces/socketMessages';
 
 type Props = PropsWithChildren & {
 
@@ -37,35 +38,36 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
                 socket = createWebSocket(`${url}?token=${tokenWithoutBearer}`);
 
                 socket.onmessage = (event) => {
-                    const message = JSON.parse(event.data);
+                    const message: SocketMessage = JSON.parse(event.data);
 
                     switch (message.type) {
                         case "init":
                             console.log("Init message received:", message);
-                            addMessage(message);
                             break;
                         case "location_update":
-                            console.log("Location update received:", message);
 
-                            const { data, name } = message.data;
+                            const {
+                                clientId,
+                                data,
+                            } = message;
 
-                            console.log(message.data)
-                            //TODO: Pass lcoationS
+                            const { location, name } = data;
 
-                            const driver = drivers.find((driver) => driver._id === message.clientId);
+                            const driver = drivers.find((driver) => driver._id === clientId);
+
                             if (driver) {
                                 updateLocation({
                                     ...driver,
-                                    location: data.location,
+                                    location,
                                 });
 
                                 break;
                             }
 
                             addDriver({
-                                _id: message.clientId,
-                                name: name,
-                                location: data.location,
+                                _id: clientId,
+                                name,
+                                location,
                             });
 
                             break;
@@ -96,7 +98,9 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
 
     const sendMessage = (message: Record<string, any>) => {
         const socket = useWebSocketStore.getState().socket;
+        console.log("socket", socket)
         if (socket && socket.readyState === WebSocket.OPEN) {
+            console.log("first")
             socket.send(JSON.stringify(message));
         } else {
             console.error("WebSocket is not open.");
@@ -113,6 +117,8 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
             try {
                 const location = await getCurrentLocation();
 
+                console.log("Location:", location)
+
                 const message = {
                     type: "location_update",
                     data: {
@@ -128,7 +134,7 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
             }
         };
 
-        const intervalId = setInterval(updateLocation, 10000);
+        const intervalId = setInterval(updateLocation, 3000);
 
         return () => clearInterval(intervalId);
     }, []);

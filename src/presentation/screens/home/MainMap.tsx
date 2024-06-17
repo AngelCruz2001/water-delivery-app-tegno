@@ -22,7 +22,8 @@ export const MainMap = (props: Props) => {
 
     const [marker, setMarker] = useState<TMarker | null>();
 
-    console.log(drivers)
+    console.log('drivers', drivers)
+
 
     useEffect(() => {
 
