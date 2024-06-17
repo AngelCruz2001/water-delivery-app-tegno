@@ -18,11 +18,10 @@ export const MainMap = (props: Props) => {
 
     const drivers = useDriverStore((state) => state.drivers);
 
+    console.log({ drivers })
     const [location, setLocation] = useState({ latitude: 24.015575981424856, longitude: -104.65724498033524 });
 
     const [marker, setMarker] = useState<TMarker | null>();
-
-    console.log('drivers', drivers)
 
 
     useEffect(() => {

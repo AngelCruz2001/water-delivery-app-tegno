@@ -62,8 +62,6 @@ export const LoginScreen = (props: Props) => {
         mutate(data)
     }
 
-    console.log({ isError, isPending, isSuccess })
-
     return (
         <SafeAreaView
             style={{

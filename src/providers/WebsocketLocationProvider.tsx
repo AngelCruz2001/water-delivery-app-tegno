@@ -17,8 +17,6 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
     const addMessage = useWebSocketStore((state) => state.addMessage);
 
     // Drivers
-    const drivers = useDriverStore((state) => state.drivers);
-    const addDriver = useDriverStore((state) => state.addDriver);
     const updateLocation = useDriverStore((state) => state.updateLocation);
 
     // User 
@@ -53,23 +51,13 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
 
                             const { location, name } = data;
 
-                            const driver = drivers.find((driver) => driver._id === clientId);
-
-                            if (driver) {
-                                updateLocation({
-                                    ...driver,
-                                    location,
-                                });
-
-                                break;
-                            }
-
-                            addDriver({
+                            console.log("clientId", clientId)
+                            const newDriver = {
                                 _id: clientId,
-                                name,
                                 location,
-                            });
-
+                                name,
+                            };
+                            updateLocation(newDriver);
                             break;
                         case "driver_disconnected":
                             console.log("Driver disconnected:", message);
@@ -98,9 +86,7 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
 
     const sendMessage = (message: Record<string, any>) => {
         const socket = useWebSocketStore.getState().socket;
-        console.log("socket", socket)
         if (socket && socket.readyState === WebSocket.OPEN) {
-            console.log("first")
             socket.send(JSON.stringify(message));
         } else {
             console.error("WebSocket is not open.");
@@ -116,9 +102,6 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
         const updateLocation = async () => {
             try {
                 const location = await getCurrentLocation();
-
-                console.log("Location:", location)
-
                 const message = {
                     type: "location_update",
                     data: {
@@ -137,7 +120,8 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
         const intervalId = setInterval(updateLocation, 3000);
 
         return () => clearInterval(intervalId);
-    }, []);
+    }, [user, sendMessage]);
+
 
     return (
         <>

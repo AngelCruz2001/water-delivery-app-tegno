@@ -5,7 +5,6 @@ type DriverState = {
   drivers: TDriver[];
 
   // Methods
-  addDriver: (driver: TDriver) => void;
   updateLocation: (driver: TDriver) => void;
   removeDriver: (driver: TDriver) => void;
 };
@@ -13,29 +12,20 @@ type DriverState = {
 export const useDriverStore = create<DriverState>()((set, get) => ({
   drivers: [],
 
-  // Methods
-  updateLocation: (driver: TDriver) =>
-    set(state => {
-      const drivers = state.drivers.map(d => {
-        if (d._id === driver._id) {
-          return driver;
-        }
-        return d;
-      });
+  updateLocation: (updatedDriver: TDriver) => set(state => {
+    const index = state.drivers.findIndex(d => d._id === updatedDriver._id);
 
-      return {
-        drivers,
-      };
-    }),
+    if (index === -1) {
+      return { drivers: [...state.drivers, updatedDriver] };
+    } else {
+      const newDrivers = [...state.drivers];
+      newDrivers[index] = updatedDriver;
+      return { drivers: newDrivers };
+    }
+  }),
 
-  addDriver: (driver: TDriver) =>
-    set(state => {
-      return {
-        drivers: [...state.drivers, driver],
-      };
-    }),
-  removeDriver: (driver: TDriver) =>
-    set(state => ({
-      drivers: state.drivers.filter(d => d._id !== driver._id),
-    })),
+  removeDriver: (driver: TDriver) => set(state => ({
+    drivers: state.drivers.filter(d => d._id !== driver._id),
+  })),
 }));
+

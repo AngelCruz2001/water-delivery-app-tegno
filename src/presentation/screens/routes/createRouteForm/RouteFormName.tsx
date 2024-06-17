@@ -30,7 +30,6 @@ export const RouteFormName = () => {
     })
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (routePayload: TPostRoute) => {
-            console.log({ routePayload });
             return postRoute(routePayload)
         },
         onError(error, variables, context) {
@@ -62,10 +61,6 @@ export const RouteFormName = () => {
                     <AppButton
                         onPress={() => {
                             const routeName = getValues('routeName');
-                            // console.log({ ...newRoute, routeName });
-                            // mutate({ ...newRoute, routeName });
-                            console.log({ ...newRoute, routeName });
-                            // mutate({ ...newRoute, routeName })
                             mutate({ ...newRoute, routeName })
                         }}
                     >
