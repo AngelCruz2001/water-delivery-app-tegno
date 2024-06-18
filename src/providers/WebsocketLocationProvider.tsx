@@ -22,9 +22,9 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
     // User 
     const user = useUserStore((state) => state.user);
 
-    // const url = "ws://localhost:8080/ws";
+    const url = "ws://localhost:8081/ws";
     // const url = "ws://192.168.1.85:8080/ws";
-    const url = "ws://water-delivery-backend.onrender.com/ws";
+    // const url = "wss://water-delivery-backend.onrender.com/ws";
 
 
     useEffect(() => {
