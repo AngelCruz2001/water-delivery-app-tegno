@@ -1,5 +1,4 @@
-
-import React, { PropsWithChildren, useEffect } from 'react'
+import React, { PropsWithChildren, useEffect, useRef } from 'react';
 import { useWebSocketStore } from '../store/websocket/useWebsocketStore';
 import { getToken } from '../presentation/api/api';
 import { createWebSocket } from '../actions/websocket/websocket';
@@ -8,68 +7,55 @@ import { getCurrentLocation } from '../actions/location/location';
 import { useUserStore } from '../store/users/useUserStore';
 import { LocationUpdate, SocketMessage } from '../interfaces/socketMessages';
 
-type Props = PropsWithChildren & {
-
-}
+type Props = PropsWithChildren & {}
 
 export const WebsocketLocationProvider = ({ children }: Props) => {
     const setSocket = useWebSocketStore((state) => state.setSocket);
     const addMessage = useWebSocketStore((state) => state.addMessage);
 
-    // Drivers
     const updateLocation = useDriverStore((state) => state.updateLocation);
-
-    // User 
     const user = useUserStore((state) => state.user);
-
     // const url = "ws://localhost:8080/ws";
-    // const url = "ws://192.168.1.85:8080/ws";
-    const url = "ws://water-delivery-backend.onrender.com/ws";
+    const url = "ws://192.168.1.85:8080/ws";
+    // const url = "wss://water-delivery-backend.onrender.com/ws";
 
+    const timeoutRef = useRef<NodeJS.Timeout>();
 
     useEffect(() => {
         let socket: WebSocket | null = null;
 
+
         const connectWebSocket = async () => {
             try {
                 const token = await getToken();
-
                 const tokenWithoutBearer = token?.split(" ")[1];
                 socket = createWebSocket(`${url}?token=${tokenWithoutBearer}`);
 
                 socket.onmessage = (event) => {
                     const message: SocketMessage = JSON.parse(event.data);
-
                     switch (message.type) {
-                        case "init":
-                            console.log("Init message received:", message);
-                            break;
                         case "location_update":
-
-                            const {
-                                clientId,
-                                data,
-                            } = message;
-
-                            const { location, name } = data;
-
-                            console.log("clientId", clientId)
-                            const newDriver = {
-                                _id: clientId,
-                                location,
-                                name,
-                            };
-                            updateLocation(newDriver);
-                            break;
-                        case "driver_disconnected":
-                            console.log("Driver disconnected:", message);
+                            updateLocation({
+                                _id: message.clientId,
+                                location: message.data.location,
+                                name: message.data.name,
+                            });
                             break;
                         default:
-                            console.log("Unknown message type:", message);
+                            console.log("Received message:", message);
                             break;
                     }
-                }
+                };
 
+                socket.onopen = () => {
+                    console.log("WebSocket connected.");
+                    clearTimeout(timeoutRef.current);
+                };
+
+                socket.onclose = () => {
+                    console.log("WebSocket closed. Reconnecting in 5 seconds...");
+                    timeoutRef.current = setTimeout(connectWebSocket, 5000);
+                };
 
                 setSocket(socket);
             } catch (error) {
@@ -83,6 +69,7 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
             if (socket) {
                 socket.close();
             }
+            clearTimeout(timeoutRef.current);
         };
     }, [url, setSocket, addMessage]);
 
@@ -91,11 +78,8 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
         if (socket && socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify(message));
         } else {
-            console.error("WebSocket is not open.");
         }
     };
-
-
 
     useEffect(() => {
         if (user?.type !== "driver") {
@@ -106,13 +90,9 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
                 const location = await getCurrentLocation();
                 const message = {
                     type: "location_update",
-                    data: {
-                        name: user?.name,
-                        location,
-                    },
+                    data: { name: user?.name, location },
                     clientId: user?._id,
                 };
-
                 sendMessage(message);
             } catch (error) {
                 console.error("Error getting location:", error);
@@ -120,14 +100,8 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
         };
 
         const intervalId = setInterval(updateLocation, 3000);
-
         return () => clearInterval(intervalId);
     }, [user, sendMessage]);
 
-
-    return (
-        <>
-            {children}
-        </>
-    )
-}
+    return <>{children}</>;
+};

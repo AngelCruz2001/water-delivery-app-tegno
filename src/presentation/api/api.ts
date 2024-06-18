@@ -18,8 +18,8 @@ axios.interceptors.request.use(
 );
 
 export const api = axios.create({
-  baseURL: 'https://water-delivery-backend.onrender.com',
-  // baseURL: 'http://192.168.1.85:8080',
+  // baseURL: 'https://water-delivery-backend.onrender.com',
+  baseURL: 'http://192.168.1.85:8080',
   // baseURL: 'http://localhost:8080',
   // baseURL: 'http://10.0.2.2:8080',
 });
