@@ -11,10 +11,10 @@ import { ClientStackProps } from "../../../navigation/clients/ClientsStackNaviga
 import { useClientsStore } from "../../../store/clients/useClientsStore";
 import Toast from "react-native-toast-message";
 import { useEffect, useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import { paddingMap, roundedMap } from "../../../config/theme/globalstyle";
 import { Card } from "../../components/shared/Card";
-import MapView, { MapPressEvent, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { colors } from "../../../config/theme/colors";
 import { GooglePlacesInput } from "./SetAddressMap";
 import { TLocation, TPostLocation } from "../../../interfaces/location";
@@ -52,7 +52,7 @@ export const CreateClientScreen = () => {
             //     index: 0,
             //     routes: [{ name: 'Clientes' }],
             // })
-            navigation.navigate('Clientes');
+            navigation.canGoBack() && navigation.goBack();
             // navigation.goBack();
         }
     })
@@ -66,6 +66,7 @@ export const CreateClientScreen = () => {
             })
         },
         onSuccess: ({ data }) => {
+            console.log("success postClient")
             addClient(data.client);
             const location = marker as TLocation;
             const { reference } = getValues()
@@ -79,6 +80,7 @@ export const CreateClientScreen = () => {
     })
 
     const onSubmit = (data: TPostClient) => {
+        console.log({ data })
         mutate(data)
     }
     useEffect(() => {
@@ -102,6 +104,7 @@ export const CreateClientScreen = () => {
 
     const moveCameraToLocation = (location: TLocation) => {
         if (mapRef.current) {
+            console.log("go to location")
             mapRef.current.animateCamera({
                 center: location,
                 zoom: 16,
@@ -243,9 +246,10 @@ export const CreateClientScreen = () => {
                     style={styles.map}
                     initialRegion={{
                         latitude: 24.027269, longitude: -104.6666078,
-                        latitudeDelta: 0.02,
-                        longitudeDelta: 0.02,
+                        latitudeDelta: 0.09,
+                        longitudeDelta: 0.09,
                     }}
+                    cameraZoomRange={{ minCenterCoordinateDistance: 10, maxCenterCoordinateDistance: 20 }}
                     showsUserLocation
                     // onPress={async (e: MapPressEvent) => {
                     //     e.persist();
@@ -262,7 +266,7 @@ export const CreateClientScreen = () => {
                     //     e.persist();
                     //     console.log("event: ", { e })
                     // }}
-                    onRegionChange={getCenterCoordinates}
+                    // onRegionChange={getCenterCoordinates}
                     onRegionChangeComplete={async () => {
                         try {
                             const { latitude, longitude } = await getCenterCoordinates()
@@ -275,16 +279,27 @@ export const CreateClientScreen = () => {
                 // onTouchEndCapture={() => getCenterCoordinates()}
                 // onResponderEnd={() => getCenterCoordinates()}
                 >
-
-                    {marker && (
+                    {/* {marker && (
                         <Marker
                             image={require('../../../assets/marker.png')}
                             coordinate={{
                                 latitude: marker.latitude, longitude: marker.longitude,
                             }}
                         />
-                    )}
+                    )} */}
                 </MapView>
+                <View style={{
+                    position: 'absolute', top: '35%', zIndex: 10, left: '45%', width: 40,
+                    aspectRatio: 1, alignItems: 'center', justifyContent: 'center',
+                    pointerEvents: 'none',
+                    // transform: [{ translateX: '50%' }, { translateY: '50%' }]
+                }}>
+                    <Image source={require('../../../assets/marker.png')} style={{
+                        maxWidth: 25,
+                        aspectRatio: 1,
+                        objectFit: 'contain'
+                    }} />
+                </View>
             </Card>
 
 
@@ -350,7 +365,7 @@ const styles = StyleSheet.create({
     },
     map: {
         width: '100%',
-        flex: 1
+        flex: 1,
     },
     searchContainer: {
         zIndex: 2,

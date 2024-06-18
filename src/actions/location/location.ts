@@ -9,19 +9,24 @@ import axios from 'axios';
 
 export const getCurrentLocation = (): Promise<TLocation> => {
   return new Promise((resolve, reject) => {
-    Geolocation.getCurrentPosition(
-      position => {
-        resolve({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      error => {
-        console.log('No se pudo obtener la ubicación', error);
-        reject(error);
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    );
+    try {
+      Geolocation.getCurrentPosition(
+        position => {
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        error => {
+          console.log('No se pudo obtener la ubicación', error);
+          reject(error);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+    } catch (error) {
+      console.log('error from getCurrentLocation: ', error);
+      reject(error);
+    }
   });
 };
 
