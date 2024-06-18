@@ -25,3 +25,15 @@ export function useGetRouters(): {
 
   return {routes, isLoading, isError};
 }
+
+export function useGetRouteByUserId(userId: string): {
+  route: TDisplayRoute | undefined;
+  isLoading: boolean;
+  isError: boolean;
+} {
+  const {routes, isLoading, isError} = useGetRouters();
+
+  const route = routes.find((r) => r.driverId === userId);
+
+  return {route, isLoading, isError};
+}

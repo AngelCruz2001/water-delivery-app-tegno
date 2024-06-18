@@ -10,18 +10,28 @@ import { FAB } from '../../components/shared/fab/Fab'
 import { HomeStackProps } from '../../../navigation/HomeStackNavigator'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { useDriverStore } from '../../../store/driver/useDriverStore'
+import { useGetRouteByUserId } from '../../hooks/routers/useGetRoutes'
+import { useUserStore } from '../../../store/users/useUserStore'
 
 type Props = {}
 
 
 export const MainMap = (props: Props) => {
 
+
+
     const drivers = useDriverStore((state) => state.drivers);
+
+    const user = useUserStore((state) => state.user);
 
     const [location, setLocation] = useState({ latitude: 24.015575981424856, longitude: -104.65724498033524 });
 
     const [marker, setMarker] = useState<TMarker | null>();
 
+    const { isError, isLoading, route } = useGetRouteByUserId(user?._id || '')
+
+
+    console.log({ route })
 
     useEffect(() => {
 

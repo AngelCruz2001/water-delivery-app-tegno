@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { TDisplayOrder } from './order';
 
 export interface TDisplayRoute {
   _id: string;
@@ -11,6 +12,7 @@ export interface TDisplayRoute {
   startTime: string;
   endTime: string;
   routePauses: TDisplayRoutePause[];
+  routeOrders: TDisplayOrder[];
 }
 
 export interface TDisplayEnrichedRoute extends TDisplayRoute {
