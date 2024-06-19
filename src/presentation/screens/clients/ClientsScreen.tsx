@@ -15,6 +15,7 @@ export const ClientsScreen = () => {
     const clients = useClientsStore(state => state.clients);
     const navigation = useNavigation<NavigationProp<ClientStackProps>>();
 
+
     return (
         <>
 

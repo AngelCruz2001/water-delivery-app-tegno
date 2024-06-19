@@ -6,14 +6,15 @@ import { RoutesScreen } from "../../presentation/screens/routes/RoutesScreen";
 import { RouteFormDate } from "../../presentation/screens/routes/createRouteForm/RouteFormDate";
 import { RouteFormDriver } from "../../presentation/screens/routes/createRouteForm/RouteFormDriver";
 import { RouteFormName } from "../../presentation/screens/routes/createRouteForm/RouteFormName";
+import { TDisplayEnrichedRoute } from "../../interfaces/routers";
+import { RouteScreen } from "../../presentation/screens/routes/RouteScreen";
 
 export type RoutesStackProps = {
     RoutesScreen: undefined;
     DateTab: undefined;
     DriversTab: undefined;
     NameTab: undefined;
-    // CreateRouteScreen: undefined;
-    // AddOrdersScreen: undefined;
+    RouteScreen: { enrichedRoute: TDisplayEnrichedRoute };
 }
 
 const Stack = createStackNavigator<RoutesStackProps>();
@@ -33,6 +34,9 @@ export function RoutesStackNavigator() {
         >
             <Stack.Screen name="RoutesScreen" component={RoutesScreen} options={{
                 title: 'Rutas y Órdenes',
+            }} />
+            <Stack.Screen name="RouteScreen" component={RouteScreen} options={{
+                title: 'Ruta',
             }} />
             <Stack.Screen name="DateTab" component={RouteFormDate} options={{
                 title: 'Nueva Ruta',
