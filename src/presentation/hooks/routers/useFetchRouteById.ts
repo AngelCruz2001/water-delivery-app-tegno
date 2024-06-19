@@ -1,16 +1,16 @@
 import {useQuery} from '@tanstack/react-query';
-import {useEffect} from 'react';
 import {TDisplayRoute} from '../../../interfaces/routers';
-import {fetchRoutes} from '../../../store/routes/api/fetchRoutes';
+import {fetchRoutes} from '../../../store/routes';
 import {RouteState, useRoutesStore} from '../../../store/routes/useRoutesStore';
+import { useEffect } from 'react';
 
-export function useGetRouters(): {
-  routes: TDisplayRoute[];
+export function useFetchRouteById(id: string): {
+  route: TDisplayRoute;
   isLoading: boolean;
   isError: boolean;
 } {
   const {data, isLoading, isError} = useQuery({
-    queryKey: ['routes/enriched'],
+    queryKey: ['routes/enriched', id],
     queryFn: fetchRoutes,
     refetchOnMount: 'always',
   });
