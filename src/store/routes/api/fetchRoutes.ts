@@ -8,3 +8,13 @@ export async function fetchRoutes() {
   });
   return data;
 }
+
+
+export async function fetchRouteById(id: string) {
+  const {data} = await api.get(`/routes/enriched/${id}`, {
+    headers: {
+      authorization: await getToken(),
+    },
+  });
+  return data;
+}

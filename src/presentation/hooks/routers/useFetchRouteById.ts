@@ -1,27 +1,32 @@
 import {useQuery} from '@tanstack/react-query';
-import {TDisplayRoute} from '../../../interfaces/routers';
-import {fetchRoutes} from '../../../store/routes';
+import {
+  TDisplayEnrichedRoute,
+  TDisplayRoute,
+} from '../../../interfaces/routers';
 import {RouteState, useRoutesStore} from '../../../store/routes/useRoutesStore';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
+import {fetchRouteById} from '../../../store/routes/api/fetchRoutes';
 
 export function useFetchRouteById(id: string): {
-  route: TDisplayRoute;
+  activeRoute: TDisplayEnrichedRoute | null;
   isLoading: boolean;
   isError: boolean;
 } {
   const {data, isLoading, isError} = useQuery({
     queryKey: ['routes/enriched', id],
-    queryFn: fetchRoutes,
+    queryFn: () => fetchRouteById(id),
     refetchOnMount: 'always',
   });
 
-  const {routes, setRoutes} = useRoutesStore((state: RouteState) => state);
+  const {activeRoute, setActiveRoute} = useRoutesStore(
+    (state: RouteState) => state,
+  );
 
   useEffect(() => {
     if (data) {
-      setRoutes(data);
+      setActiveRoute(data);
     }
-  }, [data, setRoutes]);
+  }, [data, setActiveRoute]);
 
-  return {routes, isLoading, isError};
+  return {activeRoute, isLoading, isError};
 }

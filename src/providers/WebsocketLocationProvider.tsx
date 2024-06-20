@@ -15,8 +15,8 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
 
     const updateLocation = useDriverStore((state) => state.updateLocation);
     const user = useUserStore((state) => state.user);
-    // const url = "ws://localhost:8080/ws";
-    const url = "ws://192.168.1.85:8080/ws";
+    const url = "ws://localhost:3001/ws";
+    // const url = "ws://192.168.1.73:8080/ws";
     // const url = "wss://water-delivery-backend.onrender.com/ws";
 
     const timeoutRef = useRef<NodeJS.Timeout>();
