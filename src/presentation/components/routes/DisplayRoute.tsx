@@ -53,7 +53,8 @@ export const DisplayRoute = ({
                 marginBottom: isLast ? 0 : 8
             }}
             onPress={() => {
-                // Navigate to the route screen
+                setActiveRoute(route);
+                navigation.navigate('RouteScreen', { enrichedRoute: route })
             }}
         >
             <Card

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { TDisplayOrder } from './order';
+import {TDisplayOrder} from './order';
 
 export interface TDisplayRoute {
   _id: string;
