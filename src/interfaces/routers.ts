@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {TDisplayOrder} from './order';
+import {TDisplayOrder, TOrderProduct} from './order';
+import {TLocation} from './location';
 
 export interface TDisplayRoute {
   _id: string;
@@ -27,13 +28,33 @@ export interface TPostRoute {
 }
 
 export interface TDisplayRoutePause {
-  location: Location;
+  location: TLocation;
   startTime: string;
   endTime: string;
   note: string;
 }
 
-export interface Location {
+export interface TGetOptimizedRoute {
+  origin: TWaypointLocation;
+  destiny: TWaypointLocation;
+  waypoints: TWaypoint[];
+  userId: string;
+}
+
+export interface OptimizedRoute {
+  location: TLocation;
+  clientName: string;
+  productsOrder: TOrderProduct[];
+}
+
+export interface TWaypoint {
+  userId: string;
+  clientName: string;
+  clientId: string;
+  location: TWaypointLocation;
+}
+
+export type TWaypointLocation = {
   lat: number;
   lng: number;
-}
+};

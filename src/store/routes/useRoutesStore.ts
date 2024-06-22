@@ -1,19 +1,27 @@
 import {create} from 'zustand';
-import {TDisplayEnrichedRoute, TPostRoute} from '../../interfaces/routers';
+import {
+  TDisplayEnrichedRoute,
+  TDisplayRoute,
+  TPostRoute,
+  OptimizedRoute,
+} from '../../interfaces/routers';
 import dayjs from 'dayjs';
 
 export type RouteState = {
   routes: TDisplayEnrichedRoute[];
   activeRoute: TDisplayEnrichedRoute | null;
-
+  routeOnView: TDisplayEnrichedRoute | null;
   newRoute: TPostRoute;
+  optimizedRoute: OptimizedRoute[] | null;
 
   // Methods
   setRoutes: (routes: TDisplayEnrichedRoute[]) => void;
   addRoute: (route: TDisplayEnrichedRoute) => void;
   setActiveRoute: (route: TDisplayEnrichedRoute | null) => void;
   switchRoute: (route: TDisplayEnrichedRoute) => void;
+  setRouteOnView: (route: TDisplayEnrichedRoute | null) => void;
   setNewRoute: (route: TPostRoute) => void;
+  setOptimizedRoute: (route: OptimizedRoute[] | null) => void;
 };
 
 export const useRoutesStore = create<RouteState>()(set => ({
@@ -25,7 +33,9 @@ export const useRoutesStore = create<RouteState>()(set => ({
     routeName: '',
     driverName: '',
   },
+  optimizedRoute: null,
 
+  routeOnView: null,
   // Methods
   setRoutes: (routes: TDisplayEnrichedRoute[]) => set({routes}),
   addRoute: (route: TDisplayEnrichedRoute) =>
@@ -38,4 +48,8 @@ export const useRoutesStore = create<RouteState>()(set => ({
     })),
 
   setNewRoute: (route: TPostRoute) => set({newRoute: route}),
+  setRouteOnView: (route: TDisplayEnrichedRoute | null) =>
+    set({routeOnView: route}),
+  setOptimizedRoute: (route: OptimizedRoute[] | null) =>
+    set({optimizedRoute: route}),
 }));

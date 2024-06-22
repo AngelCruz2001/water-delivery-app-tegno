@@ -5,32 +5,32 @@ import {
 } from '../../../interfaces/routers';
 import {RouteState, useRoutesStore} from '../../../store/routes/useRoutesStore';
 import {useEffect} from 'react';
-import {fetchRouteById} from '../../../store/routes/api/fetchRoutes';
+import {fetchRouteByUserId} from '../../../store/routes/api/fetchRoutes';
 
-export function useFetchRouteById(id: string): {
-  activeRoute: TDisplayEnrichedRoute | null;
+export function useFetchRouteByUserId(id: string): {
+  routeOnView: TDisplayRoute | null;
   isLoading: boolean;
   isError: boolean;
 } {
   const {data, isLoading, isError, error} = useQuery({
-    queryKey: ['routes/enriched', id],
-    queryFn: () => fetchRouteById(id),
+    queryKey: ['routes/driver', id],
+    queryFn: () => fetchRouteByUserId(id),
     refetchOnMount: 'always',
   });
 
-  const {activeRoute, setActiveRoute} = useRoutesStore(
+  const {routeOnView, setRouteOnView} = useRoutesStore(
     (state: RouteState) => state,
   );
 
   useEffect(() => {
     if (data) {
-      setActiveRoute(data);
+      setRouteOnView(data);
     }
-  }, [data, setActiveRoute]);
+  }, [data, setRouteOnView]);
 
   if (isError) {
     console.log(error?.message);
   }
 
-  return {activeRoute, isLoading, isError};
+  return {routeOnView, isLoading, isError};
 }

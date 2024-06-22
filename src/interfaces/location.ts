@@ -1,3 +1,4 @@
+import { TOrderProduct } from './order';
 export type TLocation = {
   latitude: number;
   longitude: number;
@@ -64,3 +65,10 @@ export type TPostLocation = {
   clientId: string;
   reference: string;
 };
+
+export interface TDriver {
+  _id: string;
+  name: string;
+  location: TLocation;
+}
+
