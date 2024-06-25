@@ -15,12 +15,13 @@ type ButtonProps = PropsWithChildren & {
     onPress?: (data: any) => void,
     size?: FontSize,
     style?: StyleProp<ViewStyle>
-    disabled?: boolean
+    disabled?: boolean,
+    color?: string
 }
 
 export const AppButton = (props: ButtonProps) => {
 
-    const { children, AccesoryLeft, AccesoryRight, onPress, size, style, disabled = false } = props;
+    const { children, AccesoryLeft, AccesoryRight, onPress, size, style, disabled = false, color } = props;
 
     //TODO: color or variant in props
     //TODO: accesory icon (left or right) in props
@@ -57,7 +58,7 @@ export const AppButton = (props: ButtonProps) => {
                     <AppText
                         size={size}
                         style={{
-                            color: disabled ? colors.background : colors.white,
+                            color: color ? color : disabled ? colors.background : colors.white,
                             fontWeight: 'bold',
                         }}>
                         {children}

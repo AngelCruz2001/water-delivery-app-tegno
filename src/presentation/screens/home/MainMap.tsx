@@ -17,15 +17,10 @@ type Props = {}
 
 export const MainMap = (props: Props) => {
 
-
-
     const drivers = useDriverStore((state) => state.drivers);
-
     const user = useUserStore((state) => state.user);
-
-    const [location, setLocation] = useState({ latitude: 24.015575981424856, longitude: -104.65724498033524 });
-
     const [marker, setMarker] = useState<TMarker | null>();
+    const [location, setLocation] = useState({ latitude: 24.015575981424856, longitude: -104.65724498033524 });
 
     // const { isError, isLoading, route } = useGetRouteByUserId(user?._id || '')
 

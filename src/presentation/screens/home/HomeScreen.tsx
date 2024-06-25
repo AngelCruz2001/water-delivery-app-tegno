@@ -16,12 +16,22 @@ export const HomeScreen = () => {
         <MainMap />
       </View>
       <FAB
-        iconName='plus'
+        iconName='address-book'
         onPress={() => {
           navigation.navigate('HomeCreateClient')
         }}
         style={{
           bottom: 15,
+          right: 15
+        }}
+      />
+      <FAB
+        iconName='dollar'
+        onPress={() => {
+          navigation.navigate('QuickSaleScreen')
+        }}
+        style={{
+          bottom: 75,
           right: 15
         }}
       />

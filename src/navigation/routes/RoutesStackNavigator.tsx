@@ -8,6 +8,7 @@ import { RouteFormDriver } from "../../presentation/screens/routes/createRouteFo
 import { RouteFormName } from "../../presentation/screens/routes/createRouteForm/RouteFormName";
 import { TDisplayEnrichedRoute } from "../../interfaces/routers";
 import { RouteScreen } from "../../presentation/screens/routes/RouteScreen";
+import { CreateOrdersScreen } from "../../presentation/screens/routes/createRouteForm/CreateOrdersScreen";
 
 export type RoutesStackProps = {
     RoutesScreen: undefined;
@@ -15,6 +16,7 @@ export type RoutesStackProps = {
     DriversTab: undefined;
     NameTab: undefined;
     RouteScreen: { enrichedRoute: TDisplayEnrichedRoute };
+    CreateOrdersScreen: { enrichedRoute: TDisplayEnrichedRoute, };
 }
 
 const Stack = createStackNavigator<RoutesStackProps>();
@@ -53,6 +55,7 @@ export function RoutesStackNavigator() {
                 headerBackTitle: 'chofer'
                 // headerShown: false
             }} />
+            <Stack.Screen name="CreateOrdersScreen" component={CreateOrdersScreen} />
         </Stack.Navigator>
     );
 }

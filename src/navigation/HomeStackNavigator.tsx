@@ -6,13 +6,14 @@ import { useEffect } from 'react';
 import { LoadingScreen } from '../presentation/screens/loading/LoadingScreen';
 import { colors } from '../config/theme/colors';
 import { CreateClientScreen } from '../presentation/screens/clients/CreateClientScreen';
-
+import { QuickSaleScreen } from '../presentation/screens/sales/QuickSaleScreen';
 
 export type HomeStackProps = {
     "HomeScreen": undefined,
     "LoadingScreen": undefined,
     "HomeCreateClient": undefined,
     "PermissionScreen": undefined,
+    "QuickSaleScreen": undefined
 }
 const Stack = createStackNavigator<HomeStackProps>();
 
@@ -39,6 +40,7 @@ export function HomeStackNavigator() {
             <Stack.Screen name="HomeCreateClient" options={{ title: 'Crear cliente' }} component={CreateClientScreen} />
             <Stack.Screen name="PermissionScreen" component={PermissionScreen} />
             <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
+            <Stack.Screen name="QuickSaleScreen" component={QuickSaleScreen} options={{ title: 'Registar Venta' }} />
         </Stack.Navigator>
     );
 }
