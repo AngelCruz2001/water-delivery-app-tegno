@@ -119,7 +119,7 @@ export const RouteScreen = ({ route }: Props) => {
                                     marginBottom: 25
                                 }}
                             >
-                                {order.address}
+                                {order.addressName}
                             </AppText>
 
                             {
