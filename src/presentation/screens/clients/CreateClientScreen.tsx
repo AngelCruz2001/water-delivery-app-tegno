@@ -21,6 +21,7 @@ import { TLocation, TPostLocation } from "../../../interfaces/location";
 import { GooglePlaceData, GooglePlaceDetail } from "react-native-google-places-autocomplete";
 import { getCurrentLocation, reverseGeocoding } from "../../../actions/location/location";
 import { SetSearchLocationMap } from "../../components/shared/map/SetSearchLocationMap";
+import { showCreatedToast } from "../../components/toasts/toasts";
 
 export const CreateClientScreen = () => {
 
@@ -210,28 +211,6 @@ export const CreateClientScreen = () => {
     )
 }
 
-
-export const showLoadingToast = (message = 'Cargando...') => {
-    Toast.show({
-        type: 'loading',
-        text1: message,
-        visibilityTime: 4000,
-    });
-}
-
-export const showCreatedToast = (message = 'Cliente registrado') => {
-    Toast.show({
-        type: 'createdToast',
-        text1: message,
-    });
-}
-
-export const showErrorToast = (message = 'Error al registrar el cliente') => {
-    Toast.show({
-        type: 'error',
-        text1: message,
-    });
-}
 
 const styles = StyleSheet.create({
     container: {

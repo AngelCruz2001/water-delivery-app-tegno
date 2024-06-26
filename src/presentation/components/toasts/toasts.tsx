@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { Text } from "react-native-svg";
-import { BaseToast, ErrorToast, ToastShowParams } from "react-native-toast-message";
+import Toast, { BaseToast, ErrorToast, ToastShowParams } from "react-native-toast-message";
 import { colors } from "../../../config/theme/colors";
 import { AppText } from "../shared";
 import { paddingMap, roundedMap } from "../../../config/theme/globalstyle";
@@ -52,3 +52,25 @@ export const toastConfig = {
     </View>
   )
 };
+
+export const showLoadingToast = (message = 'Cargando...') => {
+  Toast.show({
+    type: 'loading',
+    text1: message,
+    visibilityTime: 4000,
+  });
+}
+
+export const showCreatedToast = (message = 'Cliente registrado') => {
+  Toast.show({
+    type: 'createdToast',
+    text1: message,
+  });
+}
+
+export const showErrorToast = (message = 'Error al registrar el cliente') => {
+  Toast.show({
+    type: 'error',
+    text1: message,
+  });
+}

@@ -15,7 +15,7 @@ export type RoutesStackProps = {
     DateTab: undefined;
     DriversTab: undefined;
     NameTab: undefined;
-    RouteScreen: { enrichedRoute: TDisplayEnrichedRoute };
+    RouteScreen: { enrichedRouteId: string };
     CreateOrdersScreen: { enrichedRoute: TDisplayEnrichedRoute, };
 }
 

@@ -54,7 +54,7 @@ export const DisplayRoute = ({
             }}
             onPress={() => {
                 setActiveRoute(route);
-                navigation.navigate('RouteScreen', { enrichedRoute: route })
+                navigation.navigate('RouteScreen', { enrichedRouteId: route._id })
             }}
         >
             <Card

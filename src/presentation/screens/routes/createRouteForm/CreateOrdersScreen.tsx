@@ -14,17 +14,18 @@ import { TDisplayClient } from '../../../../interfaces/clients'
 import { Card } from '../../../components/shared/Card'
 import { useGetProducts } from '../../../hooks/products/useGetProducts'
 import { useProductsStore } from '../../../../store/products/useProductsStore'
-import { TCreateOrderDto } from '../../../../interfaces/order';
+import { TCreateOrderDto, TDisplayOrder, TUpdateOrderDto } from '../../../../interfaces/order';
 import { useForm } from 'react-hook-form'
 import { CartProductsList } from '../../../components/orders/CartProductsList'
 import { OrderResume } from '../../../components/orders/OrderResume'
 import { OrdersList } from '../../../components/orders/CreateOrdersList'
 import { useCurrentLocation } from '../../../hooks/location/useLocation'
 import { useMutation } from '@tanstack/react-query'
-import { showCreatedToast, showErrorToast } from '../../clients/CreateClientScreen'
 import { postOrdersBatch } from '../../../../store/routes/api/postOrdersBatch'
+import { showCreatedToast, showErrorToast } from '../../../components/toasts/toasts'
 
 type Props = NativeStackScreenProps<RoutesStackProps, 'CreateOrdersScreen'>;
+
 export const CreateOrdersScreen = ({ route: { params } }: Props) => {
 
     const { enrichedRoute } = params;
@@ -37,7 +38,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
     const products = useProductsStore(state => state.products);
     const [selectedClient, setSelectedClient] = useState<TDisplayClient | null>(null);
 
-    const [orders, setOrders] = useState<TCreateOrderDto[]>(enrichedRoute.routeOrders || []);
+    const [orders, setOrders] = useState<TUpdateOrderDto[]>(enrichedRoute.routeOrders?.map(o => ({ ...o, hasChanges: false })) || []);
 
     const [newOrder, setNewOrder] = useState<TCreateOrderDto>({
         programedDate: enrichedRoute.programedDate,
@@ -64,20 +65,13 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
             console.log("Error creating route", { error, variables, context })
             showErrorToast('Error creando ruta');
         },
-        onSuccess: (data) => {
-            console.log("res: ", data)
-            // addRoute(data);
-            // setNewRoute({
-            //     driverId: '',
-            //     driverName: '',
-            //     programedDate: dayjs(),
-            //     routeName: '',
-            // });
+        onSuccess: (data: TDisplayOrder) => {
+            console.log('success data: ', { data });
             showCreatedToast('Órdenes registradas con éxito');
-            // navigation.reset({
-            //     index: 0,
-            //     routes: [{ name: 'RoutesScreen' }],
-            // });
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'RoutesScreen' }],
+            });
         },
     })
 
@@ -98,6 +92,8 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
     }, [])
 
 
+    console.log(JSON.stringify(clients, null, 2));
+
 
     return (
         <View
@@ -116,7 +112,9 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                     borderRadius: roundedMap.md,
                     backgroundColor: colors.white,
                     marginHorizontal: 5,
-                    maxHeight: '95%',
+                    [selectedClient ? 'bottom' : 'height']: selectedClient ? 5 : 'auto',
+                    justifyContent: 'space-between'
+                    // height: selectedClient ? 'auto' : '95%',
                 }}
             >
                 {/* TODO: selectedClientInfo */}
@@ -140,30 +138,45 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                         >
                             {selectedClient.address?.split('Durango, Dgo')[0]}
                         </AppText>
-                        <AppText
-                            weight='bold'
-                            // size='lg'
+
+                        <View
                             style={{
-                                marginTop: 2,
+                                height: '45%',
                             }}
                         >
-                            Productos
-                        </AppText>
-                        <CartProductsList
-                            products={products}
-                            order={newOrder}
-                            setOrder={setNewOrder}
-                        />
-                        <View>
+                            <AppText
+                                weight='bold'
+                                // size='lg'
+                                style={{
+                                    marginTop: 2,
+                                }}
+                            >
+                                Productos
+                            </AppText>
+                            <CartProductsList
+                                products={products}
+                                order={newOrder}
+                                setOrder={setNewOrder}
+                                height={350}
+                            />
+                        </View>
+
+                        <View
+                            style={{
+                                height: '45%',
+                            }}
+                        >
                             <OrderResume
                                 order={newOrder}
                             />
                             <View>
                                 <AppButton
                                     onPress={() => {
-                                        setOrders([...orders, {
+                                        const filteredOrders = orders.filter(o => o.clientId !== newOrder.clientId);
+                                        setOrders([...filteredOrders, {
                                             ...newOrder,
-                                            products: newOrder.products
+                                            products: newOrder.products,
+                                            hasChanges: true
                                         }])
                                         setNewOrder({
                                             programedDate: enrichedRoute.programedDate,
@@ -200,7 +213,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                                     }}
                                     style={{
                                         marginTop: 10,
-                                        backgroundColor: 'transparent',
+                                        backgroundColor: colors.background,
                                     }}
                                 >
                                     Cancelar
@@ -240,7 +253,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                 showsUserLocation
             >
                 {
-                    clients.map((client) => {
+                    clients?.map((client) => {
                         const hasOrder = orders.find((order) => order.clientId === client._id)
                         return (
                             <Marker
@@ -272,11 +285,6 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                                         : require('../../../../assets/marker.png')
                                 }
                             >
-
-                                {/* <Callout>
-
-                                </Callout> */}
-
                             </Marker>
                         )
                     })
@@ -290,7 +298,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                     bottom: 5,
                     left: 0,
                     right: 0,
-                    maxHeight: 250,
+                    maxHeight: 300,
                     marginHorizontal: 5,
                 }}
             >
@@ -322,8 +330,9 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                         marginTop: 10
                     }}
                     onPress={() => {
-                        console.log(JSON.stringify(orders, null, 2));
-                        mutate(orders);
+                        const orderWithChanges = orders.filter((order) => order.hasChanges);
+                        console.log(JSON.stringify(orderWithChanges, null, 2));
+                        mutate(orderWithChanges);
                     }}
                 >
                     Guardar órdenes

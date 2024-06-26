@@ -16,14 +16,16 @@ type Props = {}
 
 export const RoutesScreen = (props: Props) => {
 
-    const { isLoading, isError } = useGetRouters();
+    const { isLoading, isError, refetch } = useGetRouters();
     const routes = useRoutesStore(state => state.routes);
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
 
     console.log(JSON.stringify(routes, null, 2))
     return (
         <>
-            <ScreenScrollContainer>
+            <ScreenScrollContainer
+                onRefresh={() => refetch()}
+            >
                 {
                     routes.map((route: TDisplayEnrichedRoute, index) => (
                         <DisplayRoute

@@ -16,7 +16,7 @@ import { paddingMap } from "../../../config/theme/globalstyle";
 import { fontSizeMap } from "../../components/shared/sizes";
 import { Pressable } from "react-native";
 import { useHeaderRightGoBack } from "../../hooks/useHeaderRightGoBack";
-import { showErrorToast } from "./CreateClientScreen";
+import { showCreatedToast, showErrorToast } from "../../components/toasts/toasts";
 
 
 type Props = NativeStackScreenProps<ClientStackProps, 'Editar Cliente'>;
@@ -125,13 +125,4 @@ export const EditClientScreen = ({ route }: Props) => {
             </Form>
         </ScreenScrollContainer>
     )
-}
-
-
-
-export const showCreatedToast = (message = 'Cliente registrado') => {
-    Toast.show({
-        type: 'createdToast',
-        text1: message,
-    });
 }
