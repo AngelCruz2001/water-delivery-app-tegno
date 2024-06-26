@@ -65,7 +65,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
             console.log("Error creating route", { error, variables, context })
             showErrorToast('Error creando ruta');
         },
-        onSuccess: (data: string) => {
+        onSuccess: () => {
             // console.log('success data: ', { data });
             showCreatedToast('Órdenes registradas con éxito');
             navigation.reset({
