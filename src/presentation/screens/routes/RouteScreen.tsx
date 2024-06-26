@@ -2,7 +2,7 @@
 
 
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { ScreenScrollContainer } from '../../components/shared/ScreenScrollContainer'
 import { AppText } from '../../components/shared'
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
@@ -34,7 +34,7 @@ export const RouteScreen = ({ route }: Props) => {
         routeOrders = [],
         startTime,
         routePauses,
-        estimatedTimeInMinutes
+        estimatedTimeInMinutes,
     } = enrichedRoute;
 
     return (
@@ -76,8 +76,10 @@ export const RouteScreen = ({ route }: Props) => {
                     style={{
                         marginTop: 50,
                         flexDirection: 'row',
+                        gap: 10,
                         // justifyContent: 'space-between',
-                        paddingHorizontal: paddingMap.horizontalCard,
+                        // paddingHorizontal: paddingMap.horizontalCard,
+                        marginBottom: paddingMap.horizontalCard,
                     }}>
 
                     <Card>
@@ -98,6 +100,27 @@ export const RouteScreen = ({ route }: Props) => {
                             }}
                         >
                             {totalOrders}
+                        </AppText>
+                    </Card>
+
+                    <Card>
+                        <AppText
+                            weight='bold'
+                            size='lg'
+                            style={{
+                                marginBottom: paddingMap.verticalContainer,
+                            }}
+                        >
+                            Productos
+                        </AppText>
+                        <AppText
+                            weight='bold'
+                            size='lg'
+                            style={{
+                                color: colors.primary
+                            }}
+                        >
+                            {11}
                         </AppText>
                     </Card>
 
