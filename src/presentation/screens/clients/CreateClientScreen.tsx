@@ -21,11 +21,17 @@ import { TLocation, TPostLocation } from "../../../interfaces/location";
 import { GooglePlaceData, GooglePlaceDetail } from "react-native-google-places-autocomplete";
 import { getCurrentLocation, reverseGeocoding } from "../../../actions/location/location";
 import { useGetOptimizedRoutes } from "../../hooks/routers/useGetOptimizedRoutes";
+import { SetSearchLocationMap } from "../../components/shared/map/SetSearchLocationMap";
 
 export const CreateClientScreen = () => {
 
-    const addClient = useClientsStore(state => state.addClient)
     const navigation = useNavigation<NavigationProp<ClientStackProps>>();
+
+    const addClient = useClientsStore(state => state.addClient)
+
+    const [location, setLocation] = useState<TLocation | null>(null);
+    const [locationName, setLocationName] = useState('');
+
     const { control, handleSubmit, formState: { errors }, getValues } = useForm({
         defaultValues: {
             name: '',
@@ -53,12 +59,8 @@ export const CreateClientScreen = () => {
             //     index: 0,
             //     routes: [{ name: 'Clientes' }],
             // })
+            // TODO: go back
             navigation.canGoBack() && navigation.goBack();
-            // navigation.goBack();
-        },
-        onError: (error) => {
-            console.error("error", error)
-            showErrorToast();
         }
     })
 
@@ -83,12 +85,12 @@ export const CreateClientScreen = () => {
             console.log({ data })
 
             addClient(data.client);
-            const location = marker as TLocation;
+            const loc = location as TLocation;
             const { reference } = getValues()
             mutateLocation({
                 reference, location: {
-                    lat: location.latitude,
-                    lng: location.longitude
+                    lat: loc.latitude,
+                    lng: loc.longitude
                 }, clientId: data.client._id, address: locationName
             })
         },
@@ -117,71 +119,7 @@ export const CreateClientScreen = () => {
         })
     }, [])
 
-    const moveCameraToLocation = (location: TLocation) => {
-        if (mapRef.current) {
-            console.log("go to location")
-            mapRef.current.animateCamera({
-                center: location,
-                zoom: 16,
-            })
-        }
-    }
 
-    const hanldeOnPress = async (
-        data: GooglePlaceData,
-        detail: GooglePlaceDetail | null,
-    ) => {
-        const latitude = detail?.geometry?.location?.lat || 0;
-        const longitude = detail?.geometry?.location?.lng || 0;
-
-        const locationStr = await reverseGeocoding({ latitude, longitude });
-        setLocationName(locationStr);
-        setMarker({ latitude: latitude, longitude: longitude })
-        moveCameraToLocation({
-            latitude: latitude,
-            longitude: longitude,
-        })
-    }
-
-    useEffect(() => {
-
-        getCurrentLocation().then((location) => {
-            moveCameraToLocation(location)
-            const { latitude, longitude } = location;
-            setMarker({ latitude: latitude, longitude: longitude })
-        })
-
-        return () => {
-
-        }
-    }, [])
-
-    const getCenterCoordinates = async (): Promise<{ latitude: number, longitude: number }> => {
-
-        let latitude = 0;
-        let longitude = 0;
-        try {
-            if (mapRef.current) {
-                const camera = await mapRef.current.getCamera();
-                if (camera && camera.center) {
-                    const { center } = camera;
-                    latitude = center.latitude;
-                    longitude = center.longitude;
-                    setMarker({
-                        latitude: center.latitude,
-                        longitude: center.longitude
-                    });
-                } else {
-                    console.error("Camera or center property is missing.");
-                }
-            } else {
-                console.error("mapRef.current is not initialized.");
-            }
-        } catch (error) {
-            console.error("Error getting center coordinates:", error);
-        }
-        return { latitude, longitude };
-    };
 
     return (
         <ScreenScrollContainer>
@@ -250,73 +188,10 @@ export const CreateClientScreen = () => {
                 />
             </Form>
 
-            <Card style={{ padding: 0, marginTop: 5, position: 'relative', height: 250 }}>
-                <View style={{ backgroundColor: colors.white, position: 'absolute', width: '100%', top: 0, zIndex: 2, borderRadius: roundedMap.md }}>
-                    <GooglePlacesInput hanldeOnPress={hanldeOnPress}
-                    />
-                </View>
-                <MapView
-                    ref={(map) => mapRef.current = map!}
-                    provider={PROVIDER_GOOGLE}
-                    style={styles.map}
-                    initialRegion={{
-                        latitude: 24.027269, longitude: -104.6666078,
-                        latitudeDelta: 0.09,
-                        longitudeDelta: 0.09,
-                    }}
-                    cameraZoomRange={{ minCenterCoordinateDistance: 10, maxCenterCoordinateDistance: 20 }}
-                    showsUserLocation
-                    // onPress={async (e: MapPressEvent) => {
-                    //     e.persist();
-                    //     const { latitude, longitude } = e.nativeEvent.coordinate
-                    //     const locationStr = await reverseGeocoding({ latitude, longitude });
-                    //     setLocationName(locationStr);
-                    //     moveCameraToLocation({
-                    //         latitude: e.nativeEvent.coordinate.latitude,
-                    //         longitude: e.nativeEvent.coordinate.longitude
-                    //     })
-                    //     setMarker({ latitude, longitude })
-                    // }}
-                    // onTouchMove={(e) => {
-                    //     e.persist();
-                    //     console.log("event: ", { e })
-                    // }}
-                    // onRegionChange={getCenterCoordinates}
-                    onRegionChangeComplete={async () => {
-                        try {
-                            const { latitude, longitude } = await getCenterCoordinates()
-                            const locationStr = await reverseGeocoding({ latitude, longitude });
-                            setLocationName(locationStr);
-                        } catch (reverseGeocodingError) {
-                            console.error("Error in reverseGeocoding:", reverseGeocodingError);
-                        }
-                    }}
-                // onTouchEndCapture={() => getCenterCoordinates()}
-                // onResponderEnd={() => getCenterCoordinates()}
-                >
-                    {/* {marker && (
-                        <Marker
-                            image={require('../../../assets/marker.png')}
-                            coordinate={{
-                                latitude: marker.latitude, longitude: marker.longitude,
-                            }}
-                        />
-                    )} */}
-                </MapView>
-                <View style={{
-                    position: 'absolute', top: '35%', zIndex: 10, left: '45%', width: 40,
-                    aspectRatio: 1, alignItems: 'center', justifyContent: 'center',
-                    pointerEvents: 'none',
-                    // transform: [{ translateX: '50%' }, { translateY: '50%' }]
-                }}>
-                    <Image source={require('../../../assets/marker.png')} style={{
-                        maxWidth: 25,
-                        aspectRatio: 1,
-                        objectFit: 'contain'
-                    }} />
-                </View>
-            </Card>
-
+            <SetSearchLocationMap
+                setLocation={setLocation}
+                setLocationName={setLocationName}
+            />
 
             <Card style={{ backgroundColor: colors.white, padding: 10, gap: 10 }} >
                 <AppText style={{
@@ -332,11 +207,11 @@ export const CreateClientScreen = () => {
                     rules={{}}
                     error={errors.reference?.message || ''}
                 />
-                {marker && (
+                {location && (
                     <AppButton
                         onPress={() => {
                             console.log('submitting')
-                            handleSubmit(onSubmit)();
+                            handleSubmit(onSubmit)();()
                         }}
                     >
                         Guardar cliente
@@ -377,10 +252,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         gap: 5
-    },
-    map: {
-        width: '100%',
-        flex: 1,
     },
     searchContainer: {
         zIndex: 2,

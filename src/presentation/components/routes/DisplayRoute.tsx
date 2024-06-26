@@ -3,7 +3,7 @@
 
 
 import React from 'react'
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import { colors } from '../../../config/theme/colors';
 import { paddingMap, roundedMap } from '../../../config/theme/globalstyle';
 import { AppText } from '../shared/AppText';
@@ -93,21 +93,22 @@ export const DisplayRoute = ({
 }
 
 type StatusProps = {
-    status: string
+    status: string,
+    style?: StyleProp<ViewStyle>
 }
-const DisplayRouteStatus = ({ status }: StatusProps) => {
+export const DisplayRouteStatus = ({ status, style }: StatusProps) => {
     const color = status === 'pending' ? colors.warning : status ===
         'completed' ? colors.success : colors.primaryDark;
     const statusText = status === 'pending' ? 'pendiente' : status ===
         'completed' ? 'completada' : 'en ruta';
     return (
         <View
-            style={{
+            style={[{
                 backgroundColor: color,
                 borderRadius: roundedMap.full,
                 paddingHorizontal: paddingMap.horizontalCard,
                 paddingVertical: 4,
-            }}
+            }, style]}
         >
             <AppText size='sm' style={{
                 color: colors.white,

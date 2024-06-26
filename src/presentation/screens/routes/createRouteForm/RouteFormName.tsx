@@ -30,6 +30,7 @@ export const RouteFormName = () => {
     })
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (routePayload: TPostRoute) => {
+            // console.log({ routePayload })
             return postRoute(routePayload)
         },
         onError(error, variables, context) {
@@ -37,7 +38,7 @@ export const RouteFormName = () => {
             showErrorToast('Error creando ruta');
         },
         onSuccess: (data) => {
-            console.log("res: ", data)
+            console.log("res: ", data, dayjs())
             addRoute(data);
             setNewRoute({
                 driverId: '',

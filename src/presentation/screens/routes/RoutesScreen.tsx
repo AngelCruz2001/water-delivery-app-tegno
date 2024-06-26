@@ -20,14 +20,14 @@ export const RoutesScreen = (props: Props) => {
     const routes = useRoutesStore(state => state.routes);
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
 
+    console.log(JSON.stringify(routes, null, 2))
     return (
         <>
-
             <ScreenScrollContainer>
                 {
-                    routes.map((route: TDisplayEnrichedRoute) => (
+                    routes.map((route: TDisplayEnrichedRoute, index) => (
                         <DisplayRoute
-                            key={route._id}
+                            key={index}
                             route={route}
                         />
                     ))

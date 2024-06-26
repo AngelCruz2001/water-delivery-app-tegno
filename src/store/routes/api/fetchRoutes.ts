@@ -2,7 +2,7 @@ import {TGetOptimizedRoute} from '../../../interfaces/routers';
 import {api, getToken} from '../../../presentation/api/api';
 
 export async function fetchRoutes() {
-  const {data} = await api.get('/routes', {
+  const {data} = await api.get('/routes/enriched', {
     headers: {
       authorization: await getToken(),
     },
