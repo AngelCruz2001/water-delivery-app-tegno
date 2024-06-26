@@ -35,7 +35,11 @@ export const RouteScreen = ({ route }: Props) => {
         startTime,
         routePauses,
         estimatedTimeInMinutes,
+
+
     } = enrichedRoute;
+
+    const totalProducts = useMemo(() => routeOrders?.reduce((acc, order) => (acc + order.totalProducts), 0), [routeOrders])
 
     return (
         <>
@@ -120,7 +124,9 @@ export const RouteScreen = ({ route }: Props) => {
                                 color: colors.primary
                             }}
                         >
-                            {11}
+                            {
+                                totalProducts
+                            }
                         </AppText>
                     </Card>
 

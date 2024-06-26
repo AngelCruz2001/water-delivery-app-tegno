@@ -13,7 +13,7 @@ export const HomeScreen = () => {
   return (
     <>
       <View style={{ flex: 1, }}>
-        <MainMap />
+        {/* <MainMap /> */}
       </View>
       <FAB
         iconName='address-book'

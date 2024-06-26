@@ -7,19 +7,19 @@ import { TWaypoint } from '../../../interfaces/routers';
 interface WaypointMarkersProps {
     currentLocation: TLocation;
     waypoints: TWaypoint[];
-    userId: string;
 }
 
-const WaypointMarkers: React.FC<WaypointMarkersProps> = ({ currentLocation, waypoints, userId }) => {
+const WaypointMarkers: React.FC<WaypointMarkersProps> = ({ currentLocation, waypoints }) => {
 
-    console.log({waypoints})
     return (
         <>
             {waypoints.map((waypoint, index) => (
                 <Marker
                     key={index}
                     coordinate={waypoint.location}
-                    title={waypoint.clientName}
+                    title={waypoint.addressName.split('Durango, Dgo')[0]}
+                    identifier={waypoint.addressName}
+                    description={waypoint.clientName}
                 />
             ))}
         </>

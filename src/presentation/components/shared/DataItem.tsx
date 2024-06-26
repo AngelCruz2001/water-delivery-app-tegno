@@ -6,7 +6,7 @@ import { colors } from '../../../config/theme/colors'
 import { AppText } from './AppText'
 
 type Props = {
-    label: string;
+    label: string | JSX.Element;
     value: string;
     isLast?: boolean;
     color?: string;

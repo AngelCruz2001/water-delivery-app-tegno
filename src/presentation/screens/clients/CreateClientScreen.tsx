@@ -20,7 +20,6 @@ import { GooglePlacesInput } from "./SetAddressMap";
 import { TLocation, TPostLocation } from "../../../interfaces/location";
 import { GooglePlaceData, GooglePlaceDetail } from "react-native-google-places-autocomplete";
 import { getCurrentLocation, reverseGeocoding } from "../../../actions/location/location";
-import { useGetOptimizedRoutes } from "../../hooks/routers/useGetOptimizedRoutes";
 import { SetSearchLocationMap } from "../../components/shared/map/SetSearchLocationMap";
 
 export const CreateClientScreen = () => {
@@ -37,13 +36,9 @@ export const CreateClientScreen = () => {
             name: '',
             businessName: '',
             phoneNumber: '618',
-            reference: '',
-
+            reference: ''
         }
     });
-    const mapRef = useRef<MapView | null>(null);
-    const [marker, setMarker] = useState<TLocation | null>(null);
-    const [locationName, setLocationName] = useState('');
 
     const { mutate: mutateLocation, isError: isErrorLocation, isPending: isPendingLocation, isSuccess: isSuccessLocation } = useMutation({
         mutationFn: async (clientPayload: TPostLocation) => {
@@ -66,24 +61,14 @@ export const CreateClientScreen = () => {
 
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (clientPayload: TPostClient) => {
-
-            try {
-                const response = await api.post<{ client: TDisplayClient }>('/clients', clientPayload, {
-                    headers: {
-                        authorization: await getToken(),
-                    },
-                })
-                console.log("response", response)
-                return data;
-            } catch (error) {
-                console.error("error", error)
-                showErrorToast();
-            }
+            return api.post<{ client: TDisplayClient }>('/clients', clientPayload, {
+                headers: {
+                    authorization: await getToken(),
+                },
+            })
         },
-        onSuccess: (data) => {
+        onSuccess: ({ data }) => {
             console.log("success postClient")
-            console.log({ data })
-
             addClient(data.client);
             const loc = location as TLocation;
             const { reference } = getValues()
@@ -211,7 +196,7 @@ export const CreateClientScreen = () => {
                     <AppButton
                         onPress={() => {
                             console.log('submitting')
-                            handleSubmit(onSubmit)();()
+                            handleSubmit(onSubmit)()
                         }}
                     >
                         Guardar cliente

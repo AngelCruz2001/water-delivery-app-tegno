@@ -22,9 +22,6 @@ const MapDirections: React.FC<MapDirectionsProps> = ({ mapViewRef, waypoints, or
 
     const waypointsLocations = waypoints.map(waypoint => waypoint.location)
 
-
-    console.log('waypoints', waypointsLocations)
-
     return (
         <MapViewDirections
             origin={origin}

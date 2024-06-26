@@ -11,17 +11,16 @@ export const getCurrentLocation = (): Promise<TLocation> => {
   return new Promise((resolve, reject) => {
     try {
       Geolocation.getCurrentPosition(
-        position => {
+        position =>
           resolve({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-          });
-        },
+          }),
         error => {
           console.log('No se pudo obtener la ubicación', error);
           reject(error);
         },
-        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        {enableHighAccuracy: true},
       );
     } catch (error) {
       console.log('error from getCurrentLocation: ', error);

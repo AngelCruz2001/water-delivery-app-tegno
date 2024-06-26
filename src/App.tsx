@@ -4,10 +4,9 @@ import {
   SafeAreaView,
   StyleSheet,
 } from 'react-native';
-
+import 'react-native-reanimated'
+import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native';
-import { SideMenuNavigator } from './navigation';
-import { PermissionsChecker } from './providers/PermissionsChecker';
 import { colors } from './config/theme/colors';
 import { QueryProvider } from './providers/QueryClient';
 import Toast from 'react-native-toast-message';

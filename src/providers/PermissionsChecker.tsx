@@ -2,12 +2,13 @@
 import { AppState, StyleSheet, Text, View } from 'react-native'
 import React, { PropsWithChildren, useEffect } from 'react'
 import { usePermissionStore } from '../store/permissions/usePermissionStore'
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { HomeStackProps } from '../navigation/HomeStackNavigator';
 
 export const PermissionsChecker = ({ children }: PropsWithChildren) => {
 
     const { locationStatus, checkLocationPermission } = usePermissionStore();
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<HomeStackProps>>();
 
     useEffect(() => {
         checkLocationPermission();
@@ -27,10 +28,13 @@ export const PermissionsChecker = ({ children }: PropsWithChildren) => {
     }, []);
 
     useEffect(() => {
+        console.log(locationStatus)
         if (locationStatus === 'granted') {
-            navigation.reset({ routes: [{ name: 'HomeScreen' as never }] })
+            // navigation.reset({ routes: [{ name: 'HomeScreen' as never }] })
+            navigation.reset({ routes: [{ name: 'DriverRoutePreviewScreen' }] })
+            console.log("first")
         } else if (locationStatus !== 'undetermined') {
-            navigation.reset({ routes: [{ name: 'PermissionScreen' as never }] })
+            navigation.reset({ routes: [{ name: 'PermissionScreen'}] })
         }
     }, [locationStatus])
 

@@ -32,9 +32,9 @@ const styles = StyleSheet.create({
     },
 });
 
-type MainMapProps = NativeStackScreenProps<HomeStackProps, 'DriverRouteMap'>
+type DriverMapScreenProps = NativeStackScreenProps<HomeStackProps, 'DriverRouteMap'>
 
-export const MainMap = ({ route: { params } }: MainMapProps) => {
+export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => {
     const user = useUserStore((state) => state.user);
     const mapViewRef = useRef<MapView>(null);
 
@@ -52,8 +52,24 @@ export const MainMap = ({ route: { params } }: MainMapProps) => {
             }
         });
     }, [mapViewRef]);
+
+    useEffect(() => {
+        if (!location) return;
+        if (!mapViewRef.current) return;
+
+        mapViewRef.current.fitToSuppliedMarkers(waypoints.map(w => w.addressName), {
+            edgePadding: { top: 0, right: 0, bottom: 0, left: 0 },
+        });
+    }, [location]);
+
     return (
         <>
+
+            <Card> 
+                <AppText>
+                    En camino a {waypoints[waypoints.length - 1].addressName}
+                </AppText>
+            </Card>
 
             <MapView
                 ref={mapViewRef}
@@ -68,7 +84,7 @@ export const MainMap = ({ route: { params } }: MainMapProps) => {
                 showsUserLocation
             >
                 {/* <UserMarker marker={marker} />  */}
-                <DriverMarkers />
+                {/* <DriverMarkers /> */}
                 <MapDirections origin={location} mapViewRef={mapViewRef} destination={location} waypoints={waypoints} />
                 <WaypointMarkers currentLocation={location} waypoints={waypoints} />
             </MapView>

@@ -15,9 +15,6 @@ import { useQueryClient } from "@tanstack/react-query";
 const Drawer = createDrawerNavigator();
 
 export function AppNavigator() {
-
-
-
     return (
         <PermissionsChecker>
             <Drawer.Navigator
