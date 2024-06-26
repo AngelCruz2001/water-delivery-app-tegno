@@ -10,11 +10,13 @@ export type TDisplayOrder = {
   clientId: string;
   clientName: string;
   addressId: string;
+  addressName: string;
   location: TLocation;
   startTime: string;
   endTime: string;
   status: string;
   products: TOrderProduct[];
+  totalProducts: number;
   note: string;
   closeNote: string;
 };

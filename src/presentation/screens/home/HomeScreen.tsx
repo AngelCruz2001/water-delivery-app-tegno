@@ -15,7 +15,7 @@ export const HomeScreen = () => {
       <View style={{ flex: 1, }}>
         <MainMap />
       </View>
-      <FAB
+      {/* <FAB
         iconName='plus'
         onPress={() => {
           navigation.navigate('HomeCreateClient')
@@ -24,7 +24,7 @@ export const HomeScreen = () => {
           bottom: 15,
           right: 15
         }}
-      />
+      /> */}
     </>
   )
 }

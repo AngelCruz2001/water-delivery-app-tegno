@@ -1,31 +1,35 @@
 import React from 'react';
 import MapViewDirections from 'react-native-maps-directions';
-import { Dimensions } from 'react-native';
+import { Dimensions, Text } from 'react-native';
 import { TLocation } from '../../../interfaces/location';
 import { androidGoogleApiKey } from '../../../config/theme/variables';
 import MapView from 'react-native-maps';
+import { TWaypoint } from '../../../interfaces/routers';
 
 const { width, height } = Dimensions.get('window');
 
 interface MapDirectionsProps {
     mapViewRef: React.RefObject<MapView>;
-    waypoints: TLocation[];
+    waypoints: TWaypoint[];
     origin: TLocation;
+    destination: TLocation
 }
 
-const MapDirections: React.FC<MapDirectionsProps> = ({ mapViewRef, waypoints, origin }) => {
+const MapDirections: React.FC<MapDirectionsProps> = ({ mapViewRef, waypoints, origin, destination }) => {
     if (!waypoints || waypoints.length < 2) {
         return null;
     }
 
-    const destination = waypoints[waypoints.length - 1];
-    const routeWaypoints = waypoints.slice(1, -1);
+    const waypointsLocations = waypoints.map(waypoint => waypoint.location)
+
+
+    console.log('waypoints', waypointsLocations)
 
     return (
         <MapViewDirections
             origin={origin}
             destination={destination}
-            waypoints={routeWaypoints}
+            waypoints={waypointsLocations}
             apikey={androidGoogleApiKey}
             strokeWidth={3}
             strokeColor="hotpink"

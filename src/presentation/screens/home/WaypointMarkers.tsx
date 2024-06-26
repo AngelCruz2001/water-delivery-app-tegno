@@ -11,41 +11,11 @@ interface WaypointMarkersProps {
 }
 
 const WaypointMarkers: React.FC<WaypointMarkersProps> = ({ currentLocation, waypoints, userId }) => {
-    const params = {
-        userId,
-        origin: {
-            lat: currentLocation.latitude,
-            lng: currentLocation.longitude,
-        },
-        destiny: {
-            lat: currentLocation.latitude,
-            lng: currentLocation.longitude,
-        },
-        waypoints,
-    }
-    
-    const { optimizedRoute, isError, isLoading } = useGetOptimizedRoutes(params);
 
-    if (isError) {
-        console.log('Error getting optimized route', isError);
-        return null;
-    }
-
-    if (isLoading) {
-        return null;
-    }
-
-    if (!waypoints || waypoints.length === 0) {
-        return null;
-    }
-
-    if (!optimizedRoute || optimizedRoute.length === 0) {
-        return null;
-    }
-
+    console.log({waypoints})
     return (
         <>
-            {optimizedRoute.map((waypoint, index) => (
+            {waypoints.map((waypoint, index) => (
                 <Marker
                     key={index}
                     coordinate={waypoint.location}
@@ -55,8 +25,6 @@ const WaypointMarkers: React.FC<WaypointMarkersProps> = ({ currentLocation, wayp
         </>
     );
 };
-
-// description={waypoint.productsOrder.map(product => product.name).join(', ')}
 
 
 export default WaypointMarkers;

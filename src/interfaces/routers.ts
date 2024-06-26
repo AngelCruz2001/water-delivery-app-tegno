@@ -51,7 +51,10 @@ export interface TWaypoint {
   userId: string;
   clientName: string;
   clientId: string;
-  location: TWaypointLocation;
+  orderNote: string;
+  addressName: string;
+  location: TLocation;
+   productsOrder: TOrderProduct[]
 }
 
 export type TWaypointLocation = {

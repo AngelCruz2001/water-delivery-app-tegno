@@ -24,10 +24,14 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
     useEffect(() => {
         let socket: WebSocket | null = null;
 
-
         const connectWebSocket = async () => {
             try {
                 const token = await getToken();
+
+                if (token === '') {
+                    return
+                }
+
                 const tokenWithoutBearer = token?.split(" ")[1];
                 socket = createWebSocket(`${url}?token=${tokenWithoutBearer}`);
 
@@ -47,6 +51,7 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
                     }
                 };
 
+                
                 socket.onopen = () => {
                     console.log("WebSocket connected.");
                     clearTimeout(timeoutRef.current);

@@ -1,7 +1,4 @@
-
-
-
-import { StyleSheet, Text, View, ViewStyle } from 'react-native'
+import { StyleSheet, View, ViewStyle } from 'react-native'
 import React, { PropsWithChildren } from 'react'
 import { paddingMap, roundedMap } from '../../../config/theme/globalstyle'
 import { colors } from '../../../config/theme/colors'
