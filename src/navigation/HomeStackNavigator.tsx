@@ -40,7 +40,7 @@ export function HomeStackNavigator() {
             <Stack.Screen name="HomeCreateClient" options={{ title: 'Crear cliente' }} component={CreateClientScreen} />
             <Stack.Screen name="PermissionScreen" component={PermissionScreen} />
             <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
-            <Stack.Screen name="QuickSaleScreen" component={QuickSaleScreen} options={{ title: 'Registar Venta' }} />
+            <Stack.Screen name="QuickSaleScreen" component={QuickSaleScreen} options={{ title: 'Registar Cliente y Venta' }} />
         </Stack.Navigator>
     );
 }
