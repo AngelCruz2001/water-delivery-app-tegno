@@ -14,8 +14,8 @@ import { formatDate } from '../../../../helpers/date'
 import { TPostRoute } from '../../../../interfaces/routers'
 import { postRoute } from '../../../../store/routes/api/postRoute'
 import { useMutation } from '@tanstack/react-query'
-import { showCreatedToast, showErrorToast } from '../../clients/CreateClientScreen'
 import dayjs from 'dayjs'
+import { showCreatedToast, showErrorToast } from '../../../components/toasts/toasts'
 
 export const RouteFormName = () => {
 

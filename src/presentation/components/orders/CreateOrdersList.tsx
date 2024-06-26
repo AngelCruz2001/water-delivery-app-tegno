@@ -5,19 +5,20 @@ import React from 'react'
 import { Pressable, ScrollView, View } from 'react-native'
 import { AppText } from '../shared'
 import { colors } from '../../../config/theme/colors'
-import { TCreateOrderDto } from '../../../interfaces/order'
+import { TCreateOrderDto, TDisplayOrder } from '../../../interfaces/order'
 import { paddingMap } from '../../../config/theme/globalstyle'
 import { TDisplayClient } from '../../../interfaces/clients'
 import { Card } from '../shared/Card'
 
 
 type Props = {
-    orders: TCreateOrderDto[];
+    orders: TCreateOrderDto[] | TDisplayOrder[];
     clients: TDisplayClient[];
-    onItemPress: (order: TCreateOrderDto | undefined, client: TDisplayClient | undefined) => void
+    onItemPress: (order: TCreateOrderDto | TDisplayOrder | undefined, client: TDisplayClient | undefined) => void
 }
 
 export const OrdersList = ({ orders, clients, onItemPress }: Props) => {
+    console.log({ clients, orders })
     return (
         <>
             <View
@@ -48,19 +49,24 @@ export const OrdersList = ({ orders, clients, onItemPress }: Props) => {
             </View>
             <ScrollView
                 style={{
-                    maxHeight: 150,
+                    maxHeight: 250,
                     paddingVertical: paddingMap.verticalCard,
-                    paddingHorizontal: 5
+                    // paddingHorizontal: 5
                 }}
             >
                 {
-                    orders.map((order, index) => {
+                    orders?.map((order, index) => {
+                        // return <AppText></AppText>
                         const client = clients.find((client) => client._id === order.clientId)
+                        if (!client) return null;
                         const totalProducts = order.products.reduce((acc, product) => acc + product.quantity, 0)
                         const hasOrder = orders.find((order) => order.clientId === client!._id)
                         return (
                             <Pressable
                                 onPress={() => onItemPress(hasOrder, client)}
+                                style={{
+                                    paddingHorizontal: paddingMap.verticalContainer
+                                }}
                             >
 
                                 <Card

@@ -44,6 +44,10 @@ export type TCreateOrderDto = {
   note: string;
 };
 
+export type TUpdateOrderDto = TCreateOrderDto & {
+  hasChanges: boolean;
+};
+
 // type CreateOrderDTO struct {
 // 	ProgramedDate time.Time      `json:"programedDate" bson:"programedDate"`
 // 	DriverId      string         `json:"driverId" bson:"driverId"`
