@@ -4,15 +4,12 @@ import {api, getToken} from '../../../presentation/api/api';
 
 export const deleteOrder = async (orderId: string): Promise<any> => {
   try {
-    const res = await api.delete<TDisplayEnrichedRoute>(
-      '/orders?id=' + orderId,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: await getToken(),
-        },
+    const res = await api.delete<string>('/orders/' + orderId, {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: await getToken(),
       },
-    );
+    });
     console.log({res});
     return res.data;
   } catch (error) {
