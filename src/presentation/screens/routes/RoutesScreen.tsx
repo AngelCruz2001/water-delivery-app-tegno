@@ -3,7 +3,7 @@ import React from 'react'
 import { ScreenScrollContainer } from '../../components/shared/ScreenScrollContainer'
 import { TDisplayEnrichedRoute } from '../../../interfaces/routers'
 import { useRoutesStore } from '../../../store/routes/useRoutesStore';
-import { useGetRouters } from '../../hooks/routers/useGetRoutes'
+import { useGetRoutes } from '../../hooks/routers/useGetRoutes'
 import { RoutesStackProps } from '../../../navigation/routes/RoutesStackNavigator'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { DisplayRoute } from '../../components/routes/DisplayRoute'
@@ -16,7 +16,7 @@ type Props = {}
 
 export const RoutesScreen = (props: Props) => {
 
-    const { isLoading, isError, refetch } = useGetRouters();
+    const { isLoading, isError, refetch } = useGetRoutes();
     const routes = useRoutesStore(state => state.routes);
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
 

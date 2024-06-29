@@ -19,8 +19,8 @@ import { TPostProduct, TProduct } from '../../../interfaces/products'
 import { api, getToken } from '../../api/api'
 import { useProductsStore } from '../../../store/products/useProductsStore'
 import { useMutation } from '@tanstack/react-query'
-import { showCreatedToast } from '../clients/CreateClientScreen'
 import { postProduct } from '../../../store/products/api/postProduct'
+import { showCreatedToast } from '../../components/toasts/toasts'
 
 type Props = {}
 

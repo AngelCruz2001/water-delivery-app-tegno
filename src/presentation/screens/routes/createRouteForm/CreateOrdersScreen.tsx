@@ -69,8 +69,8 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
             // console.log('success data: ', { data });
             showCreatedToast('Órdenes registradas con éxito');
             navigation.reset({
-                index: 0,
-                routes: [{ name: 'RoutesScreen' }],
+                index: 1,
+                routes: [{ name: 'RoutesScreen' }, { name: 'RouteScreen', params: { enrichedRouteId: enrichedRoute._id } }],
             });
         },
     })

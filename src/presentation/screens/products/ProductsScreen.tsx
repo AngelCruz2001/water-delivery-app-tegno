@@ -9,7 +9,6 @@ import { colors } from "../../../config/theme/colors";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { ProductsStackProps } from "../../../navigation/products/ProductsStackNavigator";
 import { FAB } from "../../components/shared/fab/Fab";
-import { ScreenContainer } from "../../components/shared/ScreenContainer";
 import { parsePrice } from "../../../helpers/price";
 
 export const ProductsScreen = () => {
@@ -24,11 +23,11 @@ export const ProductsScreen = () => {
                 onRefresh={refetch}
             >
                 {
-                    products.map((product: TProduct) => (
+                    products?.map((product: TProduct) => (
                         <Pressable
                             key={product._id}
                             onPress={() => {
-                                navigation.navigate('Producto', { product })
+                                navigation.navigate('Producto', { productId: product._id })
                             }}
                         >
                             <Card

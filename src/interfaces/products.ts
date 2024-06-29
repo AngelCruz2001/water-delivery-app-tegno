@@ -14,3 +14,4 @@ export type TPostProduct = {
   description: string;
   price: string;
 };
+export type TPatchProduct = TPostProduct & {};

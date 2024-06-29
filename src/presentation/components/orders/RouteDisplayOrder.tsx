@@ -32,16 +32,19 @@ export const RouteDisplayOrder = ({ order, isLast, routeId }: Props) => {
             return deleteOrder(order._id)
         },
         onSuccess: () => {
-            // console.log("success data: ", data)
-            // setRoutes(routes.filter(r => r._id !== data._id))
-            setRoutes(routes.map(route => {
-                const routeOrders = route.routeOrders.filter(o => o._id !== order._id)
-
-                return { ...route, totalOrders: route.totalOrders - 1, routeOrders }
-            }))
+            try {
+                setRoutes(routes.map(route => {
+                    if (route._id !== routeId) return route;
+                    const orders = route.routeOrders.filter(o => o._id !== order._id)
+                    return { ...route, totalOrders: route.totalOrders - 1, routeOrders: orders }
+                }))
+            } catch (error) {
+                console.log("setRoutes error:", { error })
+            }
             showCreatedToast('Pedido eliminado con éxito')
         },
-        onError: () => {
+        onError: (error) => {
+            console.log("error: ", error)
             showErrorToast('Error al eliminar el pedido')
         }
     })
@@ -63,8 +66,11 @@ export const RouteDisplayOrder = ({ order, isLast, routeId }: Props) => {
                 }}
             >
                 <AppText
+                    style={{
+                        maxWidth: '90%'
+                    }}
                 >
-                    {order.address}
+                    {order.addressName}
                 </AppText>
 
                 <Pressable

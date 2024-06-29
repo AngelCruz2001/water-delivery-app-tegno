@@ -18,6 +18,7 @@ import { paddingMap } from '../../../config/theme/globalstyle'
 import { FAB } from '../../components/shared/fab/Fab'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { useUserStore } from '../../../store/users/useUserStore'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 type Props = NativeStackScreenProps<ClientStackProps, 'Cliente'>;
 
@@ -26,6 +27,29 @@ export const ClientScreen = ({ route }: Props) => {
     const { params: { client } } = route;
     const navigation = useNavigation<NavigationProp<ClientStackProps>>();
     const user = useUserStore(state => state.user);
+
+    useEffect(() => {
+        if (!(user?.type === 'super' || user?.type === 'admin')) {
+            return
+        }
+        navigation.setOptions({
+            headerRight: () => {
+                return (
+                    <Pressable
+                        style={{
+                            marginRight: paddingMap.headerButton,
+                        }}
+                        onPress={() => {
+                            Alert.alert('Eliminar cliente', '¿Estás seguro de eliminar este cliente?')
+                        }}
+                    >
+                        <Icon name='trash' size={25} color={colors.muted} />
+                    </Pressable>
+                )
+            }
+        })
+
+    }, [])
 
     return (
         <>

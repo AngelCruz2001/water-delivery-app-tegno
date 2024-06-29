@@ -13,8 +13,8 @@ import { EditProductScreen } from "../../presentation/screens/products/EditProdu
 export type ProductsStackProps = {
     Productos: undefined,
     "Crear producto": undefined,
-    Producto: { product: TProduct },
-    "Editar Producto": { product: TProduct }
+    Producto: { productId: string },
+    "Editar Producto": { productId: string }
 }
 
 const Stack = createStackNavigator<ProductsStackProps>();

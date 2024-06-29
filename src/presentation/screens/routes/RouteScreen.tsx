@@ -10,42 +10,35 @@ import { RoutesStackProps } from '../../../navigation/routes/RoutesStackNavigato
 import { Card } from '../../components/shared/Card';
 import { DataItem } from '../../components/shared/DataItem';
 import { formatDate } from '../../../helpers/date';
-import { Alert, Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { paddingMap } from '../../../config/theme/globalstyle';
 import { colors } from '../../../config/theme/colors';
 import { DisplayRouteStatus } from '../../components/routes/DisplayRoute';
 import { FAB } from '../../components/shared/fab/Fab';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { parsePrice } from '../../../helpers/price';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { RouteDisplayOrder } from '../../components/orders/RouteDisplayOrder';
 import { useRoutesStore } from '../../../store/routes/useRoutesStore';
+import { useGetRoutes } from '../../hooks/routers/useGetRoutes';
+import { useUserStore } from '../../../store/users/useUserStore';
+
 
 
 type Props = NativeStackScreenProps<RoutesStackProps, 'RouteScreen'>;
 
 export const RouteScreen = ({ route }: Props) => {
 
+    const { isLoading, isError, refetch } = useGetRoutes();
     const { params: { enrichedRouteId } } = route;
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
-    const enrichedRoute = useRoutesStore(state => state.routes.find(r => r._id === enrichedRouteId));
+    const routes = useRoutesStore(state => state.routes);
+    const enrichedRoute = useMemo(() => routes.find(r => r._id === enrichedRouteId), [routes, enrichedRouteId]);
 
-    // const {
-    //     driverName,
-    //     programedDate,
-    //     totalOrders,
-    //     status,
-    //     routeOrders = [],
-    //     startTime,
-    //     routePauses,
-    //     estimatedTimeInMinutes,
-    // } = enrichedRoute;
-
-    console.log(JSON.stringify(enrichedRoute, null, 2));
 
     return (
         <>
-            <ScreenScrollContainer>
+            <ScreenScrollContainer
+                onRefresh={() => refetch()}
+            >
                 {enrichedRoute && <>
 
                     <DisplayRouteStatus status={enrichedRoute.status}
@@ -128,14 +121,11 @@ export const RouteScreen = ({ route }: Props) => {
                                     color: colors.primary
                                 }}
                             >
-                                {11}
+                                {enrichedRoute?.routeOrders?.reduce((acc, order) => acc + order.totalProducts, 0) || 0}
                             </AppText>
                         </Card>
 
                     </View>
-
-                    {/* TODO: Backend empty array */}
-
                     {
                         enrichedRoute?.routeOrders?.map((order, index) => (
                             <RouteDisplayOrder
@@ -150,7 +140,7 @@ export const RouteScreen = ({ route }: Props) => {
             </ScreenScrollContainer>
 
             <FAB
-                iconName='plus'
+                iconName='pencil'
                 onPress={() => {
                     navigation.navigate('CreateOrdersScreen', { enrichedRoute: enrichedRoute! })
                 }}

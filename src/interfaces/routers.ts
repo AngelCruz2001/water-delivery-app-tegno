@@ -54,7 +54,7 @@ export interface TWaypoint {
   orderNote: string;
   addressName: string;
   location: TLocation;
-   productsOrder: TOrderProduct[]
+  productsOrder: TOrderProduct[];
 }
 
 export type TWaypointLocation = {

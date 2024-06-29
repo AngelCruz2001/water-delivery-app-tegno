@@ -7,6 +7,7 @@ export async function fetchRoutes() {
       authorization: await getToken(),
     },
   });
+  console.log('fetchRoutes: ', {data});
   return data;
 }
 
@@ -22,7 +23,6 @@ export async function fetchRouteById(id: string) {
 export async function fetchRouteByUserId(id: string) {
   const {data} = await api.get(`/routes/driver/${id}`, {
     headers: {
-
       authorization: await getToken(),
     },
   });
@@ -34,7 +34,6 @@ export async function fetchRouteByUserId(id: string) {
 
 export async function fetchRouteOptimized(params: TGetOptimizedRoute) {
   try {
-
     const body = {
       origin: {
         lat: params.origin.lat,

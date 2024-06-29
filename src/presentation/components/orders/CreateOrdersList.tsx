@@ -18,7 +18,6 @@ type Props = {
 }
 
 export const OrdersList = ({ orders, clients, onItemPress }: Props) => {
-    console.log({ clients, orders })
     return (
         <>
             <View
@@ -70,7 +69,7 @@ export const OrdersList = ({ orders, clients, onItemPress }: Props) => {
                             >
 
                                 <Card
-                                    key={index}
+                                    key={order.clientId}
                                     style={{
                                         flexDirection: 'row',
                                         justifyContent: 'space-between',
