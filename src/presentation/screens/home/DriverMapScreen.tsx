@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, Alert } from 'react-native';
 import MapView, { LatLng, Marker, Polyline, PROVIDER_GOOGLE, UserLocationChangeEvent } from 'react-native-maps';
 import { useUserStore } from '../../../store/users/useUserStore';
 import { TLocation } from '../../../interfaces/location';
@@ -54,7 +54,6 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     const [routeVariationDistance, setRouteVariationDistance] = useState<number[]>([])
     const [currentIndexMarker, setCurrentIndexMarker] = useState<number>(0)
     const [currentValue, setCurrentValue] = useState<number>(0)
-    const [nextPointLocations, setNextPointLocations] = useState<string>("")
     const [refetchTimes, setRefetchTimes] = useState<number>(0)
     const [logRouteLocations, setLogRouteLocations] = useState<TLocation[]>([])
 
@@ -63,7 +62,6 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
             const loc = await getCurrentLocation();
             setLocation(loc);
             setLocationToCalculateRoute(loc)
-            setLogRouteLocations(prev => [...prev, loc])
         })();
     }, []);
 
@@ -104,7 +102,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
 
     const haversineDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
         const toRad = (x: number) => x * Math.PI / 180;
-        const R = 6371; // Radius of the Earth in km
+        const R = 6371;
         const dLat = toRad(lat2 - lat1);
         const dLon = toRad(lon2 - lon1);
         const a =
@@ -137,7 +135,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
 
 
                 if (distanceToNearestPoint < 0.01) {
-                    console.log("MATCH: ", distanceToNearestPoint, "< 0.01 - ", distanceToNearestPoint < 0.01)
+                    // console.log("MATCH: ", distanceToNearestPoint, "< 0.01 - ", distanceToNearestPoint < 0.01)
                     setRemainingRouteCoordinates(remainingRouteCoordinates.filter((_, index) => index !== currentIndexMarker))
                     setCurrentIndexMarker(0)
                 }
@@ -150,11 +148,12 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                         setCurrentIndexMarker(0)
                         setCurrentValue(0)
                         setRefetchTimes(refetchTimes + 1)
-                        console.log("Refetching because  ", differenceBtwLocations, "!= 0")
+                        // console.log("Refetching because  ", differenceBtwLocations, "!= 0")
                     }
                 }
 
                 setCurrentValue(distanceToNearestPoint)
+                setLogRouteLocations([...logRouteLocations, coordinate])
             }
         }
     }
@@ -168,7 +167,9 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
             longitude: locationToCalculateRoute?.longitude || 0,
         };
 
-        const coordinatesToCalculate = [startLocation, ...result.coordinates];
+        const coordinatesWithoutStart = result.coordinates.slice(1)
+
+        const coordinatesToCalculate = [startLocation, ...coordinatesWithoutStart];
         let variationDistanceArray: number[] = [];
 
         coordinatesToCalculate.forEach((coordinate, index) => {
@@ -186,6 +187,24 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
 
         setRouteVariationDistance(variationDistanceArray);
     };
+
+    useEffect(() => {
+
+        if (destination && location) {
+            const { latitude: latD, longitude: lonD } = destination?.location
+
+            const distanceToDestination = haversineDistance(
+                location.latitude, location.longitude,
+                latD, lonD
+            )
+
+            if (distanceToDestination < 0.1) {
+                // Alert.alert('Has llegado a tu destino')
+            }
+        }
+
+
+    }, [location, destination])
 
     return (
         <View style={styles.container}>
@@ -242,6 +261,14 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     />
                 )}
 
+                {/* {logRouteLocations.length > 0 &&
+                    <Polyline
+                        coordinates={logRouteLocations}
+                        strokeWidth={5}
+                        strokeColor="red"
+                    />
+                } */}
+
                 {location && (
                     <Marker
                         coordinate={location}
@@ -250,28 +277,12 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     />
                 )}
 
-                {/* Marker to supply camera */}
-                {
-
-                }
-
                 {location && remainingRouteCoordinates.length > 0 && (
                     <Marker
                         identifier='nextLocation'
                         coordinate={remainingRouteCoordinates[currentIndexMarker]}
                     />
                 )}
-
-
-                {/* {location && remainingRouteCoordinates.length > 0 && (
-                    [location, ...remainingRouteCoordinates].map((coordinate, index) => (
-                        <Marker
-                            key={index}
-                            title={`${index - 1} - ${haversineDistance(location.latitude, location.longitude, coordinate.latitude, coordinate.longitude).toFixed(5)} km`}
-                            coordinate={coordinate}
-                        />
-                    ))
-                )} */}
             </MapView>
         </View>
     )
