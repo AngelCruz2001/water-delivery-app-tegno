@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import MapViewDirections from 'react-native-maps-directions';
 import { Dimensions, Text } from 'react-native';
 import { TLocation } from '../../../interfaces/location';
@@ -12,13 +12,15 @@ interface MapDirectionsProps {
     mapViewRef: React.RefObject<MapView>;
     waypoints: TWaypoint[];
     origin: TLocation;
-    destination: TLocation
+    destination: TLocation;
+    setWaypointsInfo: Dispatch<SetStateAction<TWaypoint[]>>
 }
 
-const MapDirections: React.FC<MapDirectionsProps> = ({ mapViewRef, waypoints, origin, destination }) => {
+const MapDirections: React.FC<MapDirectionsProps> = ({ mapViewRef, waypoints, origin, destination, setWaypointsInfo }) => {
     if (!waypoints || waypoints.length < 2) {
         return null;
     }
+
 
     const waypointsLocations = waypoints.map(waypoint => waypoint.location)
 
@@ -44,6 +46,11 @@ const MapDirections: React.FC<MapDirectionsProps> = ({ mapViewRef, waypoints, or
                         top: height / 20,
                     },
                 });
+
+                const orderArray: Array<number> = result.waypointOrder[0];
+
+                const newWaypointsOrdered: TWaypoint[] = orderArray.map(index => waypoints[index]);
+                setWaypointsInfo(newWaypointsOrdered);
                 console.log(`Distance: ${result.distance} km, Duration: ${result.duration} min.`);
             }}
             onError={(errorMessage) => {

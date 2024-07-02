@@ -13,7 +13,7 @@ export function useFetchRouteByUserId(id: string): {
   isError: boolean;
 } {
   const {data, isLoading, isError, error} = useQuery({
-    queryKey: ['routes/driver', id],
+    queryKey: [`routes/driver/${id}`],
     queryFn: () => fetchRouteByUserId(id),
     refetchOnMount: 'always',
   });
@@ -24,6 +24,7 @@ export function useFetchRouteByUserId(id: string): {
 
   useEffect(() => {
     if (data) {
+      console.log("change")
       setRouteOnView(data);
     }
   }, [data, setRouteOnView]);

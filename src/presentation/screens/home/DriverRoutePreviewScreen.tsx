@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, Dimensions, Pressable, ScrollView } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { useUserStore } from '../../../store/users/useUserStore';
@@ -50,6 +50,43 @@ export const DriverRoutePreviewScreen: React.FC = () => {
     const [location, setLocation] = useState<TLocation>({ latitude: 24.015576, longitude: -104.657245 });
     const [marker, setMarker] = useState<TMarker | null>(null);
 
+    const [waypointsInfo, setWaypointsInfo] = useState<TWaypoint[]>(
+        routeOnView?.routeOrders.map(order => ({
+            clientName: order.clientName,
+            clientId: order.clientId,
+            userId: order.userId,
+            orderNote: order.note,
+            addressName: order.addressName,
+            productsOrder: order.products,
+            location: {
+                latitude: order.location.lat,
+                longitude: order.location.lng,
+            },
+            status: order.status,
+            id: order._id,
+        })) || []
+    );
+
+    useEffect(() => {
+
+        setWaypointsInfo(routeOnView?.routeOrders.map(order => ({
+            clientName: order.clientName,
+            clientId: order.clientId,
+            userId: order.userId,
+            orderNote: order.note,
+            addressName: order.addressName,
+            productsOrder: order.products,
+            location: {
+                latitude: order.location.lat,
+                longitude: order.location.lng,
+            },
+            status: order.status,
+            id: order._id,
+        })) || [])
+
+    }, [routeOnView])
+
+
     const navigation = useNavigation<NavigationProp<HomeStackProps>>()
 
     useEffect(() => {
@@ -63,18 +100,7 @@ export const DriverRoutePreviewScreen: React.FC = () => {
         });
     }, [mapViewRef]);
 
-    const waypoints: TWaypoint[] = routeOnView?.routeOrders.map(order => ({
-        clientName: order.clientName,
-        clientId: order.clientId,
-        userId: order.userId,
-        orderNote: order.note,
-        addressName: order.addressName,
-        productsOrder: order.products,
-        location: {
-            latitude: order.location.lat,
-            longitude: order.location.lng,
-        }
-    })) || [];
+
 
     if (!user) {
         return null;
@@ -84,11 +110,8 @@ export const DriverRoutePreviewScreen: React.FC = () => {
         return null
     }
 
-
     return (
         <>
-
-
             <MapView
                 ref={mapViewRef}
                 provider={PROVIDER_GOOGLE}
@@ -103,8 +126,8 @@ export const DriverRoutePreviewScreen: React.FC = () => {
             >
                 {/* // <UserMarker marker={marker} />  */}
                 {/* // <DriverMarkers /> */}
-                <MapDirections origin={location} mapViewRef={mapViewRef} destination={location} waypoints={waypoints} />
-                <WaypointMarkers currentLocation={location} waypoints={waypoints} />
+                <MapDirections origin={location} mapViewRef={mapViewRef} destination={location} waypoints={waypointsInfo} setWaypointsInfo={setWaypointsInfo} />
+                <WaypointMarkers currentLocation={location} waypoints={waypointsInfo} />
             </MapView>
 
             <Card
@@ -164,7 +187,7 @@ export const DriverRoutePreviewScreen: React.FC = () => {
                 >
 
                     {
-                        waypoints.map((waypoint, index) => (
+                        waypointsInfo.map((waypoint, index) => (
                             <Card key={index} style={{
                                 backgroundColor: colors.white,
                                 marginBottom: 8
@@ -201,9 +224,9 @@ export const DriverRoutePreviewScreen: React.FC = () => {
                         shadowRadius: 3.84,
                     }}
 
-                    onPress={() => navigation.navigate('DriverRouteMap', { waypoints })}
+                    onPress={() => navigation.navigate('DriverRouteMap', { waypoints: waypointsInfo })}
                 >
-                    <Icon name='navigate-circle-outline' size={25} color={colors.white} />
+                    <Icon name='navigate-circle-outline' size={30} color={colors.white} />
                     <AppText style={{
                         color: colors.white,
                         fontSize: 15,
