@@ -3,18 +3,21 @@ import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, Drawe
 import { ProfileScreen } from "../presentation/screens/profile/ProfileScreen";
 import { BottomTabsNavigator } from "./BottomTabsNavigator";
 import { PermissionsChecker } from "../providers/PermissionsChecker";
-import { AppButton, AppText } from "../presentation/components/shared";
-import { getToken, removeToken } from "../presentation/api/api";
+import { AppText } from "../presentation/components/shared";
+import { removeToken } from "../presentation/api/api";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { Alert, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { RootStackProps } from "./RootStackNavigator";
 import { useUserStore } from "../store/users/useUserStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useQueryClient } from "@tanstack/react-query";
+import { DriverMapWithOrder } from "../presentation/screens/map/DriverMapWithOrder";
+import { Loader } from "../presentation/components/shared/Loader";
+import { useUiStore } from "../store/ui/useUiStore";
 
 const Drawer = createDrawerNavigator();
 
 export function AppNavigator() {
+    const isLoading = useUiStore(state => state.isLoading);
     return (
         <PermissionsChecker>
             <Drawer.Navigator
@@ -30,7 +33,9 @@ export function AppNavigator() {
             >
                 <Drawer.Screen name="BottomTabsNavigator" component={BottomTabsNavigator} />
                 <Drawer.Screen name="Profile" component={ProfileScreen} />
+                <Drawer.Screen name="DriverMapWithOrder" component={DriverMapWithOrder} />
             </Drawer.Navigator>
+            {isLoading && <Loader />}
         </PermissionsChecker>
     );
 }
@@ -40,8 +45,6 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
     const navigation = useNavigation<NavigationProp<RootStackProps>>();
     const verifyToken = useUserStore(state => state.verifyToken);
     const { bottom } = useSafeAreaInsets()
-
-    
 
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={{ flex: 1 }}>

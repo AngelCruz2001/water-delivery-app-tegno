@@ -1,4 +1,4 @@
-import { Image, Pressable, ScrollView, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 import { paddingMap, roundedMap } from "../../../config/theme/globalstyle";
 import { TProduct } from "../../../interfaces/products";
 import { TCreateOrderDto } from "../../../interfaces/order";
@@ -6,9 +6,7 @@ import { Card } from "../shared/Card";
 import { AppText } from "../shared";
 import { colors } from "../../../config/theme/colors";
 import { parsePrice } from "../../../helpers/price";
-
-
-
+import { ScrollView } from "react-native-gesture-handler";
 
 type Props = {
     products: TProduct[];
@@ -31,6 +29,7 @@ export const CartProductsList = (props: Props) => {
         <ScrollView style={{
             maxHeight: height,
             paddingVertical: 2,
+            paddingHorizontal: 3
         }}>
             {products.map((product) => {
                 const productExists = order.products.find(p => p.productId === product._id);

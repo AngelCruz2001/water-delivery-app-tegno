@@ -9,6 +9,8 @@ import { LoginScreen } from "../presentation/screens/LoginScreen";
 import { AppNavigator } from "./SideMenuNavigator";
 import { useQueryClient } from "@tanstack/react-query";
 import { getToken } from "../presentation/api/api";
+import { useUiStore } from "../store/ui/useUiStore";
+import { Loader } from "../presentation/components/shared/Loader";
 
 export type RootStackProps = {
   "LoginScreen": undefined

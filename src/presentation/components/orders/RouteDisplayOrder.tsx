@@ -13,6 +13,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useRoutesStore } from '../../../store/routes/useRoutesStore'
 import { deleteOrder } from '../../../store/routes/api/deleteOrder'
 import { showCreatedToast, showErrorToast, showLoadingToast } from '../toasts/toasts'
+import { useUiStore } from '../../../store/ui/useUiStore'
 
 
 
@@ -25,23 +26,28 @@ export const RouteDisplayOrder = ({ order, isLast, routeId }: Props) => {
 
     const routes = useRoutesStore(state => state.routes);
     const setRoutes = useRoutesStore(state => state.setRoutes);
+    const setIsLoading = useUiStore(state => state.setIsLoading);
 
     const { mutate, isPending } = useMutation({
         mutationFn: async () => {
-            // showLoadingToast('Eliminando pedido...')
+            setIsLoading(true)
             return deleteOrder(order._id)
         },
         onSuccess: () => {
-            // console.log("success data: ", data)
-            // setRoutes(routes.filter(r => r._id !== data._id))
-            setRoutes(routes.map(route => {
-                const routeOrders = route.routeOrders.filter(o => o._id !== order._id)
-
-                return { ...route, totalOrders: route.totalOrders - 1, routeOrders }
-            }))
+            setIsLoading(false)
+            try {
+                setRoutes(routes.map(route => {
+                    if (route._id !== routeId) return route;
+                    const orders = route.routeOrders.filter(o => o._id !== order._id)
+                    return { ...route, totalOrders: route.totalOrders - 1, routeOrders: orders }
+                }))
+            } catch (error) {
+                console.log("setRoutes error:", { error })
+            }
             showCreatedToast('Pedido eliminado con éxito')
         },
         onError: () => {
+            setIsLoading(false)
             showErrorToast('Error al eliminar el pedido')
         }
     })
@@ -63,8 +69,11 @@ export const RouteDisplayOrder = ({ order, isLast, routeId }: Props) => {
                 }}
             >
                 <AppText
+                    style={{
+                        maxWidth: '90%'
+                    }}
                 >
-                    {order.address}
+                    {order.addressName}
                 </AppText>
 
                 <Pressable

@@ -34,7 +34,7 @@ export const toastConfig = {
   },
   createdToast: (props: ToastShowParams & {}) => (
     <View
-      style={{ minHeight: 40, width: '70%', backgroundColor: colors.success, borderRadius: roundedMap.lg, alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', shadowOffset: { width: 0.5, height: 0.27 }, shadowOpacity: 0.3, elevation: 5, paddingHorizontal: paddingMap.verticalCard, paddingVertical: 7, position: 'relative', marginTop: 15 }}>
+      style={{ minHeight: 40, width: '70%', backgroundColor: colors.success, borderRadius: roundedMap.lg, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', shadowOffset: { width: 0.5, height: 0.27 }, shadowOpacity: 0.3, elevation: 5, paddingHorizontal: paddingMap.verticalCard, paddingVertical: 7, position: 'relative', marginTop: 15 }}>
       <Icon name="checkmark" size={25} color={colors.white} style={{ position: 'absolute', left: 10 }} />
       <View
         style={{
@@ -43,11 +43,15 @@ export const toastConfig = {
           flex: 1,
           paddingLeft: 7,
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}
       >
-        <AppText style={{ textAlign: 'center', flex: 1, color: colors.white }} size="sm" weight="bold" >{props.text1}</AppText>
-        <AppText style={{ textAlign: 'center', flex: 1, color: colors.white }} size="sm" weight="bold" >{props.text2}</AppText>
+        <AppText style={{ textAlign: 'center', width: '100%', color: colors.white }} size="sm" weight="bold" >{props.text1}</AppText>
+        {
+          props.text2 && (
+            <AppText style={{ textAlign: 'center', width: '100%', color: colors.white }} size="sm" weight="bold" >{props.text2}</AppText>
+          )
+        }
       </View>
     </View>
   )

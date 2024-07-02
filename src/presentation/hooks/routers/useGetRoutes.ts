@@ -8,7 +8,7 @@ import {TDisplayRoute} from '../../../interfaces/routers';
 import {fetchRoutes} from '../../../store/routes/api/fetchRoutes';
 import {RouteState, useRoutesStore} from '../../../store/routes/useRoutesStore';
 
-export function useGetRouters(): {
+export function useGetRoutes(): {
   routes: TDisplayRoute[];
   isLoading: boolean;
   isError: boolean;

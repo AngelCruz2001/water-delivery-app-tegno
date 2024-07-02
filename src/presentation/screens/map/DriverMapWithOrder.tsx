@@ -4,9 +4,10 @@ import { ScreenContainer } from "../../components/shared/ScreenContainer"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { AppButton } from "../../components/shared"
 import { BottomSheet } from "../../components/shared/BottomSheet"
+import { MapOrderSale } from "./MapOrderSale"
 
 
-export const ProfileScreen = () => {
+export const DriverMapWithOrder = () => {
 
     const navigation = useNavigation();
 
@@ -14,7 +15,7 @@ export const ProfileScreen = () => {
         <>
             <ScreenContainer>
                 <SafeAreaView>
-                    <Text>ProfileScreen</Text>
+                    <Text>DriverMapWithOrder</Text>
                     <AppButton
                         onPress={() => navigation.goBack()}
                     >
@@ -22,6 +23,9 @@ export const ProfileScreen = () => {
                     </AppButton>
                 </SafeAreaView>
             </ScreenContainer>
+            <BottomSheet>
+                <MapOrderSale />
+            </BottomSheet>
         </>
     )
 }

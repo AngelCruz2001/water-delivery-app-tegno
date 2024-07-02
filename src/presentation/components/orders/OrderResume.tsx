@@ -3,21 +3,23 @@
 import React from 'react'
 import { AppText } from '../shared'
 import { paddingMap } from '../../../config/theme/globalstyle'
-import { ScrollView, View } from 'react-native'
 import { TProduct } from '../../../interfaces/products'
 import { TCreateOrderDto } from '../../../interfaces/order'
 import { colors } from '../../../config/theme/colors'
 import { parsePrice } from '../../../helpers/price'
+import { View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 
 
 
 type Props = {
     order: TCreateOrderDto;
     title?: string
+    height?: number
 }
 
 
-export const OrderResume = ({ order, title = 'Resumen de pedido' }: Props) => {
+export const OrderResume = ({ order, title = 'Resumen de pedido', height = 100 }: Props) => {
     return (
         <>
             <View>
@@ -34,7 +36,7 @@ export const OrderResume = ({ order, title = 'Resumen de pedido' }: Props) => {
             </View>
             <ScrollView
                 style={{
-                    height: 100,
+                    height,
                     paddingVertical: 5,
                 }}
             >

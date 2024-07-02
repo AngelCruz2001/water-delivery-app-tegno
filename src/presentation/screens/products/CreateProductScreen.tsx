@@ -19,8 +19,9 @@ import { TPostProduct, TProduct } from '../../../interfaces/products'
 import { api, getToken } from '../../api/api'
 import { useProductsStore } from '../../../store/products/useProductsStore'
 import { useMutation } from '@tanstack/react-query'
-import { showCreatedToast } from '../clients/CreateClientScreen'
 import { postProduct } from '../../../store/products/api/postProduct'
+import { showCreatedToast, showErrorToast } from '../../components/toasts/toasts'
+import { useUiStore } from '../../../store/ui/useUiStore'
 
 type Props = {}
 
@@ -29,6 +30,7 @@ export const CreateProductScreen = (props: Props) => {
     const addProduct = useProductsStore(state => state.addProduct);
     const navigation = useNavigation<NavigationProp<ProductsStackProps>>();
     useHeaderRightGoBack(navigation, 'Cancelar');
+    const setIsLoading = useUiStore(state => state.setIsLoading);
 
     const { control, handleSubmit, formState: { errors, isLoading } } = useForm({
         defaultValues: {
@@ -42,6 +44,7 @@ export const CreateProductScreen = (props: Props) => {
 
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (productPayload: TPostProduct) => {
+            setIsLoading(true);
             const formData = new FormData();
             formData.append('name', productPayload.name);
             formData.append('description', productPayload.description);
@@ -56,7 +59,12 @@ export const CreateProductScreen = (props: Props) => {
         onSuccess: (user) => {
             addProduct(user);
             showCreatedToast('Producto registrado');
+            setIsLoading(false);
             navigation.goBack();
+        },
+        onError: () => {
+            setIsLoading(false);
+            showErrorToast('Error al registrar el producto');
         }
     })
 

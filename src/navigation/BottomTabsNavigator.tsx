@@ -18,6 +18,7 @@ import { ProductsStackNavigator } from './products/ProductsStackNavigator';
 import { useUserStore } from '../store/users/useUserStore';
 import { UsersClientsTabsNavigator } from './users/UsersClientsTabsNavigator';
 import { RoutesStackNavigator } from './routes/RoutesStackNavigator';
+import { RoutesSalesTabsNavigator } from './routes/RoutesSalesTabsNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -65,6 +66,38 @@ export function BottomTabsNavigator() {
                     }
                 }}
             />
+            {
+                (user?.type === 'super' || user?.type === 'admin') && (
+                    <Tab.Screen
+                        name="Rutas"
+                        component={RoutesSalesTabsNavigator}
+                        options={{
+                            tabBarIcon: (props) => {
+                                return (
+                                    !props.focused ?
+                                        <OrdersIcon /> :
+                                        <OrdersIconSelected />
+                                )
+                            },
+                            headerShown: false
+                        }}
+                    />
+                )
+            }
+            {/* <Tab.Screen
+                name="Rutas"
+                component={RoutesStackNavigator}
+                options={{
+                    tabBarIcon: (props) => {
+                        return (
+                            !props.focused ?
+                                <OrdersIcon /> :
+                                <OrdersIconSelected />
+                        )
+                    },
+                    headerShown: false
+                }}
+            /> */}
             {
                 (user?.type === 'super' || user?.type === 'admin') ? (
                     <Tab.Screen
@@ -116,20 +149,6 @@ export function BottomTabsNavigator() {
                     />
                 )
             }
-            <Tab.Screen
-                name="Rutas"
-                component={RoutesStackNavigator}
-                options={{
-                    tabBarIcon: (props) => {
-                        return (
-                            !props.focused ?
-                                <OrdersIcon /> :
-                                <OrdersIconSelected />
-                        )
-                    },
-                    headerShown: false
-                }}
-            />
         </Tab.Navigator>
     );
 }
@@ -204,7 +223,8 @@ const AnimatedTabBar = ({ state: { index: activeIndex, routes }, navigation, des
         <View style={[
             styles.tabBar, {
                 paddingBottom: bottom,
-                height: 60 + bottom
+                height: 60 + bottom,
+                backgroundColor: colors.primary,
             }
         ]}>
 

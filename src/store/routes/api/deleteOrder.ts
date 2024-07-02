@@ -10,7 +10,6 @@ export const deleteOrder = async (orderId: string): Promise<any> => {
         authorization: await getToken(),
       },
     });
-    console.log({res});
     return res.data;
   } catch (error) {
     console.log('pst route error: ', {error});

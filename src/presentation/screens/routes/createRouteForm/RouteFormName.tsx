@@ -16,6 +16,7 @@ import { postRoute } from '../../../../store/routes/api/postRoute'
 import { useMutation } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { showCreatedToast, showErrorToast } from '../../../components/toasts/toasts'
+import { useUiStore } from '../../../../store/ui/useUiStore'
 
 export const RouteFormName = () => {
 
@@ -23,6 +24,7 @@ export const RouteFormName = () => {
     const setNewRoute = useRoutesStore(state => state.setNewRoute);
     const addRoute = useRoutesStore(state => state.addRoute);
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
+    const setIsLoading = useUiStore(state => state.setIsLoading);
     const { control, formState: { errors }, getValues } = useForm({
         defaultValues: {
             routeName: newRoute.driverName + ' - ' + formatDate(newRoute.programedDate.toDate())
@@ -30,11 +32,12 @@ export const RouteFormName = () => {
     })
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (routePayload: TPostRoute) => {
-            // console.log({ routePayload })
+            setIsLoading(true)
             return postRoute(routePayload)
         },
         onError(error, variables, context) {
             console.log("Error creating route", { error, variables, context })
+            setIsLoading(false)
             showErrorToast('Error creando ruta');
         },
         onSuccess: (data) => {
@@ -47,6 +50,7 @@ export const RouteFormName = () => {
                 routeName: '',
             });
             showCreatedToast('Ruta creado con éxito');
+            setIsLoading(false)
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'RoutesScreen' }],
