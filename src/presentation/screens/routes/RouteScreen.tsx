@@ -50,7 +50,7 @@ export const RouteScreen = ({ route }: Props) => {
                             marginVertical: paddingMap.horizontalContainer,
                         }}
                     >
-                        <AppText>Fecha de pedido</AppText>
+                        <AppText>Entrega programada</AppText>
                         <AppText
                             weight='bold'
                             size='lg'

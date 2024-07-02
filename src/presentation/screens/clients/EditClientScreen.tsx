@@ -17,6 +17,7 @@ import { fontSizeMap } from "../../components/shared/sizes";
 import { Pressable } from "react-native";
 import { useHeaderRightGoBack } from "../../hooks/useHeaderRightGoBack";
 import { showCreatedToast, showErrorToast } from "../../components/toasts/toasts";
+import { useUiStore } from "../../../store/ui/useUiStore";
 
 
 type Props = NativeStackScreenProps<ClientStackProps, 'Editar Cliente'>;
@@ -25,6 +26,8 @@ export const EditClientScreen = ({ route }: Props) => {
 
     const { params: { client } } = route
     const navigation = useNavigation<NavigationProp<ClientStackProps>>();
+
+    const setIsLoading = useUiStore(state => state.setIsLoading);
     const { control, handleSubmit, formState: { errors, dirtyFields } } = useForm({
         defaultValues: {
             name: client.name,
@@ -35,6 +38,7 @@ export const EditClientScreen = ({ route }: Props) => {
 
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (clientPayload: TPostClient) => {
+            setIsLoading(true)
             return api.put<{ client: TDisplayClient }>('/clients', clientPayload, {
                 headers: {
                     authorization: await getToken(),
@@ -42,9 +46,14 @@ export const EditClientScreen = ({ route }: Props) => {
             })
         },
         onSuccess: ({ data }) => {
+            setIsLoading(false)
             showCreatedToast();
             navigation.goBack();
         },
+        onError: () => {
+            showErrorToast('Error al editar el cliente');
+            setIsLoading(false)
+        }
     })
 
     const onSubmit = (data: TPostClient) => {

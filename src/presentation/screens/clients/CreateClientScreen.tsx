@@ -22,6 +22,7 @@ import { GooglePlaceData, GooglePlaceDetail } from "react-native-google-places-a
 import { getCurrentLocation, reverseGeocoding } from "../../../actions/location/location";
 import { SetSearchLocationMap } from "../../components/shared/map/SetSearchLocationMap";
 import { showCreatedToast } from "../../components/toasts/toasts";
+import { useUiStore } from "../../../store/ui/useUiStore";
 
 export const CreateClientScreen = () => {
 
@@ -31,6 +32,7 @@ export const CreateClientScreen = () => {
 
     const [location, setLocation] = useState<TLocation | null>(null);
     const [locationName, setLocationName] = useState('');
+    const setIsLoading = useUiStore(state => state.setIsLoading);
 
     const { control, handleSubmit, formState: { errors }, getValues } = useForm({
         defaultValues: {
@@ -50,18 +52,14 @@ export const CreateClientScreen = () => {
             })
         },
         onSuccess: ({ data }) => {
-            showCreatedToast();
-            // navigation.reset({
-            //     index: 0,
-            //     routes: [{ name: 'Clientes' }],
-            // })
-            // TODO: go back
+            setIsLoading(false)
             navigation.canGoBack() && navigation.goBack();
         }
     })
 
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (clientPayload: TPostClient) => {
+            setIsLoading(true)
             return api.post<{ client: TDisplayClient }>('/clients', clientPayload, {
                 headers: {
                     authorization: await getToken(),

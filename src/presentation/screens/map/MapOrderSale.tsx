@@ -1,35 +1,38 @@
+
+
+
+
+
 import React, { useState } from 'react'
-import { ScreenScrollContainer } from '../../components/shared/ScreenScrollContainer';
 import { AppText } from '../../components/shared/AppText';
-import { SetSearchLocationMap } from '../../components/shared/map/SetSearchLocationMap';
 import { TLocation } from '../../../interfaces/location';
-import { Card } from '../../components/shared/Card';
 import { CartProductsList } from '../../components/orders/CartProductsList';
 import { TCreateOrderDto } from '../../../interfaces/order';
 import dayjs from 'dayjs';
 import { useProductsStore } from '../../../store/products/useProductsStore';
-import { ScreenContainer } from '../../components/shared/ScreenContainer';
 import { useGetProducts } from '../../hooks/products/useGetProducts';
 import { View } from 'react-native';
-import { colors } from '../../../config/theme/colors';
 import { OrderResume } from '../../components/orders/OrderResume';
 import { AppButton } from '../../components/shared';
-import { paddingMap } from '../../../config/theme/globalstyle';
+import { paddingMap, roundedMap } from '../../../config/theme/globalstyle';
 import { TCreateSaleDTO, TSale } from '../../../interfaces/sale';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { HomeStackProps } from '../../../navigation/HomeStackNavigator';
+import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
 import { api, getToken } from '../../api/api';
-import { showCreatedToast, showErrorToast } from '../../components/toasts/toasts';
+import { showCreatedToast } from '../../components/toasts/toasts';
+import { colors } from '../../../config/theme/colors';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUiStore } from '../../../store/ui/useUiStore';
 
-export const QuickSaleScreen = () => {
-    const navigation = useNavigation<NavigationProp<HomeStackProps>>();
+export const MapOrderSale = () => {
+    const { bottom } = useSafeAreaInsets()
+    const navigation = useNavigation();
     const products = useProductsStore(state => state.products);
+    const setIsLoading = useUiStore(state => state.setIsLoading);
     const { isLoading: productsIsLoading, isError: productsIsError, refetch } = useGetProducts();
     const [location, setLocation] = useState<TLocation | null>(null);
-    const [locationName, setLocationName] = useState('');
-    const setIsLoading = useUiStore(state => state.setIsLoading);
+    const [locationName, setLocationName] = useState('Cerrada del amanecer 154');
 
     const { mutate, isPending } = useMutation({
         mutationFn: async (sale: TCreateSaleDTO) => {
@@ -42,14 +45,12 @@ export const QuickSaleScreen = () => {
             )
         },
         onSuccess: ({ data }) => {
-            console.log({ data });
-            showCreatedToast('Venta registrada con éxito');
             setIsLoading(false);
-            navigation.goBack();
+            showCreatedToast('Venta registrada con éxito');
+            // navigation.goBack();
         },
         onError: (error) => {
             setIsLoading(false);
-            showErrorToast('Error al registrar la venta');
             console.log({ error })
         }
     })
@@ -68,42 +69,79 @@ export const QuickSaleScreen = () => {
     })
 
     return (
-        <ScreenContainer>
-            <Card>
-                <SetSearchLocationMap
-                    setLocation={setLocation}
-                    setLocationName={setLocationName}
-                    height={250}
-                    showInput={false}
-                />
-
-                <AppText
+        <View
+            style={{
+                flex: 1,
+            }}
+        >
+            <AppText
+                weight='bold'
+                style={{
+                    marginLeft: 'auto',
+                    position: 'absolute',
+                    right: 0,
+                }}>
+                2/10
+            </AppText>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: paddingMap.horizontalCard,
+                    gap: 10,
+                    marginTop: 10,
+                }}
+            >
+                <View
                     style={{
-                        marginTop: 15,
+                        paddingVertical: paddingMap.verticalCard,
+                        paddingHorizontal: paddingMap.horizontalCard,
+                        borderRadius: roundedMap.full,
+                        backgroundColor: colors.primary,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 50,
+                        width: 50
+                    }}
+                >
+                    <Icon
+                        name='navigate'
+                        size={25}
+                        color={colors.white}
+                    />
+                </View>
+                <AppText
+                    size='lg'
+                    style={{
+                        // color: colors.textMuted,
                     }}
                 >{locationName}</AppText>
-            </Card>
+            </View>
 
             <View
                 style={{
-                    paddingVertical: paddingMap.verticalCard
+                    paddingVertical: paddingMap.verticalCard,
                 }}
             >
+                <OrderResume
+                    order={newOrder}
+                    title='Pedido'
+                    height={150}
+                />
+                <View style={{ height: 10 }} />
                 <CartProductsList
                     order={newOrder}
                     setOrder={setNewOrder}
                     products={products}
-                    height={200}
+                    height={250}
                 />
             </View>
-            <OrderResume
-                order={newOrder}
-                title='Resumen de Venta'
-            />
             <AppButton
                 disabled={newOrder.products.length === 0 || isPending}
                 style={{
-                    marginBottom: 10
+                    // marginBottom: 10,
+                    marginTop: 'auto',
+                    marginBottom: bottom + 20
                 }}
                 onPress={() => {
                     const saleData: TCreateSaleDTO = {
@@ -118,9 +156,9 @@ export const QuickSaleScreen = () => {
                     mutate(saleData);
                 }}
             >
-                Guardar Venta
+                Cerrar Venta
             </AppButton>
 
-        </ScreenContainer>
+        </View>
     )
 }

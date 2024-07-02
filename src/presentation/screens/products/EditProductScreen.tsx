@@ -23,6 +23,7 @@ import { Card } from '../../components/shared/Card';
 import { PhotoLibraryAdapter } from '../../../config/adapters/photo-library.adapter';
 import { colors } from '../../../config/theme/colors';
 import { Image } from 'react-native-compressor';
+import { useUiStore } from '../../../store/ui/useUiStore';
 
 type Props = NativeStackScreenProps<ProductsStackProps, 'Editar Producto'>;
 
@@ -33,7 +34,7 @@ export const EditProductScreen = ({ route }: Props) => {
     const setProducts = useProductsStore((state) => state.setProducts);
     const product = products.find(p => p._id === productId) as TProduct;
     const [image, setImage] = useState(product?.image.url || "");
-
+    const setIsLoading = useUiStore(state => state.setIsLoading);
     const { control, handleSubmit, formState: { errors, dirtyFields, isDirty }, getValues } = useForm({
         defaultValues: {
             name: product.name,
@@ -44,7 +45,7 @@ export const EditProductScreen = ({ route }: Props) => {
 
     const { mutate, isError: isMutateError, isPending, isSuccess, } = useMutation({
         mutationFn: async (clientPayload: TPostProduct) => {
-
+            setIsLoading(true);
             const formData = new FormData();
             if (clientPayload.name !== product.name) formData.append('name', clientPayload.name);
             if (clientPayload.description !== product.description) formData.append('description', clientPayload.description);
@@ -70,14 +71,11 @@ export const EditProductScreen = ({ route }: Props) => {
         onSuccess: ({ data }) => {
             showCreatedToast("Producto editado con éxito");
             setProducts(products.map(p => p._id === data._id ? data : p));
-            // navigation.reset({
-            //     index: 1,
-            //     routes: [{ name: 'Productos' }, { name: 'Producto', params: { productId: data._id } }],
-            // });
+            setIsLoading(false);
             navigation.goBack();
         },
         onError: (error) => {
-            console.log({ error })
+            setIsLoading(false);
             showErrorToast('Error al editar el producto');
         }
 
@@ -97,19 +95,6 @@ export const EditProductScreen = ({ route }: Props) => {
         return null
     }
 
-
-    // <>
-    //     <AppButton
-    //         disabled={!isDirty || isPending}
-    //         style={{
-    //             marginLeft: 'auto',
-    //             marginTop: 10
-    //         }}
-    //         onPress={handleSubmit(onSubmit)}>
-    //         Editar Producto
-    //     </AppButton>
-
-    // const isDirtyForm = (image === product?.image.url) || !isDirty
     return (
         <ScreenScrollContainer>
             <Form

@@ -6,10 +6,11 @@ import { ScreenScrollContainer } from "../../components/shared/ScreenScrollConta
 import { useGetProducts } from "../../hooks/products/useGetProducts"
 import { Card } from "../../components/shared/Card";
 import { colors } from "../../../config/theme/colors";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { DrawerActions, NavigationProp, useNavigation } from "@react-navigation/native";
 import { ProductsStackProps } from "../../../navigation/products/ProductsStackNavigator";
 import { FAB } from "../../components/shared/fab/Fab";
 import { parsePrice } from "../../../helpers/price";
+
 
 export const ProductsScreen = () => {
 
@@ -94,6 +95,16 @@ export const ProductsScreen = () => {
                 }}
                 style={{
                     bottom: 15,
+                    right: 15
+                }}
+            />
+            <FAB
+                iconName="trash"
+                onPress={() => {
+                    navigation.dispatch(DrawerActions.jumpTo('DriverMapWithOrder'))
+                }}
+                style={{
+                    bottom: 75,
                     right: 15
                 }}
             />

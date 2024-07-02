@@ -25,6 +25,7 @@ import { ProductsIcon, ProductsIconSelected } from '../../components/icons/Produ
 import { AppButton } from '../../components/shared/AppButton';
 import { MotiView } from 'moti';
 import { Skeleton } from 'moti/skeleton';
+import { FAB } from '../../components/shared/fab/Fab';
 
 const { width, height } = Dimensions.get('window');
 
@@ -214,6 +215,17 @@ export const DriverRoutePreviewScreen: React.FC = () => {
                     </AppText>
                 </Pressable>
             </Card>
+
+            <FAB
+                iconName='dollar'
+                onPress={() => {
+                    navigation.navigate('QuickSaleScreen')
+                }}
+                style={{
+                    bottom: 15,
+                    right: 15
+                }}
+            />
 
         </>
     );

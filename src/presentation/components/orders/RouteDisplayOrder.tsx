@@ -13,6 +13,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useRoutesStore } from '../../../store/routes/useRoutesStore'
 import { deleteOrder } from '../../../store/routes/api/deleteOrder'
 import { showCreatedToast, showErrorToast, showLoadingToast } from '../toasts/toasts'
+import { useUiStore } from '../../../store/ui/useUiStore'
 
 
 
@@ -25,13 +26,15 @@ export const RouteDisplayOrder = ({ order, isLast, routeId }: Props) => {
 
     const routes = useRoutesStore(state => state.routes);
     const setRoutes = useRoutesStore(state => state.setRoutes);
+    const setIsLoading = useUiStore(state => state.setIsLoading);
 
     const { mutate, isPending } = useMutation({
         mutationFn: async () => {
-            // showLoadingToast('Eliminando pedido...')
+            setIsLoading(true)
             return deleteOrder(order._id)
         },
         onSuccess: () => {
+            setIsLoading(false)
             try {
                 setRoutes(routes.map(route => {
                     if (route._id !== routeId) return route;
@@ -43,8 +46,8 @@ export const RouteDisplayOrder = ({ order, isLast, routeId }: Props) => {
             }
             showCreatedToast('Pedido eliminado con éxito')
         },
-        onError: (error) => {
-            console.log("error: ", error)
+        onError: () => {
+            setIsLoading(false)
             showErrorToast('Error al eliminar el pedido')
         }
     })

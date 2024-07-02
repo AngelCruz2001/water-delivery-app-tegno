@@ -23,6 +23,7 @@ import { useCurrentLocation } from '../../../hooks/location/useLocation'
 import { useMutation } from '@tanstack/react-query'
 import { postOrdersBatch } from '../../../../store/routes/api/postOrdersBatch'
 import { showCreatedToast, showErrorToast } from '../../../components/toasts/toasts'
+import { useUiStore } from '../../../../store/ui/useUiStore'
 
 type Props = NativeStackScreenProps<RoutesStackProps, 'CreateOrdersScreen'>;
 
@@ -37,6 +38,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
     const { isLoading: productsIsLoading, isError: productsIsError, refetch } = useGetProducts();
     const products = useProductsStore(state => state.products);
     const [selectedClient, setSelectedClient] = useState<TDisplayClient | null>(null);
+    const setIsLoading = useUiStore(state => state.setIsLoading);
 
     const [orders, setOrders] = useState<TUpdateOrderDto[]>(enrichedRoute.routeOrders?.map(o => ({ ...o, hasChanges: false })) || []);
 
@@ -59,15 +61,18 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
 
     const { mutate, isError: isErrorMutate, isPending, isSuccess } = useMutation({
         mutationFn: async (orders: TCreateOrderDto[]) => {
+            setIsLoading(true)
             return postOrdersBatch(orders)
         },
         onError(error, variables, context) {
             console.log("Error creating route", { error, variables, context })
+            setIsLoading(false)
             showErrorToast('Error creando ruta');
         },
         onSuccess: () => {
             // console.log('success data: ', { data });
             showCreatedToast('Órdenes registradas con éxito');
+            setIsLoading(false)
             navigation.reset({
                 index: 1,
                 routes: [{ name: 'RoutesScreen' }, { name: 'RouteScreen', params: { enrichedRouteId: enrichedRoute._id } }],

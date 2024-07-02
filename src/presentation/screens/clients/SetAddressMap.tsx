@@ -22,7 +22,8 @@ import Form from '../../components/shared/Form';
 import { Input } from '../../components/shared/input/Input'
 import { DataItem } from '../../components/shared/DataItem'
 import { Card } from '../../components/shared/Card'
-import { showErrorToast } from './CreateClientScreen'
+import { showErrorToast } from '../../components/toasts/toasts'
+import { useUiStore } from '../../../store/ui/useUiStore'
 
 type Props = {}
 
@@ -33,6 +34,7 @@ export const SetAddressMap = (props: Props) => {
     const mapRef = useRef<MapView | null>(null);
     const [marker, setMarker] = useState<TLocation | null>(null);
     const [locationName, setLocationName] = useState('');
+    const setIsLoading = useUiStore(state => state.setIsLoading);
 
     const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -42,6 +44,7 @@ export const SetAddressMap = (props: Props) => {
 
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (clientPayload: TPostLocation) => {
+            setIsLoading(true);
             return api.post('/address', clientPayload, {
                 headers: {
                     authorization: await getToken(),
@@ -49,10 +52,15 @@ export const SetAddressMap = (props: Props) => {
             })
         },
         onSuccess: ({ data }) => {
+            setIsLoading(false);
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'Clientes' }],
             })
+        },
+        onError: () => {
+            setIsLoading(false);
+            showErrorToast('Error al registrar el cliente');
         }
     })
 

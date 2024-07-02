@@ -23,7 +23,7 @@ export function UsersClientsTabsNavigator() {
 
     const navigation = useNavigation<NavigationProp<UsersClientsTabsProps>>();
     const { top } = useSafeAreaInsets()
-    const user = useUserStore(state => state.user)
+    // const user = useUserStore(state => state.user)
 
     useLayoutEffect(() => {
         navigation.setOptions({

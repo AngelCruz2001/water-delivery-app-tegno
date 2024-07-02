@@ -13,8 +13,9 @@ import { Input } from '../../components/shared/input/Input'
 import { useMutation } from '@tanstack/react-query'
 import { TPostUser, TUser, TUserType } from '../../../interfaces/user'
 import { api, getToken } from '../../api/api'
-import { showCreatedToast, showErrorToast, showLoadingToast } from '../clients/CreateClientScreen'
 import { AppButton } from '../../components/shared'
+import { useUiStore } from '../../../store/ui/useUiStore'
+import { showCreatedToast, showErrorToast } from '../../components/toasts/toasts'
 
 type Props = {}
 
@@ -22,8 +23,9 @@ export const CreateUserScreen = (props: Props) => {
 
     const navigation = useNavigation<NavigationProp<UserStackProps>>();
     const addUser = useUserStore(state => state.addUser);
+    const setIsLoading = useUiStore(state => state.setIsLoading);
 
-    const { control, handleSubmit, formState: { errors, isValid },  } = useForm({
+    const { control, handleSubmit, formState: { errors, isValid }, } = useForm({
         defaultValues: {
             name: '',
             phoneNumber: '618',
@@ -35,6 +37,7 @@ export const CreateUserScreen = (props: Props) => {
 
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (userPayload: TPostUser) => {
+            setIsLoading(true);
             return api.post<{ user: TUser }>('/register', userPayload, {
                 headers: {
                     authorization: await getToken(),
@@ -43,11 +46,13 @@ export const CreateUserScreen = (props: Props) => {
         },
         onError(error, variables, context) {
             console.log("Error creating user", { error, variables, context })
+            setIsLoading(false)
             showErrorToast('Error creando usuario');
         },
         onSuccess: ({ data }) => {
             addUser(data.user);
             showCreatedToast('Usuario creado con éxito');
+            setIsLoading(false);
             navigation.goBack();
         },
     })
