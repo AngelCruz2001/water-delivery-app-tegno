@@ -7,7 +7,7 @@ import React, { useState } from 'react'
 import { AppText } from '../../components/shared/AppText';
 import { TLocation } from '../../../interfaces/location';
 import { CartProductsList } from '../../components/orders/CartProductsList';
-import { TCreateOrderDto } from '../../../interfaces/order';
+import { TCreateOrderDto, TDisplayOrder } from '../../../interfaces/order';
 import dayjs from 'dayjs';
 import { useProductsStore } from '../../../store/products/useProductsStore';
 import { useGetProducts } from '../../hooks/products/useGetProducts';
@@ -25,14 +25,36 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUiStore } from '../../../store/ui/useUiStore';
 
-export const MapOrderSale = () => {
+
+type Props = {
+    order: TDisplayOrder
+    total: number
+    current: number
+}
+
+export const MapOrderSale = ({ order, total, current }: Props) => {
     const { bottom } = useSafeAreaInsets()
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
     const products = useProductsStore(state => state.products);
     const setIsLoading = useUiStore(state => state.setIsLoading);
     const { isLoading: productsIsLoading, isError: productsIsError, refetch } = useGetProducts();
     const [location, setLocation] = useState<TLocation | null>(null);
-    const [locationName, setLocationName] = useState('Cerrada del amanecer 154');
+    const {
+        addressName
+    } = order;
+
+
+    const [newOrder, setNewOrder] = useState<TCreateOrderDto>({
+        programedDate: order.programedDate,
+        driverId: order.driverId,
+        routeId: order.routeId,
+        userId: order.userId,
+        clientId: order.clientId,
+        addressId: order.addressId,
+        products: order.products.map(product => ({ ...product, productId: product.productId, quantity: product.quantity })),
+        note: order.note
+    })
+    // const [locationName, setLocationName] = useState('Cerrada del amanecer 154');
 
     const { mutate, isPending } = useMutation({
         mutationFn: async (sale: TCreateSaleDTO) => {
@@ -55,18 +77,6 @@ export const MapOrderSale = () => {
         }
     })
 
-    // const [orders, setOrders] = useState<TCreateOrderDto[]>([]);
-
-    const [newOrder, setNewOrder] = useState<TCreateOrderDto>({
-        programedDate: dayjs().toString(),
-        driverId: '',
-        routeId: '',
-        userId: '',
-        clientId: '',
-        addressId: '',
-        products: [],
-        note: ''
-    })
 
     return (
         <View
@@ -81,7 +91,7 @@ export const MapOrderSale = () => {
                     position: 'absolute',
                     right: 0,
                 }}>
-                2/10
+                {`${current}/${total}`}
             </AppText>
             <View
                 style={{
@@ -90,6 +100,7 @@ export const MapOrderSale = () => {
                     paddingHorizontal: paddingMap.horizontalCard,
                     gap: 10,
                     marginTop: 10,
+                    maxWidth: '80%',
                 }}
             >
                 <View
@@ -115,7 +126,7 @@ export const MapOrderSale = () => {
                     style={{
                         // color: colors.textMuted,
                     }}
-                >{locationName}</AppText>
+                >{addressName}</AppText>
             </View>
 
             <View
@@ -126,14 +137,13 @@ export const MapOrderSale = () => {
                 <OrderResume
                     order={newOrder}
                     title='Pedido'
-                    height={150}
                 />
                 <View style={{ height: 10 }} />
                 <CartProductsList
                     order={newOrder}
                     setOrder={setNewOrder}
                     products={products}
-                    height={250}
+                    height={300}
                 />
             </View>
             <AppButton
@@ -147,7 +157,7 @@ export const MapOrderSale = () => {
                     const saleData: TCreateSaleDTO = {
                         products: newOrder.products,
                         clientId: newOrder.clientId,
-                        clientAddress: locationName,
+                        clientAddress: addressName,
                         location: {
                             lat: location?.latitude || 0,
                             lng: location?.longitude || 0

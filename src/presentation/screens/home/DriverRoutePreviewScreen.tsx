@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions, Pressable, ScrollView } from 'react-native';
+import { View, StyleSheet, Dimensions, Pressable, ScrollView, SafeAreaView } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { useUserStore } from '../../../store/users/useUserStore';
 import { useFetchRouteByUserId } from '../../hooks/routers/useFetchRouteByUserId';
@@ -17,7 +17,7 @@ import { ScreenScrollContainer } from '../../components/shared/ScreenScrollConta
 import { colors } from '../../../config/theme/colors';
 import { AppText } from '../../components/shared';
 import { paddingMap } from '../../../config/theme/globalstyle';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { DrawerActions, NavigationProp, useNavigation } from '@react-navigation/native';
 import { HomeStackProps } from '../../../navigation/HomeStackNavigator';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/FontAwesome';
@@ -26,6 +26,8 @@ import { AppButton } from '../../components/shared/AppButton';
 import { MotiView } from 'moti';
 import { Skeleton } from 'moti/skeleton';
 import { FAB } from '../../components/shared/fab/Fab';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { DriverMapStackProps } from '../../../navigation/DriverMapStack';
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,6 +52,8 @@ export const DriverRoutePreviewScreen: React.FC = () => {
 
     const [location, setLocation] = useState<TLocation>({ latitude: 24.015576, longitude: -104.657245 });
     const [marker, setMarker] = useState<TMarker | null>(null);
+
+    const { bottom } = useSafeAreaInsets();
 
     const [waypointsInfo, setWaypointsInfo] = useState<TWaypoint[]>(
         routeOnView?.routeOrders.map(order => ({
@@ -88,7 +92,7 @@ export const DriverRoutePreviewScreen: React.FC = () => {
     }, [routeOnView])
 
 
-    const navigation = useNavigation<NavigationProp<HomeStackProps>>()
+    const navigation = useNavigation<NavigationProp<DriverMapStackProps>>()
 
     useEffect(() => {
         getCurrentLocation().then(loc => {
@@ -113,143 +117,140 @@ export const DriverRoutePreviewScreen: React.FC = () => {
 
     return (
         <>
-            <MapView
-                ref={mapViewRef}
-                provider={PROVIDER_GOOGLE}
-                style={styles.map}
-                initialRegion={{
-                    latitude: 24.015576,
-                    longitude: -104.657245,
-                    latitudeDelta: 0.5,
-                    longitudeDelta: 0.5,
-                }}
-                showsUserLocation
-            >
-                {/* // <UserMarker marker={marker} />  */}
-                {/* // <DriverMarkers /> */}
-                <MapDirections origin={location} mapViewRef={mapViewRef} destination={location} waypoints={waypointsInfo} setWaypointsInfo={setWaypointsInfo} />
-                <WaypointMarkers currentLocation={location} waypoints={waypointsInfo} />
-            </MapView>
+            <SafeAreaView>
+                <MapView
+                    ref={mapViewRef}
+                    provider={PROVIDER_GOOGLE}
+                    style={styles.map}
+                    initialRegion={{
+                        latitude: 24.015576,
+                        longitude: -104.657245,
+                        latitudeDelta: 0.5,
+                        longitudeDelta: 0.5,
+                    }}
+                    showsUserLocation
+                >
+                    {/* // <UserMarker marker={marker} />  */}
+                    {/* // <DriverMarkers /> */}
+                    <MapDirections origin={location} mapViewRef={mapViewRef} destination={location} waypoints={waypointsInfo} setWaypointsInfo={setWaypointsInfo} />
+                    <WaypointMarkers currentLocation={location} waypoints={waypointsInfo} />
+                </MapView>
 
-            <Card
-                style={{
-                    height: height - mapHeight,
-                    gap: 10,
-                }}
-            >
-                <View
+                <Card
                     style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 10
+                        height: height - mapHeight,
+                        gap: 10,
                     }}
                 >
-                    <Card
+                    <View
                         style={{
-                            flex: .5,
-                            display: 'flex',
+                            flexDirection: 'row',
                             alignItems: 'center',
-                            justifyContent: 'center',
-                            height: 85,
+                            gap: 10
                         }}
                     >
-                        <DataItem style={{
-                        }} label={
-                            <Icon name="time-outline" size={25} color="#4F8EF7" />
-                        } value={"49 min"} />
+                        <Card
+                            style={{
+                                flex: .5,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                height: 85,
+                            }}
+                        >
+                            <DataItem style={{
+                            }} label={
+                                <Icon name="time-outline" size={25} color="#4F8EF7" />
+                            } value={"49 min"} />
 
-                        <DataItem style={{
-                        }} label={
-                            <Icon name="car-outline" size={25} color="#4F8EF7" />
-                        } value={"16 km"} />
-                    </Card>
+                            <DataItem style={{
+                            }} label={
+                                <Icon name="car-outline" size={25} color="#4F8EF7" />
+                            } value={"16 km"} />
+                        </Card>
 
-                    <Card
+                        <Card
+                            style={{
+                                flex: .5,
+                                height: 85,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <DataItem label='Ordenes' value={String(routeOnView?.routeOrders.length)} />
+                            <DataItem label='Productos' value={String(
+                                routeOnView?.routeOrders.reduce((acc, order) => acc + order.totalProducts, 0)
+                            )} />
+                        </Card>
+                    </View>
+
+                    <ScrollView
                         style={{
-                            flex: .5,
-                            height: 85,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
+                            flexGrow: 0,
+                            height: 250,
                         }}
                     >
-                        <DataItem label='Ordenes' value={String(routeOnView?.routeOrders.length)} />
-                        <DataItem label='Productos' value={String(
-                            routeOnView?.routeOrders.reduce((acc, order) => acc + order.totalProducts, 0)
-                        )} />
-                    </Card>
-                </View>
 
-                <ScrollView
-                    style={{
-                        flexGrow: 0,
-                        height: 250,
-                    }}
-                >
+                        {
+                            waypointsInfo.map((waypoint, index) => (
+                                <Card key={index} style={{
+                                    backgroundColor: colors.white,
+                                    marginBottom: 10
+                                }} >
+                                    <AppText>{waypoint.addressName}</AppText>
+                                    {
+                                        waypoint.productsOrder.map((product, index) => (
+                                            <DataItem label={product.name} value={String(product.quantity)} key={index} />
+                                        ))
+                                    }
+                                </Card>
+                            ))
+                        }
+                    </ScrollView>
 
-                    {
-                        waypointsInfo.map((waypoint, index) => (
-                            <Card key={index} style={{
-                                backgroundColor: colors.white,
-                                marginBottom: 8
-                            }} >
-                                <AppText>{waypoint.addressName}</AppText>
-                                {
-                                    waypoint.productsOrder.map((product, index) => (
-                                        <DataItem label={product.name} value={String(product.quantity)} key={index} />
-                                    ))
-                                }
-                            </Card>
-                        ))
-                    }
-                </ScrollView>
+                    <Pressable
+                        style={{
+                            // position: 'absolute',
+                            // bottom: 0,
+                            // left: 12,
+                            display: 'flex',
+                            flexDirection: 'row',
+                            backgroundColor: colors.primary,
+                            borderRadius: 10,
+                            padding: 10,
+                            elevation: 10,
+                            width: '100%',
+                            height: 50,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            shadowColor: '#000',
+                            shadowOffset: {
+                                width: 0,
+                                height: 2,
+                            },
+                            shadowOpacity: 0.25,
+                            shadowRadius: 3.84,
+                        }}
 
-                <Pressable
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        backgroundColor: colors.primary,
-                        borderRadius: 10,
-                        padding: 10,
-                        elevation: 10,
-                        width: '100%',
-                        height: 50,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        shadowColor: '#000',
-                        shadowOffset: {
-                            width: 0,
-                            height: 2,
-                        },
-                        shadowOpacity: 0.25,
-                        shadowRadius: 3.84,
-                    }}
-
-                    onPress={() => navigation.navigate('DriverRouteMap', { waypoints: waypointsInfo })}
-                >
-                    <Icon name='navigate-circle-outline' size={30} color={colors.white} />
-                    <AppText style={{
-                        color: colors.white,
-                        fontSize: 15,
-                        fontWeight: 'bold',
-                        marginLeft: 10
-                    }}>
-                        Iniciar ruta
-                    </AppText>
-                </Pressable>
-            </Card>
-
-            <FAB
-                iconName='dollar'
-                onPress={() => {
-                    navigation.navigate('QuickSaleScreen')
-                }}
-                style={{
-                    bottom: 15,
-                    right: 15
-                }}
-            />
-
+                        onPress={() => {
+                            if (routeOnView) {
+                                navigation.navigate('DriverRouteMap', { waypoints: waypointsInfo, route: routeOnView });
+                            }
+                        }}
+                    >
+                        <Icon name='navigate-circle-outline' size={30} color={colors.white} />
+                        <AppText style={{
+                            color: colors.white,
+                            fontSize: 15,
+                            fontWeight: 'bold',
+                            marginLeft: 10
+                        }}>
+                            Iniciar ruta
+                        </AppText>
+                    </Pressable>
+                </Card>
+            </SafeAreaView>
         </>
     );
 };
