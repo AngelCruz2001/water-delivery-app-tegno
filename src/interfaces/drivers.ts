@@ -5,4 +5,5 @@ export type TDriver = {
     latitude: number;
     longitude: number;
   };
+  routeMade?: {latitude: number; longitude: number}[];
 };

@@ -159,8 +159,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     }
 
     const handleDirectionsReady = (result: MapDirectionsResponse) => {
-        setOriginalRouteCoordinates(result.coordinates);
-        setRemainingRouteCoordinates(result.coordinates);
+        
 
         const startLocation = {
             latitude: locationToCalculateRoute?.latitude || 0,
@@ -170,6 +169,11 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
         const coordinatesWithoutStart = result.coordinates.slice(1)
 
         const coordinatesToCalculate = [startLocation, ...coordinatesWithoutStart];
+
+        setOriginalRouteCoordinates(coordinatesWithoutStart);
+        setRemainingRouteCoordinates(coordinatesWithoutStart);
+
+
         let variationDistanceArray: number[] = [];
 
         coordinatesToCalculate.forEach((coordinate, index) => {

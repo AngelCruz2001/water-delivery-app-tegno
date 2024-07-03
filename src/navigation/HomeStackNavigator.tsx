@@ -11,6 +11,7 @@ import { TWaypoint } from '../interfaces/routers';
 import { MainMap } from '../presentation/screens/home/MainMap';
 import { DriverMapScreen } from '../presentation/screens/home/DriverMapScreen';
 import { DriverRoutePreviewScreen } from '../presentation/screens/home/DriverRoutePreviewScreen';
+import { AdminMapScreen } from '../presentation/screens/home/AdminMapScreen';
 
 export type HomeStackProps = {
     "LoadingScreen": undefined,
@@ -19,6 +20,7 @@ export type HomeStackProps = {
     "QuickSaleScreen": undefined,
     "DriverRoutePreviewScreen": undefined,
     "DriverRouteMap": { waypoints: TWaypoint[] }
+    "AdminRouteScreenMap": undefined
 }
 const Stack = createStackNavigator<HomeStackProps>();
 
@@ -46,8 +48,9 @@ export function HomeStackNavigator() {
             <Stack.Screen name="PermissionScreen" component={PermissionScreen} />
             <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
             <Stack.Screen name="QuickSaleScreen" component={QuickSaleScreen} options={{ title: 'Registar Cliente y Venta' }} />
-            <Stack.Screen name="DriverRoutePreviewScreen" component={DriverRoutePreviewScreen} options={{ title: 'Resumen' }} />
+            <Stack.Screen name="DriverRoutePreviewScreen" component={DriverRoutePreviewScreen} options={{ title: 'Resumen de ruta' }} />
             <Stack.Screen name="DriverRouteMap" component={DriverMapScreen} options={{ title: 'Ruta del repartidor', headerShown: false }} />
+            <Stack.Screen name="AdminRouteScreenMap" component={AdminMapScreen} options={{ title: 'Rutas', headerShown: false }} />
 
 
         </Stack.Navigator>
