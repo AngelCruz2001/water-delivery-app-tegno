@@ -2,7 +2,7 @@
 import { AppState, StyleSheet, Text, View } from 'react-native'
 import React, { PropsWithChildren, useEffect } from 'react'
 import { usePermissionStore } from '../store/permissions/usePermissionStore'
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { DrawerActions, NavigationProp, useNavigation } from '@react-navigation/native';
 import { HomeStackProps } from '../navigation/HomeStackNavigator';
 import { useUserStore } from '../store/users/useUserStore';
 
@@ -32,12 +32,11 @@ export const PermissionsChecker = ({ children }: PropsWithChildren) => {
     useEffect(() => {
         console.log(locationStatus)
         if (locationStatus === 'granted') {
+            // navigation.reset({ routes: [{ name: 'HomeScreen' as never }] })
 
-            if (user?.type === 'driver') {
-                navigation.reset({ routes: [{ name: 'DriverRoutePreviewScreen' }] })
-            } else if (user?.type === 'admin' || user?.type === 'super') {
-                navigation.reset({ routes: [{ name: 'AdminRouteScreenMap' }] })
-            }
+            navigation.dispatch(DrawerActions.jumpTo('DriverMapStack'))
+
+            console.log("first")
         } else if (locationStatus !== 'undetermined') {
             navigation.reset({ routes: [{ name: 'PermissionScreen' }] })
         }

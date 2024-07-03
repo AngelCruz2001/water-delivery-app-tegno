@@ -22,6 +22,7 @@ import { useMutation } from '@tanstack/react-query';
 import { api, getToken } from '../../api/api';
 import { showCreatedToast, showErrorToast } from '../../components/toasts/toasts';
 import { useUiStore } from '../../../store/ui/useUiStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const QuickSaleScreen = () => {
     const navigation = useNavigation<NavigationProp<HomeStackProps>>();
@@ -30,6 +31,7 @@ export const QuickSaleScreen = () => {
     const [location, setLocation] = useState<TLocation | null>(null);
     const [locationName, setLocationName] = useState('');
     const setIsLoading = useUiStore(state => state.setIsLoading);
+    const { bottom } = useSafeAreaInsets();
 
     const { mutate, isPending } = useMutation({
         mutationFn: async (sale: TCreateSaleDTO) => {
@@ -68,12 +70,16 @@ export const QuickSaleScreen = () => {
     })
 
     return (
-        <ScreenContainer>
+        <ScreenContainer
+            style={{
+                paddingBottom: bottom
+            }}
+        >
             <Card>
                 <SetSearchLocationMap
                     setLocation={setLocation}
                     setLocationName={setLocationName}
-                    height={250}
+                    height={150}
                     showInput={false}
                 />
 
@@ -93,12 +99,13 @@ export const QuickSaleScreen = () => {
                     order={newOrder}
                     setOrder={setNewOrder}
                     products={products}
-                    height={200}
+                    height={180}
                 />
             </View>
             <OrderResume
                 order={newOrder}
                 title='Resumen de Venta'
+                height={100}
             />
             <AppButton
                 disabled={newOrder.products.length === 0 || isPending}

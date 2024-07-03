@@ -10,6 +10,8 @@ import { DrawerActions, NavigationProp, useNavigation } from "@react-navigation/
 import { ProductsStackProps } from "../../../navigation/products/ProductsStackNavigator";
 import { FAB } from "../../components/shared/fab/Fab";
 import { parsePrice } from "../../../helpers/price";
+import { BottomSheet } from "../../components/shared/BottomSheet";
+import { MapOrderSale } from "../map/MapOrderSale";
 
 
 export const ProductsScreen = () => {

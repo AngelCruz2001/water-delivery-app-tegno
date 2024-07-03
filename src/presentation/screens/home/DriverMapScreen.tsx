@@ -14,6 +14,11 @@ import { androidGoogleApiKey } from '../../../config/theme/variables';
 import { TWaypoint } from '../../../interfaces/routers';
 
 import { accelerometer, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
+import { FAB } from '../../components/shared/fab/Fab';
+import { DriverMapStackProps } from '../../../navigation/DriverMapStack';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { BottomSheet } from '../../components/shared/BottomSheet';
+import { MapOrderSale } from '../map/MapOrderSale';
 
 setUpdateIntervalForType(SensorTypes.accelerometer, 400); // Actualiza cada 400ms
 
@@ -37,13 +42,15 @@ const calculateHeading = (accelData: {
     return heading;
 };
 
-type DriverMapScreenProps = NativeStackScreenProps<HomeStackProps, 'DriverRouteMap'>
+type DriverMapScreenProps = NativeStackScreenProps<DriverMapStackProps, 'DriverRouteMap'>
 
 
 export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => {
-    const { waypoints } = params;
+    const { waypoints, route } = params;
     const user = useUserStore((state) => state.user);
     const mapViewRef = useRef<MapView>(null);
+
+    const navigation = useNavigation<NavigationProp<DriverMapStackProps>>();
 
     const [heading, setHeading] = useState<number | null>(null)
     const [location, setLocation] = useState<TLocation | null>(null);
@@ -82,6 +89,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
             accelSubscription.unsubscribe();
         };
     }, []);
+
 
     useEffect(() => {
         if (location && destination) {
@@ -211,83 +219,109 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     }, [location, destination])
 
     return (
-        <View style={styles.container}>
-            <Card>
-                <AppText>En camino a {destination?.addressName} - {refetchTimes}</AppText>
-            </Card>
+        <>
+            <View style={styles.container}>
+                <Card>
+                    <AppText>En camino a {destination?.addressName} - {refetchTimes}</AppText>
+                </Card>
 
-            <MapView
-                ref={mapViewRef}
-                provider={PROVIDER_GOOGLE}
-                style={styles.map}
-                initialRegion={{
-                    latitude: 24.015576,
-                    longitude: -104.657245,
-                    latitudeDelta: 0.0021,
-                    longitudeDelta: 0.0021,
+                <MapView
+                    ref={mapViewRef}
+                    provider={PROVIDER_GOOGLE}
+                    style={styles.map}
+                    initialRegion={{
+                        latitude: 24.015576,
+                        longitude: -104.657245,
+                        latitudeDelta: 0.0021,
+                        longitudeDelta: 0.0021,
+                    }}
+                    onUserLocationChange={handleUserLocationChange}
+                    showsUserLocation
+                >
+                    {locationToCalculateRoute && destination && (
+                        <MapViewDirections
+                            origin={locationToCalculateRoute}
+                            destination={destination.location}
+                            apikey={androidGoogleApiKey}
+                            strokeWidth={1}
+                            strokeColor={colors.success}
+                            timePrecision="now"
+                            resetOnChange={false}
+                            onStart={() => {
+                                // console.log(`- Started routing from ${locationToCalculateRoute} to ${destination.addressName}`);
+                            }}
+                            onReady={handleDirectionsReady}
+                            onError={(errorMessage) => {
+                                console.log('Error with MapViewDirections:', errorMessage);
+                            }}
+                        />
+                    )}
+
+                    {destination && (
+                        <Marker
+                            coordinate={destination.location}
+                            title={destination.addressName.split('Durango, Dgo')[0]}
+                            identifier={destination.addressName}
+                            description={destination.clientName}
+                        />
+                    )}
+
+                    {remainingRouteCoordinates.length > 0 && location && (
+                        <Polyline
+                            coordinates={[location, ...remainingRouteCoordinates]}
+                            strokeWidth={5}
+                            strokeColor="blue"
+                        />
+                    )}
+
+                    {/* {logRouteLocations.length > 0 &&
+                    <Polyline
+                    coordinates={logRouteLocations}
+                    strokeWidth={5}
+                    strokeColor="red"
+                    />
+                    } */}
+
+                    {location && (
+                        <Marker
+                            coordinate={location}
+                            identifier='location'
+                            image={require('../../../assets/truck.png')}
+                        />
+                    )}
+
+                    {location && remainingRouteCoordinates.length > 0 && (
+                        <Marker
+                            identifier='nextLocation'
+                            coordinate={remainingRouteCoordinates[currentIndexMarker]}
+                        />
+                    )}
+                </MapView>
+            </View>
+            <FAB
+                iconName='dollar'
+                onPress={() => {
+                    navigation.navigate('QuickSaleScreen')
                 }}
-                onUserLocationChange={handleUserLocationChange}
-                showsUserLocation
-            >
-                {locationToCalculateRoute && destination && (
-                    <MapViewDirections
-                        origin={locationToCalculateRoute}
-                        destination={destination.location}
-                        apikey={androidGoogleApiKey}
-                        strokeWidth={1}
-                        strokeColor={colors.success}
-                        timePrecision="now"
-                        resetOnChange={false}
-                        onStart={() => {
-                            // console.log(`- Started routing from ${locationToCalculateRoute} to ${destination.addressName}`);
-                        }}
-                        onReady={handleDirectionsReady}
-                        onError={(errorMessage) => {
-                            console.log('Error with MapViewDirections:', errorMessage);
-                        }}
-                    />
-                )}
-
-                {destination && (
-                    <Marker
-                        coordinate={destination.location}
-                        title={destination.addressName.split('Durango, Dgo')[0]}
-                        identifier={destination.addressName}
-                        description={destination.clientName}
-                    />
-                )}
-
-                {remainingRouteCoordinates.length > 0 && location && (
-                    <Polyline
-                        coordinates={[location, ...remainingRouteCoordinates]}
-                        strokeWidth={5}
-                        strokeColor="blue"
-                    />
-                )}
-
-                {/* {logRouteLocations.length > 0 &&
-                    <Polyline
-                        coordinates={logRouteLocations}
-                        strokeWidth={5}
-                        strokeColor="red"
-                    />
-                } */}
-
-                {location && (
-                    <Marker
-                        coordinate={location}
-                        identifier='location'
-                        image={require('../../../assets/truck.png')}
-                    />
-                )}
-
-                {location && remainingRouteCoordinates.length > 0 && (
-                    <Marker
-                        identifier='nextLocation'
-                        coordinate={remainingRouteCoordinates[currentIndexMarker]}
-                    />
-                )}
-            </MapView>
-        </View>
+                style={{
+                    bottom: 230,
+                    right: 15
+                }}
+            />
+            <FAB
+                iconProvider='Ionicons'
+                iconName="person-add"
+                onPress={() => {
+                    navigation.navigate('CreateClientScreen')
+                }}
+                style={{
+                    bottom: 290,
+                    right: 15
+                }}
+            />
+            <BottomSheet>
+                <MapOrderSale order={route.routeOrders[0]} total={route.routeOrders.length} current={2} />
+            </BottomSheet>
+        </>
     )
 }

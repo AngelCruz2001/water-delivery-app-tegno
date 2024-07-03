@@ -10,9 +10,9 @@ import { Pressable, View } from "react-native";
 import { RootStackProps } from "./RootStackNavigator";
 import { useUserStore } from "../store/users/useUserStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { DriverMapWithOrder } from "../presentation/screens/map/DriverMapWithOrder";
 import { Loader } from "../presentation/components/shared/Loader";
 import { useUiStore } from "../store/ui/useUiStore";
+import { DriverMapStack } from "./DriverMapStack";
 
 const Drawer = createDrawerNavigator();
 
@@ -33,7 +33,7 @@ export function AppNavigator() {
             >
                 <Drawer.Screen name="BottomTabsNavigator" component={BottomTabsNavigator} />
                 <Drawer.Screen name="Profile" component={ProfileScreen} />
-                <Drawer.Screen name="DriverMapWithOrder" component={DriverMapWithOrder} />
+                <Drawer.Screen name="DriverMapStack" component={DriverMapStack} />
             </Drawer.Navigator>
             {isLoading && <Loader />}
         </PermissionsChecker>
