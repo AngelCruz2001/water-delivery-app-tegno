@@ -34,8 +34,11 @@ export const PermissionsChecker = ({ children }: PropsWithChildren) => {
         if (locationStatus === 'granted') {
             // navigation.reset({ routes: [{ name: 'HomeScreen' as never }] })
 
-            navigation.dispatch(DrawerActions.jumpTo('DriverMapStack'))
-
+            if (user?.type === 'driver') {
+                navigation.dispatch(DrawerActions.jumpTo('DriverMapStack'))
+            } else if (user?.type === 'admin' || user?.type === 'super') {
+                navigation.reset({ routes: [{ name: 'AdminRouteScreenMap' }] })
+            }
             console.log("first")
         } else if (locationStatus !== 'undetermined') {
             navigation.reset({ routes: [{ name: 'PermissionScreen' }] })

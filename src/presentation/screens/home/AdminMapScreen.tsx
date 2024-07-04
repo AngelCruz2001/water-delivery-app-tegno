@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Dimensions, Pressable } from 'react-native';
-import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { LatLng, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useUserStore } from '../../../store/users/useUserStore';
 import { useFetchRouteByUserId } from '../../hooks/routers/useFetchRouteByUserId';
 import UserMarker from './UserMarker';
@@ -41,8 +41,11 @@ export const AdminMapScreen = () => {
     const mapViewRef = useRef<MapView>(null);
 
     const activeDriver = useDriverStore((state) => state.activeDriver)
-    const [routeFollowedByActiveDrive, setRouteFollowedByActiveUser] = useState<TLocation[]>([])
+    const routeFollowedByActiveDrive = useDriverStore((state) => state.routeFollowedByActiveDrive)
     const [location, setLocation] = useState<TLocation>({ latitude: 24.015576, longitude: -104.657245 });
+
+
+    console.log(routeFollowedByActiveDrive)
 
     useEffect(() => {
         getCurrentLocation().then(loc => {
@@ -55,13 +58,13 @@ export const AdminMapScreen = () => {
         });
     }, [mapViewRef]);
 
-    useEffect(() => {
-        if (activeDriver && activeDriver.routeMade) {
-            setRouteFollowedByActiveUser(activeDriver.routeMade)
-        }
-    }, [activeDriver])
+    // useEffect(() => {
+    //     if (activeDriver && activeDriver.routeMade) {
+    //         setRouteFollowedByActiveUser(activeDriver.routeMade)
+    //     }
+    // }, [activeDriver])
 
-    console.log("ActiveDriver", activeDriver?.routeMade?.length)
+    // console.log("ActiveDriver", activeDriver?.routeMade?.length)
     return (
         <>
 
@@ -80,6 +83,7 @@ export const AdminMapScreen = () => {
                 {/* <UserMarker marker={marker} />  */}
                 <DriverMarkers />
                 {
+                    routeFollowedByActiveDrive && routeFollowedByActiveDrive.length > 0 &&
                     <Polyline coordinates={routeFollowedByActiveDrive} strokeWidth={4} strokeColor={colors.primary} />
                 }
                 {/* <MapDirections origin={location} mapViewRef={mapViewRef} destination={location} waypoints={waypoints} /> */}

@@ -143,15 +143,15 @@ export const MapOrderSale = ({ order, total, current }: Props) => {
                     order={newOrder}
                     setOrder={setNewOrder}
                     products={products}
-                    height={300}
+                    height={220}
                 />
             </View>
             <AppButton
                 disabled={newOrder.products.length === 0 || isPending}
                 style={{
-                    // marginBottom: 10,
-                    marginTop: 'auto',
-                    marginBottom: bottom + 20
+                    marginBottom: 10,
+                    // marginTop: 'auto',
+                    // marginBottom: bottom + 20
                 }}
                 onPress={() => {
                     const saleData: TCreateSaleDTO = {

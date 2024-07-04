@@ -19,6 +19,7 @@ import { DriverMapStackProps } from '../../../navigation/DriverMapStack';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomSheet } from '../../components/shared/BottomSheet';
 import { MapOrderSale } from '../map/MapOrderSale';
+import { sendMessage } from '../../../providers/WebsocketLocationProvider';
 
 setUpdateIntervalForType(SensorTypes.accelerometer, 400); // Actualiza cada 400ms
 
@@ -160,6 +161,16 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     }
                 }
 
+                const message = {
+                    type: "location_update",
+                    data: { name: user?.name, location },
+                    clientId: user?._id,
+                };
+
+                console.log("Sending message")
+
+                sendMessage(message)
+
                 setCurrentValue(distanceToNearestPoint)
                 setLogRouteLocations([...logRouteLocations, coordinate])
             }
@@ -193,7 +204,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     result.coordinates[index + 1].longitude
                 );
 
-                variationDistanceArray.push(distance);
+                variationDistanceArray. push(distance);
             }
         });
 

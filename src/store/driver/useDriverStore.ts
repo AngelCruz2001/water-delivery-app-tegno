@@ -1,9 +1,12 @@
 import {create} from 'zustand';
 import {TDriver} from '../../interfaces/drivers';
+import {TLocation} from '../../interfaces/order';
 
 type DriverState = {
   drivers: TDriver[];
   activeDriver: TDriver | null;
+  routeFollowedByActiveDrive: TLocation[] | null;
+  setRouteFollowedByActiveUser: (route: TLocation[]) => void;
 
   // Methods
   updateLocation: (driver: TDriver) => void;
@@ -15,8 +18,10 @@ type DriverState = {
 export const useDriverStore = create<DriverState>()((set, get) => ({
   drivers: [],
   activeDriver: null,
+  routeFollowedByActiveDrive: null,
   setActiveDriver: (driver: TDriver | null) => set({activeDriver: driver}),
-
+  setRouteFollowedByActiveUser: (route: TLocation[]) =>
+    set({routeFollowedByActiveDrive: route}),
   updateLocation: (updatedDriver: TDriver) =>
     set(state => {
       const index = state.drivers.findIndex(d => d._id === updatedDriver._id);
