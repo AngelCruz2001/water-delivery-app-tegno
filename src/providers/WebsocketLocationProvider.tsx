@@ -16,6 +16,9 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
 
     const updateLocation = useDriverStore((state) => state.updateLocation);
     const user = useUserStore((state) => state.user);
+    // TODO: Hacer esto en backend
+    const activeDriver = useDriverStore((state) => state.activeDriver)
+    const drivers = useDriverStore((state) => state.drivers)
     const setRouteFollowedByActiveUser = useDriverStore((state) => state.setRouteFollowedByActiveUser)
     // const url = "ws://localhost:8080/ws";
     const url = "ws://192.168.3.20:8080/ws";
@@ -42,23 +45,27 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
                     switch (message.type) {
                         case "location_update":
 
-                            const { location, name } = message.data
-                        
+                            const { location, name } = message.data as any
+
                             updateLocation({
                                 _id: message.clientId,
                                 location: location as TLocation,
                                 name,
                             });
+
+                            sendMessage({
+                                type: "get_location_history",
+                                data: { userId: activeDriver?._id },
+                            })
                             break;
-                        case "location_history": 
-                            console.log("message.data: ", message.data)
-                            setRouteFollowedByActiveUser(message.data.location as TLocation[])  
+                        case "location_history":
+                            setRouteFollowedByActiveUser(message.data as TLocation[])
                             break
                         default:
                             console.log("Received message:", message);
                             break;
                     }
-                    
+
                 };
 
 

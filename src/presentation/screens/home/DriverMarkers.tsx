@@ -13,11 +13,11 @@ const DriverMarkers: React.FC = () => {
 
     const handleOnMarkerPress = (driver: TDriver) => {
         setActiveDriver(driver)
-        const message = {
-            type: "get_location_history",
-            clientId: driver._id
-        };
-        sendMessage(message)
+        // const message = {
+        //     type: "get_location_history",
+        //     clientId: driver._id
+        // };
+        // sendMessage(message)
     }
 
     const handleOnDeselect = () => {

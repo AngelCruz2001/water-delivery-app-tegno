@@ -2,7 +2,7 @@ import { TLocation } from "./location";
 
 export type SocketMessage = {
     type: string;
-    data: LocationUpdate
+    data: LocationUpdate | TLocation[]
     clientId: string;
 };
 
@@ -11,5 +11,5 @@ export type LocationUpdate = {
     location: {
         latitude: number, 
         longitude: number
-    } | TLocation[]
+    }
 }

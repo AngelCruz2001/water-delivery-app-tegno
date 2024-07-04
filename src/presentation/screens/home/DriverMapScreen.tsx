@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, Dimensions, Alert } from 'react-native';
 import MapView, { LatLng, Marker, Polyline, PROVIDER_GOOGLE, UserLocationChangeEvent } from 'react-native-maps';
 import { useUserStore } from '../../../store/users/useUserStore';
@@ -65,6 +65,9 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     const [refetchTimes, setRefetchTimes] = useState<number>(0)
     const [logRouteLocations, setLogRouteLocations] = useState<TLocation[]>([])
 
+    const [currentWaypointIndex, setCurrentWaypointIndex] = useState(0)
+
+    const currentOrder = useMemo(() => route.routeOrders.find((order) => order._id === waypoints[currentIndexMarker]?.orderId), [route])
     useEffect(() => {
         (async () => {
             const loc = await getCurrentLocation();
@@ -73,9 +76,17 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
         })();
     }, []);
 
+
+    useEffect(() => {
+        // Setear el index de la primera ruta que no tenga el status como compleatado
+        console.log({ waypoints })
+        const currentWaypointIndex = waypoints.findIndex((waypoint) => waypoint.status === 'created')
+        setCurrentWaypointIndex(currentWaypointIndex)
+    }, [waypoints])
+
     useEffect(() => {
         if (waypoints && waypoints.length > 0) {
-            setDestination(waypoints[0]);
+            setDestination(waypoints[currentWaypointIndex]);
         }
     }, [waypoints]);
 
@@ -178,7 +189,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     }
 
     const handleDirectionsReady = (result: MapDirectionsResponse) => {
-        
+
 
         const startLocation = {
             latitude: locationToCalculateRoute?.latitude || 0,
@@ -204,7 +215,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     result.coordinates[index + 1].longitude
                 );
 
-                variationDistanceArray. push(distance);
+                variationDistanceArray.push(distance);
             }
         });
 
@@ -330,9 +341,12 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     right: 15
                 }}
             />
-            <BottomSheet>
-                <MapOrderSale order={route.routeOrders[0]} total={route.routeOrders.length} current={2} />
-            </BottomSheet>
+            {
+                currentOrder &&
+                <BottomSheet>
+                    <MapOrderSale order={currentOrder} total={route.routeOrders.length} current={currentWaypointIndex + 1} />
+                </BottomSheet>
+            }
         </>
     )
 }

@@ -42,6 +42,12 @@ export const useDriverStore = create<DriverState>()((set, get) => ({
           ...updatedDriver,
           routeMade: routeMade,
         };
+        if (
+          state.activeDriver &&
+          state.activeDriver._id === updatedDriver._id
+        ) {
+          set({routeFollowedByActiveDrive: routeMade});
+        }
         return {drivers: newDrivers};
       }
     }),

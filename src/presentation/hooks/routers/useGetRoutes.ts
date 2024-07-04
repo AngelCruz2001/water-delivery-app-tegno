@@ -3,10 +3,11 @@ import {
   RefetchOptions,
   useQuery,
 } from '@tanstack/react-query';
-import {useEffect} from 'react';
+import {useCallback, useEffect} from 'react';
 import {TDisplayRoute} from '../../../interfaces/routers';
 import {fetchRoutes} from '../../../store/routes/api/fetchRoutes';
 import {RouteState, useRoutesStore} from '../../../store/routes/useRoutesStore';
+import {useFocusEffect} from '@react-navigation/native';
 
 export function useGetRoutes(): {
   routes: TDisplayRoute[];
@@ -29,6 +30,12 @@ export function useGetRoutes(): {
       setRoutes(data);
     }
   }, [data, setRoutes]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   return {routes, isLoading, isError, refetch};
 }

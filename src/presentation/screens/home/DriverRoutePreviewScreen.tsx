@@ -68,7 +68,7 @@ export const DriverRoutePreviewScreen: React.FC = () => {
                 longitude: order.location.lng,
             },
             status: order.status,
-            id: order._id,
+            orderId: order._id,
         })) || []
     );
 
@@ -86,7 +86,7 @@ export const DriverRoutePreviewScreen: React.FC = () => {
                 longitude: order.location.lng,
             },
             status: order.status,
-            id: order._id,
+            orderId: order._id,
         })) || [])
 
     }, [routeOnView])
