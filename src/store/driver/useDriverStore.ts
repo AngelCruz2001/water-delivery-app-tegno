@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import {TDriver} from '../../interfaces/drivers';
-import {TLocation} from '../../interfaces/order';
+import {TLocation} from '../../interfaces/location';
 
 type DriverState = {
   drivers: TDriver[];

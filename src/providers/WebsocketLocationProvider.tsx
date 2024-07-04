@@ -52,7 +52,7 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
                             break;
                         case "location_history": 
                             console.log("message.data: ", message.data)
-                            setRouteFollowedByActiveUser(message.data.location as TLocation[])
+                            setRouteFollowedByActiveUser(message.data.location as TLocation[])  
                             break
                         default:
                             console.log("Received message:", message);
