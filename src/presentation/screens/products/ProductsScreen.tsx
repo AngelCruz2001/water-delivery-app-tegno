@@ -100,16 +100,6 @@ export const ProductsScreen = () => {
                     right: 15
                 }}
             />
-            <FAB
-                iconName="trash"
-                onPress={() => {
-                    navigation.dispatch(DrawerActions.jumpTo('DriverMapWithOrder'))
-                }}
-                style={{
-                    bottom: 75,
-                    right: 15
-                }}
-            />
         </>
     )
 }

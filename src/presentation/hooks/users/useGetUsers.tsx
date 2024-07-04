@@ -1,11 +1,12 @@
 
 
 import { QueryObserverResult, RefetchOptions, useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { fetchClients } from '../../../store/clients';
 import { useUserStore } from '../../../store/users/useUserStore';
 import { TUser } from '../../../interfaces/user';
 import { fetchUsers } from '../../../store/users/api/fetchUsers';
+import { useFocusEffect } from '@react-navigation/native';
 
 export function useGetUsers(): {
     users: TUser[];
@@ -29,6 +30,12 @@ export function useGetUsers(): {
             setUsers(data);
         }
     }, [data, setUsers]);
+
+    useFocusEffect(
+        useCallback(() => {
+            refetch();
+        }, [refetch]),
+    );
 
     return { users, isLoading, isError, refetch };
 }

@@ -41,7 +41,7 @@ export function HomeStackNavigator() {
                 title: 'Inicio'
             }} component={HomeScreen} /> */}
             <Stack.Screen name="HomeCreateClient" options={{ title: 'Crear cliente' }} component={CreateClientScreen} />
-            <Stack.Screen name="PermissionScreen" component={PermissionScreen} />
+            <Stack.Screen name="PermissionScreen" component={PermissionScreen} options={{ title: 'Permisos' }} />
             <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
             <Stack.Screen name="AdminRouteScreenMap" component={AdminMapScreen} options={{ title: 'Rutas', headerShown: false }} />
 
