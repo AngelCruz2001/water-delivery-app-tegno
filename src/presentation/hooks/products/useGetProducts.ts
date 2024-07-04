@@ -6,7 +6,8 @@ import {
 import {TProduct} from '../../../interfaces/products';
 import {fetchProducts} from '../../../store/products/api/fetchProducts';
 import {useProductsStore} from '../../../store/products/useProductsStore';
-import {useEffect} from 'react';
+import {useCallback, useEffect} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 
 export function useGetProducts(): {
   products: TProduct[];
@@ -29,6 +30,12 @@ export function useGetProducts(): {
       setProducts(data);
     }
   }, [data, setProducts]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   return {products, isLoading, isError, refetch};
 }

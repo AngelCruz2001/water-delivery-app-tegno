@@ -9,6 +9,7 @@ import {useSalesStore} from '../../../store/sales/useSalesStore';
 import {fetchSales} from '../../../store/sales/api/fetchSales';
 import {useFocusEffect} from '@react-navigation/native';
 import {useCallback} from 'react';
+import {useUiStore} from '../../../store/ui/useUiStore';
 
 export function useGetSales(date: string): {
   sales: TSale[];

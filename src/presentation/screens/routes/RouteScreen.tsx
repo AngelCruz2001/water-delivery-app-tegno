@@ -19,9 +19,6 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RouteDisplayOrder } from '../../components/orders/RouteDisplayOrder';
 import { useRoutesStore } from '../../../store/routes/useRoutesStore';
 import { useGetRoutes } from '../../hooks/routers/useGetRoutes';
-import { useUserStore } from '../../../store/users/useUserStore';
-
-
 
 type Props = NativeStackScreenProps<RoutesStackProps, 'RouteScreen'>;
 

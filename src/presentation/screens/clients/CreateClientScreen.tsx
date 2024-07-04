@@ -138,11 +138,11 @@ export const CreateClientScreen = () => {
                     placeholder="ej. Miscelanea el rayo"
                     control={control}
                     rules={{
-                        required: "Necesitas agregar un nombre",
-                        minLength: {
-                            value: 3,
-                            message: "El nombre debe tener al menos 3 caracteres",
-                        }
+                        // required: "Necesitas agregar un nombre",
+                        // minLength: {
+                        //     value: 3,
+                        //     message: "El nombre debe tener al menos 3 caracteres",
+                        // }
                     }}
 
                     error={errors.businessName?.message || ''}
@@ -156,15 +156,15 @@ export const CreateClientScreen = () => {
                     label="Teléfono"
                     control={control}
                     rules={{
-                        required: "Necesitas agregar un número telefónico",
-                        minLength: {
-                            value: 10,
-                            message: "El número debe tener al menos 10 digitos"
-                        },
-                        maxLength: {
-                            value: 10,
-                            message: "El número debe tener máximo 10 digitos"
-                        }
+                        // required: "Necesitas agregar un número telefónico",
+                        // minLength: {
+                        //     value: 10,
+                        //     message: "El número debe tener al menos 10 digitos"
+                        // },
+                        // maxLength: {
+                        //     value: 10,
+                        //     message: "El número debe tener máximo 10 digitos"
+                        // }
                     }}
                     error={errors.phoneNumber?.message || ''}
                     contrast
