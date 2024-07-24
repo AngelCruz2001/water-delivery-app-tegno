@@ -7,7 +7,6 @@ export async function fetchRoutes() {
       authorization: await getToken(),
     },
   });
-  console.log('fetchRoutes: ', {data});
   return data;
 }
 

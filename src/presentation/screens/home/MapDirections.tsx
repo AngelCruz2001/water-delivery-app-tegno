@@ -31,7 +31,7 @@ const MapDirections: React.FC<MapDirectionsProps> = ({ mapViewRef, waypoints, or
             waypoints={waypointsLocations}
             apikey={androidGoogleApiKey}
             strokeWidth={3}
-            strokeColor="hotpink"
+            strokeColor="blue"
             timePrecision='now'
             optimizeWaypoints={true}
             onStart={() => {

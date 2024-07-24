@@ -25,6 +25,10 @@ import { BottomSheet } from '../../components/shared/BottomSheet';
 import { useRoutesStore } from '../../../store/routes/useRoutesStore';
 import { useGetRoutes } from '../../hooks/routers/useGetRoutes';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { FAB } from '../../components/shared/fab/Fab';
+import { useDemoStore } from '../../../store/demo/useDemoStore';
+import { sendMessage } from '../../../providers/WebsocketLocationProvider';
+import { getToken } from '../../api/api';
 
 const { width, height } = Dimensions.get('window');
 
@@ -43,13 +47,18 @@ type MainMapProps = NativeStackScreenProps<HomeStackProps, 'AdminRouteScreenMap'
 export const AdminMapScreen = () => {
     const user = useUserStore((state) => state.user);
 
+    const token = getToken();
+
     const { } = useGetRoutes()
+    const isDemoActive = useDemoStore((state) => state.isDemoActive);
+    const setIsDemoActive = useDemoStore((state) => state.setIsDemoActive);
 
     const routes = useRoutesStore((state) => state.routes)
     const mapViewRef = useRef<MapView>(null);
 
     const activeDriver = useDriverStore((state) => state.activeDriver)
     const routeFollowedByActiveDrive = useDriverStore((state) => state.routeFollowedByActiveDrive)
+    const [location, setLocation] = useState<TLocation>({ latitude: 24.015576, longitude: -104.657245 });
 
 
     const [activeRoute, setActiveRoute] = useState<TDisplayRoute>()
@@ -63,11 +72,21 @@ export const AdminMapScreen = () => {
     }, [routes, activeDriver])
 
     useEffect(() => {
-        if (activeDriver ) {
+        if (activeDriver) {
             mapViewRef.current?.animateCamera({ center: activeDriver?.location, zoom: 18 })
         }
     }, [activeDriver])
 
+    useEffect(() => {
+        getCurrentLocation().then(loc => {
+            setLocation(loc);
+            if (mapViewRef.current) {
+                mapViewRef.current.animateCamera({
+                    center: loc,
+                });
+            }
+        });
+    }, [mapViewRef]);
 
 
     // console.log({ routeFollowedByActiveDrive })
@@ -90,6 +109,19 @@ export const AdminMapScreen = () => {
     // }, [activeDriver])
 
     // console.log("ActiveDriver", activeDriver?.routeMade?.length)
+
+    const onActiveDemoMode = () => {
+        setIsDemoActive(!isDemoActive)
+        if (isDemoActive) {
+            console.log({ isDemoActive })
+            sendMessage({
+                type: "start_simulated_drivers",
+                data: token
+            })
+        }
+    }
+
+
     return (
         <>
 
@@ -98,22 +130,33 @@ export const AdminMapScreen = () => {
                 provider={PROVIDER_GOOGLE}
                 style={styles.map}
                 initialRegion={{
-                    latitude: 24.015576,
-                    longitude: -104.657245,
-                    latitudeDelta: 0.5,
-                    longitudeDelta: 0.5,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    latitudeDelta: 0.02,
+                    longitudeDelta: 0.02,
                 }}
                 showsUserLocation
+                
             >
                 {/* <UserMarker marker={marker} />  */}
                 <DriverMarkers />
                 {
-                    activeDriver && <Polyline coordinates={routeFollowedByActiveDrive} strokeWidth={4} strokeColor={colors.primary} />
+                    activeDriver && routeFollowedByActiveDrive && <Polyline coordinates={routeFollowedByActiveDrive} strokeWidth={4} strokeColor={colors.primary} />
                 }
                 {/* <MapDirections origin={location} mapViewRef={mapViewRef} destination={location} waypoints={waypoints} /> */}
                 {/* <WaypointMarkers currentLocation={location} waypoints={waypoints} /> */}
 
             </MapView>
+
+            <FAB
+                iconName='speedometer-outline'
+                iconProvider='Ionicons'
+                onPress={onActiveDemoMode}
+                style={{
+                    bottom: 15,
+                    right: 15
+                }}
+            />
 
             {
                 false &&

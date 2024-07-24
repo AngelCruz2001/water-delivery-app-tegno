@@ -1,6 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import Config from 'react-native-config';
+
 axios.interceptors.request.use(
   async config => {
     console.log('config: ', config);
@@ -18,10 +20,7 @@ axios.interceptors.request.use(
 );
 
 export const api = axios.create({
-  baseURL: 'https://water-delivery-backend.onrender.com',
-  // baseURL: 'http://192.168.3.20:8080',
-  // baseURL: 'http://localhost:8080',
-  // baseURL: 'http://10.0.2.2:8080',
+  baseURL: Config.API_URL
 });
 
 export const saveToken = async (token: string) => {

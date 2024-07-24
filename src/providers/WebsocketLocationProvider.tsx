@@ -7,6 +7,7 @@ import { getCurrentLocation } from '../actions/location/location';
 import { useUserStore } from '../store/users/useUserStore';
 import { LocationUpdate, SocketMessage } from '../interfaces/socketMessages';
 import { TLocation } from '../interfaces/location';
+import Config from 'react-native-config';
 
 type Props = PropsWithChildren & {}
 
@@ -22,7 +23,12 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
     const setRouteFollowedByActiveUser = useDriverStore((state) => state.setRouteFollowedByActiveUser)
     // const url = "ws://localhost:8080/ws";
     // const url = "ws://192.168.3.20:8080/ws";
-    const url = "wss://water-delivery-backend.onrender.com/ws";
+    // const url = "wss://water-delivery-backend.onrender.com/ws";
+    const url = Config.API_URL_SOCKETS;
+
+    if (url === undefined) {
+        throw new Error("API_URL_SOCKETS is not defined");
+    }
 
     const timeoutRef = useRef<NodeJS.Timeout>();
 
@@ -139,3 +145,4 @@ export const sendMessage = (message: Record<string, any>) => {
         console.error("WebSocket is not connected.")
     }
 }
+

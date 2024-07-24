@@ -20,14 +20,10 @@ import { paddingMap } from '../../../config/theme/globalstyle';
 import { DrawerActions, NavigationProp, useNavigation } from '@react-navigation/native';
 import { HomeStackProps } from '../../../navigation/HomeStackNavigator';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Icon2 from 'react-native-vector-icons/FontAwesome';
-import { ProductsIcon, ProductsIconSelected } from '../../components/icons/ProductsIcon';
-import { AppButton } from '../../components/shared/AppButton';
-import { MotiView } from 'moti';
-import { Skeleton } from 'moti/skeleton';
-import { FAB } from '../../components/shared/fab/Fab';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DriverMapStackProps } from '../../../navigation/DriverMapStack';
+import { useDemoStore } from '../../../store/demo/useDemoStore';
+import { sendMessage } from '../../../providers/WebsocketLocationProvider';
 
 const { width, height } = Dimensions.get('window');
 
@@ -249,6 +245,8 @@ export const DriverRoutePreviewScreen: React.FC = () => {
                             Iniciar ruta
                         </AppText>
                     </Pressable>
+
+                    
                 </Card>
             </SafeAreaView>
         </>
