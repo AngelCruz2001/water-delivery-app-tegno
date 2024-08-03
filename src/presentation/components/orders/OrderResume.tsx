@@ -96,7 +96,7 @@ export const OrderResume = ({ order, title = 'Resumen de pedido', height = 100 }
                 >
                     ${parsePrice(
                         order.products.reduce((acc, product) => {
-                            console.log({ acc, product })
+                            // console.log({ acc, product })
                             return acc + (product.price * product.quantity)
                         }, 0))
                     }

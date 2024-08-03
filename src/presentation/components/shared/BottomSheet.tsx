@@ -14,10 +14,11 @@ import { ScreenContainer } from './ScreenContainer'
 const { height: SCREEN_HEIGHT } = Dimensions.get('window')
 
 type Props = PropsWithChildren & {
+    startHeight?: number
 
 }
 
-export const BottomSheet = ({ children }: Props) => {
+export const BottomSheet = ({ children, startHeight }: Props) => {
 
     const minTranslateY = -100;
     const translateY = useSharedValue(minTranslateY);
@@ -25,7 +26,7 @@ export const BottomSheet = ({ children }: Props) => {
     const [showScreenBackground, setshowScreenBackground] = useState(false);
     const { top, bottom } = useSafeAreaInsets();
     const context = useSharedValue({ y: 0, opacity: 0 });
-    const screenTop = SCREEN_HEIGHT - bottom - 80;
+    const screenTop = SCREEN_HEIGHT - bottom - (startHeight || 80)
     // const height = SCREEN_HEIGHT - top
     const height = SCREEN_HEIGHT - top
     const maxTranslateY = screenTop - (height - screenTop) - 20

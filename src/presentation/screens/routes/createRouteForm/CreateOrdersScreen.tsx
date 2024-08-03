@@ -97,7 +97,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
     }, [])
 
 
-    console.log(JSON.stringify(clients, null, 2));
+    // console.log(JSON.stringify(clients, null, 2));
 
 
     return (

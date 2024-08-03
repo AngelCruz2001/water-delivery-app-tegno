@@ -13,8 +13,10 @@ export type RouteState = {
   routeOnView: TDisplayEnrichedRoute | null;
   newRoute: TPostRoute;
   optimizedRoute: OptimizedRoute[] | null;
+  routeForDriver: TDisplayEnrichedRoute | null;
 
   // Methods
+  getRouteForDriver: (driverId: string) => void;
   setRoutes: (routes: TDisplayEnrichedRoute[]) => void;
   addRoute: (route: TDisplayEnrichedRoute) => void;
   setActiveRoute: (route: TDisplayEnrichedRoute | null) => void;
@@ -36,7 +38,15 @@ export const useRoutesStore = create<RouteState>()(set => ({
   optimizedRoute: null,
 
   routeOnView: null,
+  routeForDriver: null,
   // Methods
+
+  getRouteForDriver: (driverId: string) => {
+    const route = useRoutesStore
+      .getState()
+      .routes.find(r => r.driverId === driverId);
+    set({routeForDriver: route});
+  },
   setRoutes: (routes: TDisplayEnrichedRoute[]) => set({routes}),
   addRoute: (route: TDisplayEnrichedRoute) =>
     set(state => ({routes: [...state.routes, route]})),

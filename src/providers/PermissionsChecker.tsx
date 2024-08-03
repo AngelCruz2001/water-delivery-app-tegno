@@ -30,7 +30,7 @@ export const PermissionsChecker = ({ children }: PropsWithChildren) => {
     }, []);
 
     useEffect(() => {
-        console.log(locationStatus)
+        // console.log(locationStatus)
         if (locationStatus === 'granted') {
             // navigation.reset({ routes: [{ name: 'HomeScreen' as never }] })
 
@@ -39,7 +39,6 @@ export const PermissionsChecker = ({ children }: PropsWithChildren) => {
             } else if (user?.type === 'admin' || user?.type === 'super') {
                 navigation.reset({ routes: [{ name: 'AdminRouteScreenMap' }] })
             }
-            console.log("first")
         } else if (locationStatus !== 'undetermined') {
             navigation.reset({ routes: [{ name: 'PermissionScreen' }] })
         }

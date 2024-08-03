@@ -22,9 +22,9 @@ export const CartProductsList = (props: Props) => {
         setOrder,
         height = 250,
     } = props;
-    console.log({
-        products
-    })
+    // console.log({
+    //     products
+    // })
     return (
         <ScrollView style={{
             maxHeight: height,

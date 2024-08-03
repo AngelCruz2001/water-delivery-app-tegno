@@ -30,9 +30,11 @@ type Props = {
     order: TDisplayOrder
     total: number
     current: number
+    hasArrived?: boolean
+    onCloseSale?: () => void
 }
 
-export const MapOrderSale = ({ order, total, current }: Props) => {
+export const MapOrderSale = ({ order, total, current, hasArrived, onCloseSale }: Props) => {
     const { bottom } = useSafeAreaInsets()
     // const navigation = useNavigation();
     const products = useProductsStore(state => state.products);
@@ -42,7 +44,6 @@ export const MapOrderSale = ({ order, total, current }: Props) => {
     const {
         addressName
     } = order;
-
 
     const [newOrder, setNewOrder] = useState<TCreateOrderDto>({
         programedDate: order.programedDate,
@@ -54,7 +55,6 @@ export const MapOrderSale = ({ order, total, current }: Props) => {
         products: order.products.map(product => ({ ...product, productId: product.productId, quantity: product.quantity })),
         note: order.note
     })
-    // const [locationName, setLocationName] = useState('Cerrada del amanecer 154');
 
     const { mutate, isPending } = useMutation({
         mutationFn: async (sale: TCreateSaleDTO) => {
@@ -147,7 +147,7 @@ export const MapOrderSale = ({ order, total, current }: Props) => {
                 />
             </View>
             <AppButton
-                disabled={newOrder.products.length === 0 || isPending}
+                disabled={newOrder.products.length === 0 || isPending || !hasArrived}
                 style={{
                     marginBottom: 10,
                     // marginTop: 'auto',
@@ -161,9 +161,12 @@ export const MapOrderSale = ({ order, total, current }: Props) => {
                         location: {
                             lat: location?.latitude || 0,
                             lng: location?.longitude || 0
-                        }
+                        }, 
+                        orderId: order._id
                     }
                     mutate(saleData);
+
+                    if (onCloseSale) onCloseSale();
                 }}
             >
                 Cerrar Venta

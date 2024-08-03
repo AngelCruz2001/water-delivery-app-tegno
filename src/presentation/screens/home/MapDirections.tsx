@@ -35,7 +35,7 @@ const MapDirections: React.FC<MapDirectionsProps> = ({ mapViewRef, waypoints, or
             timePrecision='now'
             optimizeWaypoints={true}
             onStart={() => {
-                console.log(`Started routing from ${origin} to ${destination}`);
+                // console.log(`Started routing from ${origin} to ${destination}`);
             }}
             onReady={result => {
                 mapViewRef.current?.fitToCoordinates(result.coordinates, {
@@ -54,7 +54,7 @@ const MapDirections: React.FC<MapDirectionsProps> = ({ mapViewRef, waypoints, or
                 console.log(`Distance: ${result.distance} km, Duration: ${result.duration} min.`);
             }}
             onError={(errorMessage) => {
-                console.log('Error with MapViewDirections:', errorMessage);
+                // console.log('Error with MapViewDirections:', errorMessage);
             }}
         />
     );

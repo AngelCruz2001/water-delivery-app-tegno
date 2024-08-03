@@ -58,11 +58,12 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
                                 location: location as TLocation,
                                 name,
                             });
-
-                            sendMessage({
-                                type: "get_location_history",
-                                data: { userId: activeDriver?._id },
-                            })
+                            if (activeDriver) {
+                                sendMessage({
+                                    type: "get_location_history",
+                                    data: { userId: activeDriver._id },
+                                })
+                            }
                             break;
                         case "location_history":
                             setRouteFollowedByActiveUser(message.data as TLocation[])

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, Alert, Pressable } from 'react-native';
 import MapView, { LatLng, Marker, Polyline, PROVIDER_GOOGLE, UserLocationChangeEvent } from 'react-native-maps';
 import { useUserStore } from '../../../store/users/useUserStore';
 import { TLocation } from '../../../interfaces/location';
@@ -47,10 +47,10 @@ type DriverMapScreenProps = NativeStackScreenProps<DriverMapStackProps, 'DriverR
 
 
 export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => {
-    const { waypoints, route } = params;
+    const { waypoints: originalWaypoints, route, numberAlreadyDelivered} = params;
     const user = useUserStore((state) => state.user);
     const mapViewRef = useRef<MapView>(null);
-
+    const [waypoints, setWaypoints] = useState<TWaypoint[]>(originalWaypoints);
     const navigation = useNavigation<NavigationProp<DriverMapStackProps>>();
 
     const [heading, setHeading] = useState<number | null>(null)
@@ -64,36 +64,38 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     const [currentValue, setCurrentValue] = useState<number>(0)
     const [refetchTimes, setRefetchTimes] = useState<number>(0)
     const [logRouteLocations, setLogRouteLocations] = useState<TLocation[]>([])
+    const [isFollowing, setIsFollowing] = useState<boolean>(false)
+    const [hasArrived, setHasArrived] = useState<boolean>(false)
 
-    const [currentWaypointIndex, setCurrentWaypointIndex] = useState(0)
+    const [currentWaypointIndex, setCurrentWaypointIndex] = useState(0);
 
-    const currentOrder = useMemo(() => route.routeOrders.find((order) => order._id === waypoints[currentIndexMarker]?.orderId), [route])
+    const currentOrder = useMemo(() => route.routeOrders.find((order) => order._id === waypoints[currentWaypointIndex]?.orderId), [route, currentWaypointIndex])
+    // useEffect(() => {
+    //     (async () => {
+    //         const loc = await getCurrentLocation();
+    //         setLocation(loc);
+    //         setLocationToCalculateRoute(loc)
+    //     })();
+    // }, []);
+
+
     useEffect(() => {
-        (async () => {
-            const loc = await getCurrentLocation();
-            setLocation(loc);
-            setLocationToCalculateRoute(loc)
-        })();
-    }, []);
-
-
-    useEffect(() => {
-        // Setear el index de la primera ruta que no tenga el status como compleatado
-        console.log({ waypoints })
-        const currentWaypointIndex = waypoints.findIndex((waypoint) => waypoint.status === 'created')
-        setCurrentWaypointIndex(currentWaypointIndex)
-    }, [waypoints])
+        if (waypoints && waypoints.length > 0) {
+            setCurrentWaypointIndex(0);
+        }
+        // TODO: handle error
+    }, [originalWaypoints])
 
     useEffect(() => {
         if (waypoints && waypoints.length > 0) {
             setDestination(waypoints[currentWaypointIndex]);
         }
-    }, [waypoints]);
+    }, [waypoints, currentWaypointIndex]);
 
     useEffect(() => {
         const accelSubscription = accelerometer.subscribe(({ x, y, z }) => {
             const accelData = { x, y, z };
-            const currentHeading = calculateHeading(accelData);
+            const currentHeading = calculateHeading(accelData); 
             setHeading(currentHeading);
         });
 
@@ -106,7 +108,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     useEffect(() => {
         if (location && destination) {
             const { latitude, longitude } = location;
-            if (latitude && longitude) {
+            if (latitude && longitude && isFollowing) {
                 mapViewRef.current?.animateCamera({
                     center: { latitude, longitude },
                     zoom: 20,
@@ -114,7 +116,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     heading: heading || 0,
                     pitch: 30,
                 });
-            } else {
+            } else if (isFollowing) {
                 console.warn('Invalid coordinates for destination');
             }
         }
@@ -151,15 +153,11 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     nearestPoint.longitude
                 );
 
-                const nextPointCoordinates = `${nearestPoint.latitude},  ${nearestPoint.longitude}`
-
 
                 if (distanceToNearestPoint < 0.01) {
-                    // console.log("MATCH: ", distanceToNearestPoint, "< 0.01 - ", distanceToNearestPoint < 0.01)
                     setRemainingRouteCoordinates(remainingRouteCoordinates.filter((_, index) => index !== currentIndexMarker))
                     setCurrentIndexMarker(0)
                 }
-                console.log(`REF IF  ${distanceToNearestPoint} > ${routeVariationDistance[currentIndexMarker]}`)
                 if (distanceToNearestPoint > (routeVariationDistance[currentIndexMarker])) {
                     const differenceBtwLocations = distanceToNearestPoint - currentValue
 
@@ -178,7 +176,6 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     clientId: user?._id,
                 };
 
-                console.log("Sending message")
 
                 sendMessage(message)
 
@@ -189,8 +186,6 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     }
 
     const handleDirectionsReady = (result: MapDirectionsResponse) => {
-
-
         const startLocation = {
             latitude: locationToCalculateRoute?.latitude || 0,
             longitude: locationToCalculateRoute?.longitude || 0,
@@ -231,9 +226,8 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                 location.latitude, location.longitude,
                 latD, lonD
             )
-
-            if (distanceToDestination < 0.1) {
-                // Alert.alert('Has llegado a tu destino')
+            if (distanceToDestination < 0.07) {
+                setHasArrived(true)
             }
         }
 
@@ -244,8 +238,9 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
         <>
             <View style={styles.container}>
                 <Card>
-                    <AppText>En camino a {destination?.addressName} - {refetchTimes}</AppText>
+                    <AppText>En camino a {destination?.addressName} - {currentWaypointIndex}</AppText>
                 </Card>
+
 
                 <MapView
                     ref={mapViewRef}
@@ -258,9 +253,12 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                         longitudeDelta: 0.0021,
                     }}
                     onUserLocationChange={handleUserLocationChange}
+                    onPanDrag={() => {
+                        if (isFollowing) setIsFollowing(false);
+                    }}
                     showsUserLocation
                 >
-                    {locationToCalculateRoute && destination && (
+                    {locationToCalculateRoute && destination && !hasArrived && (
                         <MapViewDirections
                             origin={locationToCalculateRoute}
                             destination={destination.location}
@@ -288,7 +286,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                         />
                     )}
 
-                    {remainingRouteCoordinates.length > 0 && location && (
+                    {remainingRouteCoordinates.length > 0 && location && !hasArrived && (
                         <Polyline
                             coordinates={[location, ...remainingRouteCoordinates]}
                             strokeWidth={5}
@@ -312,14 +310,41 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                         />
                     )}
 
-                    {location && remainingRouteCoordinates.length > 0 && (
+                    {/* {location && remainingRouteCoordinates.length > 0 && (
                         <Marker
                             identifier='nextLocation'
                             coordinate={remainingRouteCoordinates[currentIndexMarker]}
                         />
-                    )}
+                    )} */}
                 </MapView>
             </View>
+            {
+                !isFollowing && <FAB
+                    iconName='compass'
+                    onPress={() => {
+                        setIsFollowing(true)
+                        if (location && destination) {
+                            const { latitude, longitude } = location;
+                            if (latitude && longitude) {
+                                mapViewRef.current?.animateCamera({
+                                    center: { latitude, longitude },
+                                    zoom: 20,
+                                    altitude: 100,
+                                    heading: heading || 0,
+                                    pitch: 30,
+                                });
+                            } else if (isFollowing) {
+                                console.warn('Invalid coordinates for destination');
+                            }
+                        }
+
+                    }}
+                    style={{
+                        bottom: 230,
+                        left: 15
+                    }}
+                />
+            }
             <FAB
                 iconName='dollar'
                 onPress={() => {
@@ -344,7 +369,52 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
             {
                 currentOrder &&
                 <BottomSheet>
-                    <MapOrderSale order={currentOrder} total={route.routeOrders.length} current={currentWaypointIndex + 1} />
+                    <MapOrderSale
+                        key={currentOrder._id}
+                        order={currentOrder}
+                        total={route.routeOrders.length}
+                        current={currentWaypointIndex + 1 + numberAlreadyDelivered}
+                        hasArrived={hasArrived}
+                        onCloseSale={() => {
+                            setHasArrived(false)
+
+                            if (currentWaypointIndex + 1 < route.routeOrders.length) {
+                                setCurrentWaypointIndex(currentWaypointIndex + 1)
+                            } else if ((currentWaypointIndex + 1) === route.routeOrders.length) {
+                                
+                                // TODO: Finish order and close map. 
+                            }
+                        }}
+                    />
+
+                    <Pressable style={{
+                        backgroundColor: colors.red,
+                        width: 30,
+                        height: 30,
+                        position: 'absolute',
+                        top: 10,
+                        zIndex: 200,
+                        alignItems: 'center'
+                    }} onPress={() => {
+                        setCurrentWaypointIndex(currentWaypointIndex + 1)
+                        setHasArrived(true)
+                    }}>
+                        <AppText>+</AppText>
+                    </Pressable>
+                    <Pressable style={{
+                        backgroundColor: colors.red,
+                        width: 30,
+                        height: 30,
+                        position: 'absolute',
+                        top: 40,
+                        zIndex: 200,
+                        alignItems: 'center'
+                    }} onPress={() => {
+                        setCurrentWaypointIndex(currentWaypointIndex - 1)
+                        setHasArrived(true)
+                    }}>
+                        <AppText>-</AppText>
+                    </Pressable>
                 </BottomSheet>
             }
         </>

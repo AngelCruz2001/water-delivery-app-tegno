@@ -1,6 +1,6 @@
 
-import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions, Pressable } from 'react-native';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, Dimensions, Pressable, ScrollView } from 'react-native';
 import MapView, { LatLng, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useUserStore } from '../../../store/users/useUserStore';
 import { useFetchRouteByUserId } from '../../hooks/routers/useFetchRouteByUserId';
@@ -24,11 +24,15 @@ import { useDriverStore } from '../../../store/driver/useDriverStore';
 import { BottomSheet } from '../../components/shared/BottomSheet';
 import { useRoutesStore } from '../../../store/routes/useRoutesStore';
 import { useGetRoutes } from '../../hooks/routers/useGetRoutes';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { FAB } from '../../components/shared/fab/Fab';
 import { useDemoStore } from '../../../store/demo/useDemoStore';
 import { sendMessage } from '../../../providers/WebsocketLocationProvider';
 import { getToken } from '../../api/api';
+import { DataOverviewCard } from '../../components/map/DataOverviewCard';
+import { DriverCardName } from '../../components/map/DriverCardName';
+import { TDriver } from '../../../interfaces/drivers';
+import { OrderResume } from '../../components/orders/OrderResume';
+import { TCreateOrderDto, TOrderProduct } from '../../../interfaces/order';
 
 const { width, height } = Dimensions.get('window');
 
@@ -57,12 +61,22 @@ export const AdminMapScreen = () => {
     const mapViewRef = useRef<MapView>(null);
 
     const activeDriver = useDriverStore((state) => state.activeDriver)
+    const drivers = useDriverStore((state) => state.drivers)
+    const setActiveDriver = useDriverStore((state) => state.setActiveDriver)
     const routeFollowedByActiveDrive = useDriverStore((state) => state.routeFollowedByActiveDrive)
     const [location, setLocation] = useState<TLocation>({ latitude: 24.015576, longitude: -104.657245 });
 
 
     const [activeRoute, setActiveRoute] = useState<TDisplayRoute>()
     // const [location, setLocation] = useState<TLocation>({ latitude: 24.015576, longitude: -104.657245 });
+
+    const handleActiveDriver = (driver: TDriver) => {
+        if (driver && driver._id !== activeDriver?._id) {
+            setActiveDriver(driver)
+        } else {
+            setActiveDriver(null)
+        }
+    }
 
     useEffect(() => {
         if (activeDriver && activeDriver._id) {
@@ -88,27 +102,24 @@ export const AdminMapScreen = () => {
         });
     }, [mapViewRef]);
 
+    const getFullOrderOfDriver = (driverId: string): TCreateOrderDto => {
+        const routeForDriver = routes.find(route => route.driverId === driverId)
 
-    // console.log({ routeFollowedByActiveDrive })
+        const routeOrdersProducts: Array<TOrderProduct> = routeForDriver!.routeOrders.map(o => o.products.map(p => ({ ...p, quantity: 1 }))).flat()
 
-    // useEffect(() => {
-    //     getCurrentLocation().then(loc => {
-    //         setLocation(loc);
-    //         if (mapViewRef.current) {
-    //             mapViewRef.current.animateCamera({
-    //                 center: loc,
-    //             });
-    //         }
-    //     });
-    // }, [mapViewRef]);
+        const order: TCreateOrderDto = {
+            addressId: '',
+            clientId: '',
+            driverId: '',
+            note: '',
+            products: routeOrdersProducts,
+            programedDate: '',
+            routeId: '',
+            userId: ''
+        }
 
-    // useEffect(() => {
-    //     if (activeDriver && activeDriver.routeMade) {
-    //         setRouteFollowedByActiveUser(activeDriver.routeMade)
-    //     }
-    // }, [activeDriver])
-
-    // console.log("ActiveDriver", activeDriver?.routeMade?.length)
+        return order
+    }
 
     const onActiveDemoMode = () => {
         setIsDemoActive(!isDemoActive)
@@ -116,7 +127,7 @@ export const AdminMapScreen = () => {
             console.log({ isDemoActive })
             sendMessage({
                 type: "start_simulated_drivers",
-                data: token
+                data: JSON.stringify(token)
             })
         }
     }
@@ -136,7 +147,7 @@ export const AdminMapScreen = () => {
                     longitudeDelta: 0.02,
                 }}
                 showsUserLocation
-                
+
             >
                 {/* <UserMarker marker={marker} />  */}
                 <DriverMarkers />
@@ -159,54 +170,45 @@ export const AdminMapScreen = () => {
             />
 
             {
-                false &&
+                true &&
 
-                <BottomSheet>
-
+                <BottomSheet
+                >
                     <View
                         style={{
-                            flex: 1,
+                            flex: 1
                         }}
                     >
+                        <AppText>
+                            Elija un conductor para ver sus ordenes
+                        </AppText>
+
 
                         <View
                             style={{
-                                flexDirection: 'row',
                                 alignItems: 'center',
-                                paddingHorizontal: paddingMap.horizontalCard,
                                 gap: 10,
                                 marginTop: 10,
-                                maxWidth: '80%',
+                                flex: 1
                             }}
                         >
-                            <View
-                                style={{
-                                    paddingVertical: paddingMap.verticalCard,
-                                    paddingHorizontal: paddingMap.horizontalCard,
-                                    borderRadius: roundedMap.full,
-                                    backgroundColor: colors.primary,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    height: 50,
-                                    width: 50
-                                }}
-                            >
-                                <Icon
-                                    name='navigate'
-                                    size={25}
-                                    color={colors.white}
-                                />
-                            </View>
-                            <AppText
-                                size='lg'
-                                style={{
-                                    // color: colors.textMuted,
-                                }}
-                            >{activeRoute?.routeName}</AppText>
+                            {
+                                drivers.map((driver: TDriver) => (
+                                    <Fragment key={driver._id}>
+                                        {/* <OrderResume
+                                            order={getFullOrderOfDriver(driver._id)}
+                                            title='Pedido'
+                                        /> */}
+                                        <DriverCardName key={driver._id} driverId={driver._id} driverName={driver.name} onPress={() => handleActiveDriver(driver)} />
+                                        {activeDriver && activeDriver._id === driver._id && <DataOverviewCard driverId={activeDriver._id} />}
+                                        {/* <DataOverviewCard driverId={driver._id} /> */}
+                                    </Fragment>
+                                ))
+                            }
+
                         </View>
+
                     </View>
-
-
                 </BottomSheet>
             }
 

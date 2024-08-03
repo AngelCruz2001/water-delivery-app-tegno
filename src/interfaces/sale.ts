@@ -16,4 +16,5 @@ export interface TCreateSaleDTO {
   clientId?: string;
   clientAddress: string;
   location: TLocation;
+  orderId?: string;
 }

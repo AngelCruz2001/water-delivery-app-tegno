@@ -17,7 +17,7 @@ export const DataItem = ({ label, value, isLast, style, color = colors.primary }
     return (
         <>
             <View style={[{ gap: 5, paddingVertical: 2, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, style]}>
-                <AppText size='sm' style={{ color: colors.textMuted }}>
+                <AppText size='sm' style={{ color: colors.textMuted, maxWidth: '80%' }}>
                     {label}
                 </AppText>
                 <AppText weight='bold' style={{ display: 'flex', color, flex: .9, textAlign: 'right' }}>

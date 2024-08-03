@@ -53,7 +53,6 @@ export const EditProductScreen = ({ route }: Props) => {
             if (image !== product?.image.url) {
                 const result = await Image.compress(image);
                 const type = result.split('.')[1];
-                console.log({ type })
                 formData.append('image', {
                     uri: result,
                     type: 'image/' + type,

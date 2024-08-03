@@ -16,7 +16,7 @@ const WaypointMarkers: React.FC<WaypointMarkersProps> = ({ currentLocation, wayp
             {waypoints.map((waypoint, index) => (
                 <Marker
                     key={index}
-                    status='show'
+                    status={waypoint.status === 'created' ? 'show' : 'success'}
                     coordinate={waypoint.location}
                     title={waypoint.addressName.split('Durango, Dgo')[0]}
                     identifier={waypoint.addressName}
