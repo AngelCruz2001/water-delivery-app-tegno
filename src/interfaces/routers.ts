@@ -5,7 +5,7 @@ import {TLocation} from './location';
 export interface TDisplayRoute {
   _id: string;
   routeName: string;
-  programedDate: string;
+  scheduledDays: number[]
   status: string;
   driverId: string;
   totalOrders: number;
@@ -21,7 +21,7 @@ export interface TDisplayEnrichedRoute extends TDisplayRoute {
 }
 
 export interface TPostRoute {
-  programedDate: dayjs.Dayjs;
+  scheduledDays: number[];
   driverId: string;
   driverName: string;
   routeName: string;

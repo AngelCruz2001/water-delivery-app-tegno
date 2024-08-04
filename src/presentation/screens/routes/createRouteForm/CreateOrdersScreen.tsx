@@ -3,7 +3,7 @@ import { AppButton, AppText } from '../../../components/shared'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { RoutesStackProps } from '../../../../navigation/routes/RoutesStackNavigator'
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types'
-import { formatDate } from '../../../../helpers/date'
+import { formatDate, getWeekDaysFromArray } from '../../../../helpers/date'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { View } from 'react-native'
 import { useGetClients } from '../../../hooks/clients/useGetClients'
@@ -43,7 +43,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
     const [orders, setOrders] = useState<TUpdateOrderDto[]>(enrichedRoute.routeOrders?.map(o => ({ ...o, hasChanges: false })) || []);
 
     const [newOrder, setNewOrder] = useState<TCreateOrderDto>({
-        programedDate: enrichedRoute.programedDate,
+        scheduledDays: enrichedRoute.scheduledDays,
         driverId: enrichedRoute.driverId,
         routeId: enrichedRoute._id,
         userId: '',
@@ -82,7 +82,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
 
     useEffect(() => {
         navigation.setOptions({
-            title: formatDate(new Date(enrichedRoute.programedDate)),
+            title: getWeekDaysFromArray(enrichedRoute.scheduledDays),
             headerRight: () => (
                 <AppText
                     style={{
@@ -184,7 +184,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                                             hasChanges: true
                                         }])
                                         setNewOrder({
-                                            programedDate: enrichedRoute.programedDate,
+                                            scheduledDays: enrichedRoute.scheduledDays,
                                             driverId: enrichedRoute.driverId,
                                             routeId: enrichedRoute._id,
                                             userId: '',
@@ -206,7 +206,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                                     onPress={() => {
                                         setSelectedClient(null)
                                         setNewOrder({
-                                            programedDate: enrichedRoute.programedDate,
+                                            scheduledDays: enrichedRoute.scheduledDays,
                                             driverId: enrichedRoute.driverId,
                                             routeId: enrichedRoute._id,
                                             userId: '',

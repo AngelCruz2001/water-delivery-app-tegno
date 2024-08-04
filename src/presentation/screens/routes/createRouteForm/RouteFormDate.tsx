@@ -9,12 +9,23 @@ import { ScreenContainer } from '../../../components/shared/ScreenContainer';
 import { useRoutesStore } from '../../../../store/routes/useRoutesStore';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RoutesStackProps } from '../../../../navigation/routes/RoutesStackNavigator';
+import WeekDayPicker from '../../../components/routes/createRouteForm/WeekDayPicker';
 
 export const RouteFormDate = () => {
 
     const newRoute = useRoutesStore(state => state.newRoute);
     const setNewRoute = useRoutesStore(state => state.setNewRoute);
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
+
+    const handleDayPickerChange = (days: number[]) => {
+        console.log("days: ", days);
+
+        setNewRoute({
+            ...newRoute,
+            scheduledDays: days
+        })
+    }
+
 
     return (
         <ScreenContainer>
@@ -26,14 +37,20 @@ export const RouteFormDate = () => {
             </AppText>
 
             <Card>
-                <DateTimePicker
+                <WeekDayPicker
+                    key={newRoute.scheduledDays.toString()}
+                    onChange={handleDayPickerChange}
+                />
+
+                {/* <DateTimePicker
                     mode="single"
-                    date={newRoute.programedDate}
+                    date={newRoute.}
                     onChange={(params) => setNewRoute({
                         ...newRoute,
-                        programedDate: dayjs(params.date),
+                        : dayjs(params.date),
                     })}
-                />
+                /> */}
+                
             </Card>
 
             <AppButton

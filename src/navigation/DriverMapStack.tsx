@@ -13,7 +13,7 @@ import { NoRouteForDriver } from '../presentation/screens/home/NoRouteForDriver'
 export type DriverMapStackProps = {
     "QuickSaleScreen": undefined,
     "DriverRouteMap": { waypoints: TWaypoint[], route: TDisplayRoute, numberAlreadyDelivered: number },
-    DriverRoutePreviewScreen: { waypoints: TWaypoint[], routeOnView: TDisplayRoute | null },
+    DriverRoutePreviewScreen: { originalWaypoints: TWaypoint[], waypoints: TWaypoint[], routeOnView: TDisplayRoute | null,  numberAlreadyDelivered: number  },
     NoRouteForDriver: undefined
     CreateClientScreen: undefined
 }
@@ -30,7 +30,7 @@ export function DriverMapStack() {
 
     return (
         <Stack.Navigator
-            initialRouteName='DriverRoutePreviewScreen'
+            initialRouteName='NoRouteForDriver'
             screenOptions={{
                 // headerShown: false,
                 cardStyle: { backgroundColor: colors.background },
@@ -38,7 +38,7 @@ export function DriverMapStack() {
         >
             <Stack.Screen name="DriverRouteMap" component={DriverMapScreen} options={{ title: 'Ruta del repartidor', headerShown: false }} />
             <Stack.Screen name="QuickSaleScreen" component={QuickSaleScreen} options={{ title: 'Registar Cliente y Venta' }} />
-            <Stack.Screen name="NoRouteForDriver" component={NoRouteForDriver} options={{ title: 'Registar Cliente y Venta' }} />
+            <Stack.Screen name="NoRouteForDriver" component={NoRouteForDriver} options={{ title: 'Rutas pendientes' }} />
             
             <Stack.Screen name="DriverRoutePreviewScreen" component={DriverRoutePreviewScreen} options={{ title: 'Resumen' }} />
             <Stack.Screen name="CreateClientScreen" options={{ title: 'Crear cliente' }} component={CreateClientScreen} />

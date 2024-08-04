@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import Form from '../../../components/shared/Form'
 import { Input } from '../../../components/shared/input/Input'
 import { useRoutesStore } from '../../../../store/routes/useRoutesStore'
-import { formatDate } from '../../../../helpers/date'
+import { formatDate, getWeekDaysFromArray } from '../../../../helpers/date'
 import { TPostRoute } from '../../../../interfaces/routers'
 import { postRoute } from '../../../../store/routes/api/postRoute'
 import { useMutation } from '@tanstack/react-query'
@@ -27,7 +27,7 @@ export const RouteFormName = () => {
     const setIsLoading = useUiStore(state => state.setIsLoading);
     const { control, formState: { errors }, getValues } = useForm({
         defaultValues: {
-            routeName: newRoute.driverName + ' - ' + formatDate(newRoute.programedDate.toDate())
+            routeName: newRoute.driverName + ' - ' + getWeekDaysFromArray(newRoute.scheduledDays)
         }
     })
     const { mutate, isError, isPending, isSuccess } = useMutation({
@@ -46,7 +46,7 @@ export const RouteFormName = () => {
             setNewRoute({
                 driverId: '',
                 driverName: '',
-                programedDate: dayjs(),
+                scheduledDays: [],
                 routeName: '',
             });
             showCreatedToast('Ruta creado con éxito');

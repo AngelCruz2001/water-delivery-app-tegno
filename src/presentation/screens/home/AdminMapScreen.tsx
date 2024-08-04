@@ -113,7 +113,7 @@ export const AdminMapScreen = () => {
             driverId: '',
             note: '',
             products: routeOrdersProducts,
-            programedDate: '',
+            scheduledDays: [],
             routeId: '',
             userId: ''
         }

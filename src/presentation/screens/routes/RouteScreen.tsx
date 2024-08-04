@@ -9,7 +9,7 @@ import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/nati
 import { RoutesStackProps } from '../../../navigation/routes/RoutesStackNavigator';
 import { Card } from '../../components/shared/Card';
 import { DataItem } from '../../components/shared/DataItem';
-import { formatDate } from '../../../helpers/date';
+import { formatDate, getWeekDaysFromArray } from '../../../helpers/date';
 import { View } from 'react-native';
 import { paddingMap } from '../../../config/theme/globalstyle';
 import { colors } from '../../../config/theme/colors';
@@ -54,7 +54,9 @@ export const RouteScreen = ({ route }: Props) => {
                             style={{
                                 color: colors.primary
                             }}
-                        >{formatDate(new Date(enrichedRoute.programedDate))}</AppText>
+                        >
+                            {getWeekDaysFromArray(enrichedRoute.scheduledDays).join(', ')}
+                        </AppText>
                     </View>
                     <Card style={{ gap: 10 }} >
                         <DataItem

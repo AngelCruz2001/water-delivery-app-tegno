@@ -16,7 +16,7 @@ import { ClientStackProps } from '../../../navigation/clients/ClientsStackNaviga
 import { Card } from '../shared/Card';
 import { RoutesStackProps } from '../../../navigation/routes/RoutesStackNavigator';
 import { useRoutesStore } from '../../../store/routes/useRoutesStore';
-import { formatDate } from '../../../helpers/date';
+import { formatDate, getWeekDaysFromArray } from '../../../helpers/date';
 
 
 type Props = {
@@ -29,7 +29,7 @@ export const DisplayRoute = ({
     route,
     route: {
         _id,
-        programedDate,
+        scheduledDays,
         status,
         routeName,
         driverId,
@@ -72,7 +72,9 @@ export const DisplayRoute = ({
                             {routeName}
                         </AppText>
                         <AppText size='sm' style={{ color: colors.primary }}>
-                            {formatDate(new Date(programedDate))}
+                            {
+                                scheduledDays && getWeekDaysFromArray(scheduledDays).join(', ')
+                            }
                         </AppText>
 
                     </View>

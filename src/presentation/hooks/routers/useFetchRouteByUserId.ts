@@ -1,4 +1,4 @@
-import {useQuery} from '@tanstack/react-query';
+import {QueryObserverResult, RefetchOptions, useQuery} from '@tanstack/react-query';
 import {
   TDisplayEnrichedRoute,
   TDisplayRoute,
@@ -11,8 +11,11 @@ export function useFetchRouteByUserId(id: string): {
   routeOnView: TDisplayRoute | null;
   isLoading: boolean;
   isError: boolean;
+  refetch: (
+    options?: RefetchOptions | undefined,
+  ) => Promise<QueryObserverResult<any, Error>>;
 } {
-  const {data, isLoading, isError, error} = useQuery({
+  const {data, isLoading, isError, error, refetch} = useQuery({
     queryKey: [`routes/driver/${id}`],
     queryFn: () => fetchRouteByUserId(id),
     refetchOnMount: 'always',
@@ -33,5 +36,5 @@ export function useFetchRouteByUserId(id: string): {
     console.log(error?.message);
   }
 
-  return {routeOnView, isLoading, isError};
+  return {routeOnView, isLoading, isError, refetch};
 }

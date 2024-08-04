@@ -10,3 +10,32 @@ export const formatDate = (dateToFormat: Date) => {
   });
   return formattedDate;
 };
+
+export const getWeekDay = (dayNumber: number) => {
+  const days = [
+    'Dom',
+    'Lun',
+    'Mar',
+    'Mié',
+    'Jue',
+    'Vie',
+    'Sáb',
+  ];
+  return days[dayNumber] || '';
+};
+
+export const getWeekDaysFromArray = (dayNumbers: number[]) => {
+  const todayDayNumber = new Date().getDay();
+
+  console.log(dayNumbers);
+  if (dayNumbers === undefined) {
+    return [];
+  }
+
+
+  return dayNumbers.map(dayNumber => {
+    const dayName = getWeekDay(dayNumber);
+    // return dayNumber === todayDayNumber ? 'Hoy' : dayName;
+    return dayName;
+  });
+};

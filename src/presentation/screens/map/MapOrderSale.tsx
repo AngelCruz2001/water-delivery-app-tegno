@@ -46,7 +46,7 @@ export const MapOrderSale = ({ order, total, current, hasArrived, onCloseSale }:
     } = order;
 
     const [newOrder, setNewOrder] = useState<TCreateOrderDto>({
-        programedDate: order.programedDate,
+        scheduledDays: order.scheduledDays,
         driverId: order.driverId,
         routeId: order.routeId,
         userId: order.userId,

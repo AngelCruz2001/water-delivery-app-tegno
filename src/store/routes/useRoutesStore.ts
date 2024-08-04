@@ -31,8 +31,8 @@ export const useRoutesStore = create<RouteState>()(set => ({
   activeRoute: null,
   newRoute: {
     driverId: '',
-    programedDate: dayjs(),
     routeName: '',
+    scheduledDays: [],
     driverName: '',
   },
   optimizedRoute: null,

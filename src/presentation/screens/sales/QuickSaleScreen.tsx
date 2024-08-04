@@ -59,7 +59,7 @@ export const QuickSaleScreen = () => {
     // const [orders, setOrders] = useState<TCreateOrderDto[]>([]);
 
     const [newOrder, setNewOrder] = useState<TCreateOrderDto>({
-        programedDate: dayjs().toString(),
+        scheduledDays: [],
         driverId: '',
         routeId: '',
         userId: '',
