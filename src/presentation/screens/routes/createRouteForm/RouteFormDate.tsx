@@ -18,7 +18,6 @@ export const RouteFormDate = () => {
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
 
     const handleDayPickerChange = (days: number[]) => {
-        console.log("days: ", days);
 
         setNewRoute({
             ...newRoute,

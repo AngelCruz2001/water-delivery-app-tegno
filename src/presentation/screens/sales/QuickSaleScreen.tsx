@@ -44,7 +44,6 @@ export const QuickSaleScreen = () => {
             )
         },
         onSuccess: ({ data }) => {
-            console.log({ data });
             showCreatedToast('Venta registrada con éxito');
             setIsLoading(false);
             navigation.goBack();

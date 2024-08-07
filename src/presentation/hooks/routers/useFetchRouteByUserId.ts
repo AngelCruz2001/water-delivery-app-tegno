@@ -27,7 +27,6 @@ export function useFetchRouteByUserId(id: string): {
 
   useEffect(() => {
     if (data) {
-      console.log("change")
       setRouteOnView(data);
     }
   }, [data, setRouteOnView]);

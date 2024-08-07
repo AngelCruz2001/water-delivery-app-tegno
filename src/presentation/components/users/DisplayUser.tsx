@@ -6,8 +6,8 @@ import { colors } from '../../../config/theme/colors'
 import { Card } from '../shared/Card'
 import { AppText } from '../shared'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
-import { ClientStackProps } from '../../../navigation/clients/ClientsStackNavigator'
 import { Pressable } from 'react-native'
+import { UserStackProps } from '../../../navigation/users/UserStackNavigator'
 
 type Props = {
     user: TUser
@@ -20,10 +20,12 @@ export const DisplayUser = (props: Props) => {
 
     const color = type === 'admin' ? colors.primary : type === 'driver' ? colors.warning : colors.success
 
-    const navigation = useNavigation<NavigationProp<ClientStackProps>>()
+    const navigation = useNavigation<NavigationProp<UserStackProps>>()
 
     return (
-        <Pressable>
+        <Pressable
+            onPress={() => navigation.navigate('Editar Usuario', {user})}
+        >
             <Card
                 style={{
                     width: '100%',

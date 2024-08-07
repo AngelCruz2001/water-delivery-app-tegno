@@ -5,7 +5,7 @@ import { RoutesStackProps } from '../../../../navigation/routes/RoutesStackNavig
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types'
 import { formatDate, getWeekDaysFromArray } from '../../../../helpers/date'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
-import { View } from 'react-native'
+import { Dimensions, View } from 'react-native'
 import { useGetClients } from '../../../hooks/clients/useGetClients'
 import { useClientsStore } from '../../../../store/clients/useClientsStore'
 import { paddingMap, roundedMap } from '../../../../config/theme/globalstyle'
@@ -24,8 +24,12 @@ import { useMutation } from '@tanstack/react-query'
 import { postOrdersBatch } from '../../../../store/routes/api/postOrdersBatch'
 import { showCreatedToast, showErrorToast } from '../../../components/toasts/toasts'
 import { useUiStore } from '../../../../store/ui/useUiStore'
+import useDistance from '../../../hooks/useDistance'
 
 type Props = NativeStackScreenProps<RoutesStackProps, 'CreateOrdersScreen'>;
+
+const { width, height } = Dimensions.get('window');
+
 
 export const CreateOrdersScreen = ({ route: { params } }: Props) => {
 
@@ -39,6 +43,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
     const products = useProductsStore(state => state.products);
     const [selectedClient, setSelectedClient] = useState<TDisplayClient | null>(null);
     const setIsLoading = useUiStore(state => state.setIsLoading);
+
 
     const [orders, setOrders] = useState<TUpdateOrderDto[]>(enrichedRoute.routeOrders?.map(o => ({ ...o, hasChanges: false })) || []);
 
@@ -58,6 +63,23 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
             note: ''
         }
     })
+
+    useEffect(() => {
+        if (mapRef.current) {
+
+            mapRef.current.fitToSuppliedMarkers(clients.map(c => c._id), {
+                edgePadding: {
+                    right: width / 20,
+                    bottom: height / 20,
+                    left: width / 20,
+                    top: height / 20,
+                },
+            })
+        }
+    }, [clients, mapRef.current])
+
+
+
 
     const { mutate, isError: isErrorMutate, isPending, isSuccess } = useMutation({
         mutationFn: async (orders: TCreateOrderDto[]) => {
@@ -177,12 +199,16 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                             <View>
                                 <AppButton
                                     onPress={() => {
+
                                         const filteredOrders = orders.filter(o => o.clientId !== newOrder.clientId);
-                                        setOrders([...filteredOrders, {
+
+                                        if (newOrder.products.length === 0) setOrders(filteredOrders);
+                                        else setOrders([...filteredOrders, {
                                             ...newOrder,
                                             products: newOrder.products,
                                             hasChanges: true
                                         }])
+
                                         setNewOrder({
                                             scheduledDays: enrichedRoute.scheduledDays,
                                             driverId: enrichedRoute.driverId,
@@ -199,7 +225,7 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                                         marginTop: 10
                                     }}
                                 >
-                                    Agregar órden
+                                    {newOrder.products.length === 0 ? 'Cancelar orden' : 'Guardar orden'}
                                 </AppButton>
                                 <AppButton
                                     color={colors.textMuted}
@@ -243,12 +269,12 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                 )}
 
             </Card>
+
             <MapView
                 provider={PROVIDER_GOOGLE}
                 ref={mapRef}
                 style={{
-                    width: '100%',
-                    height: '100%',
+                    flex: 1
                 }}
                 initialRegion={{
                     latitude: location.latitude, longitude: location.longitude,
@@ -260,8 +286,11 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                 {
                     clients?.map((client) => {
                         const hasOrder = orders.find((order) => order.clientId === client._id)
+
                         return (
                             <Marker
+                                key={client._id}
+
                                 onPress={() => {
                                     setSelectedClient(client)
                                     if (hasOrder) {
@@ -278,19 +307,18 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
                                     moveCameraToLocation({ latitude: client.location?.lat || 0, longitude: client.location?.lng || 0 })
 
                                 }}
-                                key={client._id}
                                 coordinate={{
                                     latitude: client.location?.lat || 0, longitude: client.location?.lng || 0,
                                 }}
                                 title={client.name}
+                                identifier={client._id}
                                 description={client.address}
                                 image={
                                     hasOrder
                                         ? require('../../../../assets/marker_success.png')
                                         : require('../../../../assets/marker.png')
                                 }
-                            >
-                            </Marker>
+                            />
                         )
                     })
                 }
@@ -299,7 +327,6 @@ export const CreateOrdersScreen = ({ route: { params } }: Props) => {
 
             <Card
                 style={{
-                    position: 'absolute',
                     bottom: 5,
                     left: 0,
                     right: 0,

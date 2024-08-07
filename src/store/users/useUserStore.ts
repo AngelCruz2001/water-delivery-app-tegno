@@ -17,6 +17,8 @@ type UserState = {
   setUsers: (users: TUser[]) => void;
   setToken: (token: string, user: TUser) => void;
   addUser: (user: TUser) => void;
+  editUser: (user: TUser) => void;
+  removeUser: (userId: string) => void;
 };
 
 export const useUserStore = create<UserState>()(set => ({
@@ -54,6 +56,17 @@ export const useUserStore = create<UserState>()(set => ({
     set(state => ({users: [...state.users, user]}));
   },
 
+  editUser: (user: TUser) => {
+    set(state => ({
+      users: state.users.map(u => (u._id === user._id ? user : u)),
+    }));
+  },
+
+  removeUser: (userId: string) => {
+    set(state => ({
+      users: state.users.filter(u => u._id !== userId),
+    }));
+  },
   setToken: (token, user) => {
     saveToken(token);
     set(() => ({

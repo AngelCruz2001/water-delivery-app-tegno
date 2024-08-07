@@ -20,7 +20,7 @@ axios.interceptors.request.use(
 );
 
 export const api = axios.create({
-  baseURL: Config.API_URL
+  baseURL: Config.API_URL || 'http://localhost:8080',
 });
 
 export const saveToken = async (token: string) => {

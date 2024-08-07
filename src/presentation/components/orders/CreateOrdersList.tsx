@@ -62,6 +62,7 @@ export const OrdersList = ({ orders, clients, onItemPress }: Props) => {
                         const hasOrder = orders.find((order) => order.clientId === client!._id)
                         return (
                             <Pressable
+                                key={order.clientId}
                                 onPress={() => onItemPress(hasOrder, client)}
                                 style={{
                                     paddingHorizontal: paddingMap.verticalContainer

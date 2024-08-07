@@ -11,14 +11,13 @@ import { colors } from '../../../config/theme/colors';
 
 export const ClientsScreen = () => {
 
-    const { isLoading, isError } = useGetClients();
+    const { isLoading, isError, refetch } = useGetClients();
     const clients = useClientsStore(state => state.clients);
     const navigation = useNavigation<NavigationProp<ClientStackProps>>();
 
     return (
         <>
-
-            <ScreenScrollContainer>
+            <ScreenScrollContainer onRefresh={() => refetch()}>
                 {
                     clients.map((client: TDisplayClient) => (
                         <DisplayClient
@@ -49,7 +48,6 @@ export const ClientsScreen = () => {
                     right: 15,
                     backgroundColor: colors.primary
                 }}
-            // iconColor={colors.white}
             />
         </>
     )

@@ -4,25 +4,32 @@ import React from 'react'
 import { colors } from '../../../config/theme/colors'
 
 import { AppText } from './AppText'
+import { ReactElement } from 'react';
 
 type Props = {
     label: string | JSX.Element;
-    value: string;
+    value: string | JSX.Element;
     isLast?: boolean;
     color?: string;
     style?: StyleProp<ViewStyle>;
 }
 
-export const DataItem = ({ label, value, isLast, style, color = colors.primary }: Props) => {
+export const DataItem = ({ label, value, isLast, style, color = colors.primary, }: Props) => {
     return (
         <>
             <View style={[{ gap: 5, paddingVertical: 2, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, style]}>
                 <AppText size='sm' style={{ color: colors.textMuted, maxWidth: '80%' }}>
                     {label}
                 </AppText>
-                <AppText weight='bold' style={{ display: 'flex', color, flex: .9, textAlign: 'right' }}>
-                    {value}
-                </AppText>
+
+                {
+                    React.isValidElement(value) ? value : (
+                        <AppText weight='bold' style={{ display: 'flex', color, flex: .9, textAlign: 'right' }}>
+                            {value}
+                        </AppText>
+                    )
+                }
+
             </View>
             {!isLast && (
                 <View style={{

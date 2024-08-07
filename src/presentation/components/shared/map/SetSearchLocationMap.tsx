@@ -12,7 +12,7 @@ import { GooglePlaceData, GooglePlaceDetail } from 'react-native-google-places-a
 import { getCurrentLocation, reverseGeocoding } from '../../../../actions/location/location';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { TLocation } from '../../../../interfaces/location';
-
+import { FAB } from '../fab/Fab';
 
 type Props = {
     setLocation: (location: TLocation) => void;
@@ -67,7 +67,6 @@ export const SetSearchLocationMap = ({
         return { latitude, longitude };
     };
 
-
     const hanldeOnPress = async (
         data: GooglePlaceData,
         detail: GooglePlaceDetail | null,
@@ -84,20 +83,13 @@ export const SetSearchLocationMap = ({
         })
     }
 
-
     useEffect(() => {
-
         getCurrentLocation().then((location) => {
             moveCameraToLocation(location)
             const { latitude, longitude } = location;
             setLocation({ latitude: latitude, longitude: longitude })
         })
-
-        return () => {
-
-        }
     }, [])
-
 
     return (
         <>
@@ -121,22 +113,6 @@ export const SetSearchLocationMap = ({
                     }}
                     cameraZoomRange={{ minCenterCoordinateDistance: 10, maxCenterCoordinateDistance: 20 }}
                     showsUserLocation
-                    // onPress={async (e: MapPressEvent) => {
-                    //     e.persist();
-                    //     const { latitude, longitude } = e.nativeEvent.coordinate
-                    //     const locationStr = await reverseGeocoding({ latitude, longitude });
-                    //     setLocationName(locationStr);
-                    //     moveCameraToLocation({
-                    //         latitude: e.nativeEvent.coordinate.latitude,
-                    //         longitude: e.nativeEvent.coordinate.longitude
-                    //     })
-                    //     setLocation({ latitude, longitude })
-                    // }}
-                    // onTouchMove={(e) => {
-                    //     e.persist();
-                    //     console.log("event: ", { e })
-                    // }}
-                    // onRegionChange={getCenterCoordinates}
                     onRegionChangeComplete={async () => {
                         try {
                             const { latitude, longitude } = await getCenterCoordinates()
@@ -146,15 +122,29 @@ export const SetSearchLocationMap = ({
                             console.error("Error in reverseGeocoding:", reverseGeocodingError);
                         }
                     }}
-                // onTouchEndCapture={() => getCenterCoordinates()}
-                // onResponderEnd={() => getCenterCoordinates()}
                 >
                 </MapView>
+
+                <FAB
+                    iconName='compass'
+                    onPress={() => {
+                        getCurrentLocation().then((location) => {
+                            moveCameraToLocation(location)
+                            const { latitude, longitude } = location;
+                            setLocation({ latitude: latitude, longitude: longitude })
+                        })
+                    }}
+                    style={{
+                        bottom: 15,
+                        right: 15
+                    }}
+                />
+
+
                 <View style={{
                     position: 'absolute', top: '35%', zIndex: 10, left: '45%', width: 40,
                     aspectRatio: 1, alignItems: 'center', justifyContent: 'center',
                     pointerEvents: 'none',
-                    // transform: [{ translateX: '50%' }, { translateY: '50%' }]
                 }}>
                     <Image source={require('../../../../assets/marker.png')} style={{
                         maxWidth: 25,

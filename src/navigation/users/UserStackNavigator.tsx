@@ -19,6 +19,7 @@ import { CreateUserScreen } from "../../presentation/screens/users/CreateUserScr
 import { darken } from "../../config/theme/helpers";
 import { fontSizeMap } from "../../presentation/components/shared/sizes";
 import { UserScreen } from "../../presentation/screens/users/UserScreen";
+import { EditUser } from "../../presentation/screens/users/EditUser";
 import { TUser } from "../../interfaces/user";
 
 export type UserStackProps = {
@@ -58,6 +59,7 @@ export function UserStackNavigator() {
             <Stack.Screen name="Usuarios" component={UsersScreen} />
             <Stack.Screen name="Crear usuario" component={CreateUserScreen} />
             <Stack.Screen name="Usuario" component={UserScreen} />
+            <Stack.Screen name="Editar Usuario" component={EditUser} />
         </Stack.Navigator>
     );
 }

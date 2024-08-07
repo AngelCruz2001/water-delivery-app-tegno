@@ -20,7 +20,6 @@ export const RoutesScreen = (props: Props) => {
     const routes = useRoutesStore(state => state.routes);
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
 
-    console.log(JSON.stringify(routes, null, 2))
     return (
         <>
             <ScreenScrollContainer

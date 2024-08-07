@@ -384,7 +384,6 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                             }
 
                             setCurrentWaypointIndex(currentWaypointIndex + 1)
-                            
                         }}
                     />
 

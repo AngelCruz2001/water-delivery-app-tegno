@@ -81,7 +81,6 @@ export const CreateClientScreen = () => {
     })
 
     const onSubmit = (data: TPostClient) => {
-        console.log({ data })
         mutate(data)
     }
     useEffect(() => {

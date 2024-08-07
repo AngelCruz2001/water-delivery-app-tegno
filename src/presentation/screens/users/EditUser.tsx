@@ -27,7 +27,7 @@ export const EditUser = ({ route }: Props) => {
 
     const { user } = route.params;
     const navigation = useNavigation<NavigationProp<UserStackProps>>();
-    const addUser = useUserStore(state => state.addUser);
+    const editUser = useUserStore(state => state.editUser);
     const setIsLoading = useUiStore(state => state.setIsLoading);
 
     const { control, handleSubmit, formState: { errors, isValid, dirtyFields }, } = useForm({
@@ -42,8 +42,9 @@ export const EditUser = ({ route }: Props) => {
 
     const { mutate, isError, isPending, isSuccess, } = useMutation({
         mutationFn: async (userPayload: TPostUser) => {
+            
             setIsLoading(true);
-            return api.post<{ user: TUser }>('/register', userPayload, {
+            return api.put<{ user: TUser }>('/users/'+user._id, {...userPayload, password: userPayload.password || null}, {
                 headers: {
                     authorization: await getToken(),
                 },
@@ -55,7 +56,7 @@ export const EditUser = ({ route }: Props) => {
             showErrorToast('Error creando usuario');
         },
         onSuccess: ({ data }) => {
-            addUser(data.user);
+            editUser(data.user);
             showCreatedToast('Usuario editado con éxito');
             setIsLoading(false);
             navigation.goBack();
@@ -64,8 +65,6 @@ export const EditUser = ({ route }: Props) => {
 
     const onSubmit = (data: TPostUser) => {
         mutate(data);
-        // console.log(control._formValues)
-        // mutate(control._formValues as TPostUser);
     }
 
     const onInvalid = () => {
@@ -80,7 +79,7 @@ export const EditUser = ({ route }: Props) => {
                         disabled={(Object.keys(dirtyFields).length === 0) || isPending}
                         onPress={handleSubmit(onSubmit, onInvalid)}
                     >
-                        Crear usuario
+                        Actualizar usuario
                     </AppButton>
                 }
             >
@@ -161,10 +160,9 @@ export const EditUser = ({ route }: Props) => {
                     placeholder="Contraseña"
                     control={control}
                     rules={{
-                        required: "Necesitas agregar una contraseña",
                         minLength: {
                             value: 5,
-                            message: "La contraseña debe tener al menos 3 caracteres",
+                            message: "La contraseña debe tener al menos 5 caracteres",
                         }
                     }}
                     error={errors.name?.message || ''}

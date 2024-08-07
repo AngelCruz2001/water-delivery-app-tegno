@@ -10,6 +10,7 @@ type ClientsState = {
   addClient: (client: TDisplayClient) => void;
   setSpecificClient: (client: TDisplayClient | null) => void;
   switchClient: (client: TDisplayClient) => void;
+  removeClient: (clientID: string) => void;
 };
 
 export const useClientsStore = create<ClientsState>()(set => ({
@@ -29,5 +30,9 @@ export const useClientsStore = create<ClientsState>()(set => ({
   switchClient: (client: TDisplayClient) =>
     set(state => ({
       clients: state.clients.map(c => (c._id === client._id ? client : c)),
+    })),
+  removeClient: (clientID: string) =>
+    set(state => ({
+      clients: state.clients.filter(c => c._id !== clientID),
     })),
 }));

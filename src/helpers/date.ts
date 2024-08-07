@@ -27,7 +27,6 @@ export const getWeekDay = (dayNumber: number) => {
 export const getWeekDaysFromArray = (dayNumbers: number[]) => {
   const todayDayNumber = new Date().getDay();
 
-  console.log(dayNumbers);
   if (dayNumbers === undefined) {
     return [];
   }

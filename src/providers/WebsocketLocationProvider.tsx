@@ -21,10 +21,7 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
     const activeDriver = useDriverStore((state) => state.activeDriver)
     const drivers = useDriverStore((state) => state.drivers)
     const setRouteFollowedByActiveUser = useDriverStore((state) => state.setRouteFollowedByActiveUser)
-    // const url = "ws://localhost:8080/ws";
-    // const url = "ws://192.168.3.20:8080/ws";
-    // const url = "wss://water-delivery-backend.onrender.com/ws";
-    const url = Config.API_URL_SOCKETS;
+    const url = Config.API_URL_SOCKETS || 'ws://localhost:8080/ws';
 
     if (url === undefined) {
         throw new Error("API_URL_SOCKETS is not defined");

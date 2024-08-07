@@ -27,7 +27,6 @@ export const UsersScreen = (props: Props) => {
                 }}
             >
                 <View>
-
                     {
                         users?.map(user => (
                             <DisplayUser
