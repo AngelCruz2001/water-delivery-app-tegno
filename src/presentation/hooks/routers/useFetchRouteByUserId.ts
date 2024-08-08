@@ -31,8 +31,13 @@ export function useFetchRouteByUserId(id: string): {
     }
   }, [data, setRouteOnView]);
 
+
   if (isError) {
     console.log(error?.message);
+  }
+  
+  if (!data ) {
+    return {routeOnView: data, isLoading, isError, refetch};
   }
 
   return {routeOnView, isLoading, isError, refetch};

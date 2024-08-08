@@ -30,6 +30,8 @@ export function useGetSales(date: string): {
   useEffect(() => {
     if (data) {
       setSales(data);
+    } else {
+      setSales([]);
     }
   }, [data, setSales]);
 

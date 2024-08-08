@@ -68,7 +68,6 @@ export const AdminMapScreen = () => {
 
 
     const [activeRoute, setActiveRoute] = useState<TDisplayRoute>()
-    // const [location, setLocation] = useState<TLocation>({ latitude: 24.015576, longitude: -104.657245 });
 
     const handleActiveDriver = (driver: TDriver) => {
         if (driver && driver._id !== activeDriver?._id) {

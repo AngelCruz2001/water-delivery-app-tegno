@@ -10,17 +10,24 @@ import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 type Props = PropsWithChildren & {
     style?: StyleProp<ViewStyle>
     containerStyle?: StyleProp<ViewStyle>
-    onRefresh?: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<any, Error>>;
+    onRefresh?: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<any, Error>> | void
+    setIsLoading?: (isLoading: boolean) => void
 }
 
-export const ScreenScrollContainer = ({ children, style, onRefresh, containerStyle}: Props) => {
+export const ScreenScrollContainer = ({ children, style, onRefresh, containerStyle, setIsLoading }: Props) => {
 
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const onRefreshHandler = async () => {
         setIsRefreshing(true);
+        if (setIsLoading) {
+            setIsLoading(true)
+        }
         if (onRefresh) {
             await onRefresh()
+        }
+        if (setIsLoading) {
+            setIsLoading(false)
         }
         setIsRefreshing(false);
     }
@@ -46,7 +53,7 @@ export const ScreenScrollContainer = ({ children, style, onRefresh, containerSty
                     paddingTop: paddingMap.verticalContainer,
                 }, style]}
                 contentContainerStyle={containerStyle}
-                >
+            >
                 <View style={{ height: 20 }} />
                 {children}
                 <View style={{ height: 100 }} />

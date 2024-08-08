@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppText } from '../../components/shared';
 import { View, Image } from 'react-native';
 import { DriverMapStackProps } from '../../../navigation/DriverMapStack';
@@ -13,6 +13,7 @@ export const NoRouteForDriver = () => {
     const { routeOnView, waypointsInfo, isLoading, refetch } = useRouteOnView(user?._id || '');
     const setIsLoading = useUiStore(state => state.setIsLoading);
     const navigation = useNavigation<NavigationProp<DriverMapStackProps>>();
+    const [refetchTimestamp, setRefetchTimestamp] = useState(0);
 
     useEffect(() => {
         if (waypointsInfo && waypointsInfo.length > 0) {
@@ -26,16 +27,22 @@ export const NoRouteForDriver = () => {
                 });
             }
         }
-    }, [waypointsInfo, navigation, routeOnView]);
+    }, [waypointsInfo, navigation, routeOnView, refetchTimestamp]);
 
     useEffect(() => {
         setIsLoading(isLoading);
     }, [isLoading, setIsLoading]);
 
+    const handleRefetch = () => {
+        refetch().then(() => {
+            setRefetchTimestamp(refetchTimestamp + 1);
+        })
+    };
+
     return (
         <ScreenScrollContainer
             containerStyle={{ justifyContent: 'center', alignItems: 'center', gap: 10 }}
-            onRefresh={refetch}
+            onRefresh={handleRefetch}
         >
             <View style={{ height: 100, width: 250 }}>
                 <Image

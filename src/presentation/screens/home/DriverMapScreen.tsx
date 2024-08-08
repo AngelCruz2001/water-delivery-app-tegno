@@ -47,7 +47,7 @@ type DriverMapScreenProps = NativeStackScreenProps<DriverMapStackProps, 'DriverR
 
 
 export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => {
-    const { waypoints, route, numberAlreadyDelivered} = params;
+    const { waypoints, route, numberAlreadyDelivered } = params;
     const user = useUserStore((state) => state.user);
     const mapViewRef = useRef<MapView>(null);
     const navigation = useNavigation<NavigationProp<DriverMapStackProps>>();
@@ -64,18 +64,18 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     const [refetchTimes, setRefetchTimes] = useState<number>(0)
     const [logRouteLocations, setLogRouteLocations] = useState<TLocation[]>([])
     const [isFollowing, setIsFollowing] = useState<boolean>(false)
-    const [hasArrived, setHasArrived] = useState<boolean>(true) 
+    const [hasArrived, setHasArrived] = useState<boolean>(false)
 
     const [currentWaypointIndex, setCurrentWaypointIndex] = useState(0);
 
     const currentOrder = useMemo(() => route.routeOrders.find((order) => order._id === waypoints[currentWaypointIndex]?.orderId), [route, currentWaypointIndex])
-    // useEffect(() => {
-    //     (async () => {
-    //         const loc = await getCurrentLocation();
-    //         setLocation(loc);
-    //         setLocationToCalculateRoute(loc)
-    //     })();
-    // }, []);
+    useEffect(() => {
+        (async () => {
+            const loc = await getCurrentLocation();
+            setLocation(loc);
+            setLocationToCalculateRoute(loc)
+        })();
+    }, []);
 
 
     // useEffect(() => {
@@ -95,7 +95,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
     useEffect(() => {
         const accelSubscription = accelerometer.subscribe(({ x, y, z }) => {
             const accelData = { x, y, z };
-            const currentHeading = calculateHeading(accelData); 
+            const currentHeading = calculateHeading(accelData);
             setHeading(currentHeading);
         });
 
@@ -230,9 +230,8 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                 setHasArrived(true)
             }
         }
-
-
     }, [location, destination])
+
 
     return (
         <>
@@ -300,7 +299,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                     strokeWidth={5}
                     strokeColor="red"
                     />
-                    } */}
+                    }  */}
 
                     {location && (
                         <Marker
@@ -376,7 +375,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                         current={currentWaypointIndex + 1 + numberAlreadyDelivered}
                         hasArrived={hasArrived}
                         onCloseSale={() => {
-                            // setHasArrived(false)
+                            setHasArrived(false)
 
                             if ((currentWaypointIndex + 1) === waypoints.length) { // +1 because the currentWaypointIndex is 0 based
                                 navigation.navigate('NoRouteForDriver')
@@ -387,7 +386,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                         }}
                     />
 
-                    <Pressable style={{
+                    {/* <Pressable style={{
                         backgroundColor: colors.red,
                         width: 30,
                         height: 30,
@@ -414,7 +413,7 @@ export const DriverMapScreen = ({ route: { params } }: DriverMapScreenProps) => 
                         setHasArrived(true)
                     }}>
                         <AppText>-</AppText>
-                    </Pressable>
+                    </Pressable> */}
                 </BottomSheet>
             }
         </>

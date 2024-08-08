@@ -19,7 +19,7 @@ export const useRouteOnView = (userId: string): UseRouteOnViewResult => {
 
   useEffect(() => {
     if (routeOnView) {
-      const updatedWaypoints: TWaypoint[] = routeOnView.routeOrders.map(
+      const updatedWaypoints: TWaypoint[] = routeOnView?.routeOrders?.map(
         order => ({
           clientName: order.clientName,
           clientId: order.clientId,
@@ -40,7 +40,7 @@ export const useRouteOnView = (userId: string): UseRouteOnViewResult => {
   }, [routeOnView]);
 
   if (!routeOnView) {
-    return {routeOnView: null, waypointsInfo: [], isLoading: false, refetch};
+    return {routeOnView, waypointsInfo: [], isLoading, refetch};
   }
 
   return {routeOnView, waypointsInfo, isLoading, refetch};

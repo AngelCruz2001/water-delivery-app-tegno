@@ -56,6 +56,7 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
                                 name,
                             });
                             if (activeDriver) {
+                                console.log("Sending location")
                                 sendMessage({
                                     type: "get_location_history",
                                     data: { userId: activeDriver._id },

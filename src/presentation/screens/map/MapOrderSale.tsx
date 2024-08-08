@@ -171,6 +171,32 @@ export const MapOrderSale = ({ order, total, current, hasArrived, onCloseSale }:
             >
                 Cerrar Venta
             </AppButton>
+            <AppButton
+                disabled={newOrder.products.length === 0 || isPending || !hasArrived}
+                customBackgroundColor={colors.red}
+                style={{
+                    marginBottom: 10,
+                    // marginTop: 'auto',
+                    // marginBottom: bottom + 20
+                }}
+                onPress={() => {
+                    const saleData: TCreateSaleDTO = {
+                        products: [],
+                        clientId: newOrder.clientId,
+                        clientAddress: addressName,
+                        location: {
+                            lat: location?.latitude || 0,
+                            lng: location?.longitude || 0
+                        }, 
+                        orderId: order._id
+                    }
+                    mutate(saleData);
+
+                    if (onCloseSale) onCloseSale();
+                }}
+            >
+                No se encontro el cliente
+            </AppButton>
 
         </View>
     )

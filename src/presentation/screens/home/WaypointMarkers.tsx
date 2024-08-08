@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { TLocation } from '../../../interfaces/location';
-import { useGetOptimizedRoutes } from '../../hooks/routers/useGetOptimizedRoutes';
 import { TWaypoint } from '../../../interfaces/routers';
 import { Marker } from '../../components/shared/Marker';
 

@@ -16,12 +16,13 @@ type ButtonProps = PropsWithChildren & {
     size?: FontSize,
     style?: StyleProp<ViewStyle>
     disabled?: boolean,
-    color?: string
+    color?: string, 
+    customBackgroundColor?: string
 }
 
 export const AppButton = (props: ButtonProps) => {
 
-    const { children, AccesoryLeft, AccesoryRight, onPress, size, style, disabled = false, color } = props;
+    const { children, AccesoryLeft, AccesoryRight, onPress, size, style, disabled = false, color, customBackgroundColor } = props;
 
     //TODO: color or variant in props
     //TODO: accesory icon (left or right) in props
@@ -31,7 +32,7 @@ export const AppButton = (props: ButtonProps) => {
             disabled={disabled}
             onPress={onPress}
             style={({ pressed }) => ([{
-                backgroundColor: disabled ? colors.textMuted : !pressed ? colors.primary : darken(colors.primary, .5),
+                backgroundColor: disabled ? colors.textMuted : !pressed ? customBackgroundColor || colors.primary : darken(customBackgroundColor || colors.primary, .5),
                 borderRadius: roundedMap.sm,
                 shadowOffset: { width: !pressed ? 0 : 0, height: !pressed ? 0 : 0 },
                 shadowColor: lighten(colors.accent, .7),
