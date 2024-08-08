@@ -80,7 +80,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.ricardosandoval.waterdelivery"
+    namespace "com.waterdelivery"
     defaultConfig {
         applicationId "com.ricardosandoval.waterdelivery"
         minSdkVersion rootProject.ext.minSdkVersion
