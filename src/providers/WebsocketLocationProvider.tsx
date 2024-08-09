@@ -21,7 +21,7 @@ export const WebsocketLocationProvider = ({ children }: Props) => {
     const activeDriver = useDriverStore((state) => state.activeDriver)
     const drivers = useDriverStore((state) => state.drivers)
     const setRouteFollowedByActiveUser = useDriverStore((state) => state.setRouteFollowedByActiveUser)
-    const url = Config.API_URL_SOCKETS || 'ws://localhost:8080/ws';
+    const url = Config.API_URL_SOCKETS || 'wss://water-delivery-backend-production.up.railway.app/ws';
 
     if (url === undefined) {
         throw new Error("API_URL_SOCKETS is not defined");
