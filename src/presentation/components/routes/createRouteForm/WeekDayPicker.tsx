@@ -11,9 +11,12 @@ const WeekDayPicker: React.FC<WeekDayPickerProps> = ({ selectedDays = [], onChan
 
   const toggleDay = (value: number) => {
     let updatedDays = [...days];
+    console.log({ updatedDays, value })
     if (updatedDays.includes(value)) {
+      console.log('remove')
       updatedDays = updatedDays.filter(d => d !== value);
     } else {
+      console.log('add')
       updatedDays.push(value);
     }
     setDays(updatedDays);
@@ -30,15 +33,15 @@ const WeekDayPicker: React.FC<WeekDayPickerProps> = ({ selectedDays = [], onChan
     { label: 'Dom', value: 6 }
   ];
 
-  const renderDayButton = (day: { label: string, value: number }) => {
-    const isSelected = days.includes(day.value);
+  const renderDayButton = (day: { label: string, value: number }, isActive: boolean) => {
+    // const isSelected = days.includes(day.value);
     return (
       <TouchableOpacity
         key={day.value}
-        style={[styles.dayButton, isSelected && styles.selectedDayButton]}
+        style={[styles.dayButton, isActive && styles.selectedDayButton]}
         onPress={() => toggleDay(day.value)}
       >
-        <Text style={[styles.dayText, isSelected && styles.selectedDayText]}>
+        <Text style={[styles.dayText, isActive && styles.selectedDayText]}>
           {day.label}
         </Text>
       </TouchableOpacity>
@@ -47,7 +50,7 @@ const WeekDayPicker: React.FC<WeekDayPickerProps> = ({ selectedDays = [], onChan
 
   return (
     <View style={styles.container}>
-      {weekDays.map((day) => renderDayButton(day))}
+      {weekDays.map((day) => renderDayButton(day, days.find(d => d === day.value) !== undefined))}
     </View>
   );
 };
