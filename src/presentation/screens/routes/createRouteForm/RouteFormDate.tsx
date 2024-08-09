@@ -27,14 +27,6 @@ export const RouteFormDate = () => {
     const setNewRoute = useRoutesStore(state => state.setNewRoute);
     const navigation = useNavigation<NavigationProp<RoutesStackProps>>();
 
-    const handleDayPickerChange = (days: number[]) => {
-        setNewRoute({
-            ...newRoute,
-            scheduledDays: days
-        })
-    }
-
-
     return (
         <ScreenContainer>
             <AppText weight='bold'
@@ -73,11 +65,11 @@ export const RouteFormDate = () => {
                                     borderWidth: 1,
                                     borderRadius: 5,
                                     borderColor: '#ddd',
-                                    backgroundColor: isSelected ? colors.primary : colors.white,
+                                    backgroundColor: isSelected ? '#007bff' : colors.white,
                                 }} >
                                 <AppText
                                     style={{
-                                        color: isSelected ? colors.white : colors.primary
+                                        color: isSelected ? colors.white : 'black'
                                     }}
                                 >{day.label}</AppText>
                             </Pressable>
