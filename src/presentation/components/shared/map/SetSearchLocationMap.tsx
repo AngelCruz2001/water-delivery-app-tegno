@@ -3,7 +3,7 @@
 
 
 import React, { useEffect, useRef } from 'react'
-import { Image, View } from 'react-native';
+import { Alert, Image, View } from 'react-native';
 import { roundedMap } from '../../../../config/theme/globalstyle';
 import { Card } from '../Card';
 import { colors } from '../../../../config/theme/colors';
@@ -67,7 +67,7 @@ export const SetSearchLocationMap = ({
         return { latitude, longitude };
     };
 
-    const hanldeOnPress = async (
+    const handleOnPress = async (
         data: GooglePlaceData,
         detail: GooglePlaceDetail | null,
     ) => {
@@ -93,12 +93,13 @@ export const SetSearchLocationMap = ({
 
     return (
         <>
-            <Card style={{ padding: 0, marginTop: 5, position: 'relative', height }}>{
-                showInput &&
-                (<View style={{ backgroundColor: colors.white, position: 'absolute', width: '100%', top: 0, zIndex: 2, borderRadius: roundedMap.md }}>
-                    <GooglePlacesInput hanldeOnPress={hanldeOnPress}
-                    />
-                </View>)}
+            <Card style={{ padding: 0, marginTop: 5, position: 'relative', height }}>
+                {
+                    showInput &&
+                    <View style={{ backgroundColor: colors.white, position: 'absolute', width: '100%', top: 0, zIndex: 2, borderRadius: roundedMap.md }}>
+                        <GooglePlacesInput handleOnPress={handleOnPress} />
+                    </View>
+                }
                 <MapView
                     ref={(map) => mapRef.current = map!}
                     provider={PROVIDER_GOOGLE}

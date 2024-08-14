@@ -12,13 +12,13 @@ import { colors } from '../../../../config/theme/colors';
 
 
 const weekDays = [
-    { label: 'Lun', value: 0 },
-    { label: 'Mar', value: 1 },
-    { label: 'Mié', value: 2 },
-    { label: 'Jue', value: 3 },
-    { label: 'Vie', value: 4 },
-    { label: 'Sáb', value: 5 },
-    { label: 'Dom', value: 6 }
+    { label: 'Dom', value: 0 },
+    { label: 'Lun', value: 1 },
+    { label: 'Mar', value: 2 },
+    { label: 'Mié', value: 3 },
+    { label: 'Jue', value: 4 },
+    { label: 'Vie', value: 5 },
+    { label: 'Sáb', value: 6 }
 ];
 
 export const RouteFormDate = () => {
@@ -48,6 +48,7 @@ export const RouteFormDate = () => {
                         const isSelected = newRoute.scheduledDays.includes(day.value);
                         return (
                             <Pressable
+                                key={day.value}
                                 onPress={() => {
                                     const updatedDays = [...newRoute.scheduledDays];
                                     if (isSelected) {
@@ -61,7 +62,10 @@ export const RouteFormDate = () => {
                                     })
                                 }}
                                 style={{
-                                    padding: 10,
+                                    paddingHorizontal: 6,
+                                    paddingVertical: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
                                     borderWidth: 1,
                                     borderRadius: 5,
                                     borderColor: '#ddd',
@@ -76,20 +80,6 @@ export const RouteFormDate = () => {
                         )
                     })}
                 </View>
-                {/* <WeekDayPicker
-                    key={newRoute.scheduledDays.length}
-                    onChange={handleDayPickerChange}
-                /> */}
-
-                {/* <DateTimePicker
-                    mode="single"
-                    date={newRoute.}
-                    onChange={(params) => setNewRoute({
-                        ...newRoute,
-                        : dayjs(params.date),
-                    })}
-                /> */}
-
             </Card>
 
             <AppButton

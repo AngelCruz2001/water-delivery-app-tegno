@@ -1,6 +1,7 @@
 import {TClientLocation} from './location';
 
 export type TPostClient = {
+  _id?: string;
   businessName: string;
   name: string;
   phoneNumber: string;

@@ -23,6 +23,8 @@ import { getCurrentLocation, reverseGeocoding } from "../../../actions/location/
 import { SetSearchLocationMap } from "../../components/shared/map/SetSearchLocationMap";
 import { showCreatedToast } from "../../components/toasts/toasts";
 import { useUiStore } from "../../../store/ui/useUiStore";
+import { ScreenContainer } from "../../components/shared/ScreenContainer";
+import { ScrollView } from "react-native-gesture-handler";
 
 export const CreateClientScreen = () => {
 
@@ -78,6 +80,10 @@ export const CreateClientScreen = () => {
                 }, clientId: data.client._id, address: locationName
             })
         },
+        onError: (error) => {
+            console.log(error)
+            setIsLoading(false)
+        }
     })
 
     const onSubmit = (data: TPostClient) => {
@@ -105,106 +111,113 @@ export const CreateClientScreen = () => {
 
 
     return (
-        <ScreenScrollContainer>
-            <Form
-                buttons={
-                    <>
-                        {/* <AppButton onPress={handleSubmit(onSubmit)}>
-                            Crear Cliente
-                        </AppButton> */}
-                    </>
-                }
-            >
-                <Input
-                    name="name"
-                    contrast
-                    label="Nombre del cliente"
-                    placeholder="Nombre del cliente"
-                    control={control}
-                    rules={{
-                        required: "Necesitas agregar un nombre",
-                        minLength: {
-                            value: 3,
-                            message: "El nombre debe tener al menos 3 caracteres",
-                        }
-                    }}
-                    error={errors.name?.message || ''}
-                />
-                <Input
-                    name="businessName"
-                    contrast
-                    label="Nombre de negocio"
-                    placeholder="ej. Miscelanea el rayo"
-                    control={control}
-                    rules={{
-                        // required: "Necesitas agregar un nombre",
-                        // minLength: {
-                        //     value: 3,
-                        //     message: "El nombre debe tener al menos 3 caracteres",
-                        // }
-                    }}
 
-                    error={errors.businessName?.message || ''}
-                />
-                <Input
-                    accessoryLeft="phone"
-                    size="md"
-                    grow={false}
-                    name="phoneNumber"
-                    placeholder="Número de telefono"
-                    label="Teléfono"
-                    control={control}
-                    rules={{
-                        // required: "Necesitas agregar un número telefónico",
-                        // minLength: {
-                        //     value: 10,
-                        //     message: "El número debe tener al menos 10 digitos"
-                        // },
-                        // maxLength: {
-                        //     value: 10,
-                        //     message: "El número debe tener máximo 10 digitos"
-                        // }
-                    }}
-                    error={errors.phoneNumber?.message || ''}
-                    contrast
-                    keyboardType="number-pad"
-                />
-            </Form>
+        <ScreenContainer>
 
             <SetSearchLocationMap
                 setLocation={setLocation}
                 setLocationName={setLocationName}
             />
 
-            <Card style={{ backgroundColor: colors.white, padding: 10, gap: 10 }} >
-                <AppText style={{
-                    marginBottom: 10
-                }}>
-                    {locationName}
-                </AppText>
-                <Input
-                    name="reference"
-                    label="Referencia"
-                    placeholder="indique alguna referencia de la ubicación"
-                    control={control}
-                    rules={{}}
-                    error={errors.reference?.message || ''}
-                />
-                {location && (
-                    <AppButton
-                        onPress={() => {
-                            console.log('submitting')
-                            handleSubmit(onSubmit)()
+            <AppText style={{
+                marginTop: 10,
+                marginBottom: 10
+            }}>
+                {locationName}
+            </AppText>
+
+            <ScrollView>
+
+                <Form
+                    buttons={
+                        <>
+                            {/* <AppButton onPress={handleSubmit(onSubmit)}>
+                            Crear Cliente
+                        </AppButton> */}
+                        </>
+                    }
+                >
+                    <Input
+                        name="name"
+                        contrast
+                        label="Nombre del cliente"
+                        placeholder="Nombre del cliente"
+                        control={control}
+                        rules={{
+                            minLength: {
+                                value: 3,
+                                message: "El nombre debe tener al menos 3 caracteres",
+                            }
                         }}
-                    >
-                        Guardar cliente
-                    </AppButton>
-                )}
+                        error={errors.name?.message || ''}
+                    />
+                    <Input
+                        name="businessName"
+                        contrast
+                        label="Nombre de negocio"
+                        placeholder="ej. Miscelanea el rayo"
+                        control={control}
+                        rules={{
+                            // required: "Necesitas agregar un nombre",
+                            // minLength: {
+                            //     value: 3,
+                            //     message: "El nombre debe tener al menos 3 caracteres",
+                            // }
+                        }}
 
-            </Card>
+                        error={errors.businessName?.message || ''}
+                    />
+                    <Input
+                        accessoryLeft="phone"
+                        size="md"
+                        grow={false}
+                        name="phoneNumber"
+                        placeholder="Número de telefono"
+                        label="Teléfono"
+                        control={control}
+                        rules={{
+                            // required: "Necesitas agregar un número telefónico",
+                            // minLength: {
+                            //     value: 10,
+                            //     message: "El número debe tener al menos 10 digitos"
+                            // },
+                            // maxLength: {
+                            //     value: 10,
+                            //     message: "El número debe tener máximo 10 digitos"
+                            // }
+                        }}
+                        error={errors.phoneNumber?.message || ''}
+                        contrast
+                        keyboardType="number-pad"
+                    />
+                </Form>
+
+                <Card style={{ backgroundColor: colors.white, padding: 10, gap: 10 }} >
+
+                    <Input
+                        name="reference"
+                        label="Referencia"
+                        placeholder="indique alguna referencia de la ubicación"
+                        control={control}
+                        rules={{}}
+                        error={errors.reference?.message || ''}
+                    />
+                    {location && (
+                        <AppButton
+                            onPress={() => {
+                                console.log('submitting')
+                                handleSubmit(onSubmit)()
+                            }}
+                        >
+                            Guardar cliente
+                        </AppButton>
+                    )}
+
+                </Card>
+            </ScrollView>
 
 
-        </ScreenScrollContainer>
+        </ScreenContainer>
     )
 }
 

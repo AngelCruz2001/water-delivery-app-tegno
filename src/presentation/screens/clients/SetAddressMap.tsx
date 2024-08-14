@@ -1,6 +1,6 @@
 
 
-import { View, Text, StyleSheet, Platform, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Platform, Pressable, Alert } from 'react-native'
 import MapView, { MapPressEvent, Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { getCurrentLocation, reverseGeocoding } from '../../../actions/location/location'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
@@ -73,7 +73,7 @@ export const SetAddressMap = (props: Props) => {
         }
     }
 
-    const hanldeOnPress = async (
+    const handleOnPress = async (
         data: GooglePlaceData,
         detail: GooglePlaceDetail | null,
     ) => {
@@ -205,7 +205,7 @@ export const SetAddressMap = (props: Props) => {
     )
 }
 
-export const GooglePlacesInput = ({ hanldeOnPress }: { hanldeOnPress: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void }) => {
+export const GooglePlacesInput = ({ handleOnPress }: { handleOnPress: (data: GooglePlaceData, detail: GooglePlaceDetail | null) => void }) => {
     const ref = useRef<GooglePlacesAutocompleteRef | null>(null);
 
     return (
@@ -235,7 +235,10 @@ export const GooglePlacesInput = ({ hanldeOnPress }: { hanldeOnPress: (data: Goo
             fetchDetails
             ref={ref}
             placeholder='Buscar ubicación'
-            onPress={hanldeOnPress}
+            onPress={(data, details = null) => {
+                Alert.alert('Location Selected', JSON.stringify(data));
+                handleOnPress(data, details);
+            }}
             onNotFound={() => console.log('not found')}
             query={{
                 key: Platform.OS === 'ios' ? iOSGoogleApiKey : androidGoogleApiKey,

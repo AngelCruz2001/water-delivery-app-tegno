@@ -18,6 +18,7 @@ import { Pressable } from "react-native";
 import { useHeaderRightGoBack } from "../../hooks/useHeaderRightGoBack";
 import { showCreatedToast, showErrorToast } from "../../components/toasts/toasts";
 import { useUiStore } from "../../../store/ui/useUiStore";
+import { useClientsStore } from "../../../store/clients/useClientsStore";
 
 
 type Props = NativeStackScreenProps<ClientStackProps, 'Editar Cliente'>;
@@ -28,6 +29,9 @@ export const EditClientScreen = ({ route }: Props) => {
     const navigation = useNavigation<NavigationProp<ClientStackProps>>();
 
     const setIsLoading = useUiStore(state => state.setIsLoading);
+
+    const editClient = useClientsStore(state => state.editClient);
+
     const { control, handleSubmit, formState: { errors, dirtyFields } } = useForm({
         defaultValues: {
             name: client.name,
@@ -39,7 +43,8 @@ export const EditClientScreen = ({ route }: Props) => {
     const { mutate, isError, isPending, isSuccess } = useMutation({
         mutationFn: async (clientPayload: TPostClient) => {
             setIsLoading(true)
-            return api.put<{ client: TDisplayClient }>('/clients', clientPayload, {
+            console.log({ clientPayload })
+            return api.put<{ client: TDisplayClient }>(`/clients/${clientPayload._id}`, clientPayload, {
                 headers: {
                     authorization: await getToken(),
                 },
@@ -47,19 +52,26 @@ export const EditClientScreen = ({ route }: Props) => {
         },
         onSuccess: ({ data }) => {
             setIsLoading(false)
-            showCreatedToast();
-            navigation.goBack();
+            showCreatedToast("Cliente editado con exito");
+            editClient(data.client);
+            navigation.reset({ index: 0, routes: [{ name: 'Clientes' }] })
+            // navigation.goBack()
         },
-        onError: () => {
+        onError: (error) => {
             showErrorToast('Error al editar el cliente');
+            console.log({ error })
             setIsLoading(false)
         }
     })
 
     const onSubmit = (data: TPostClient) => {
-        // mutate(data)
         //TODO: implementar esta funcionalidad
-        showErrorToast("Función no implementada")
+        console.log(data)
+        mutate({
+            ...data,
+            _id: client._id
+        })
+        // showErrorToast("Función no implementada")
     }
 
     useHeaderRightGoBack(navigation, 'cancelar');
@@ -84,11 +96,11 @@ export const EditClientScreen = ({ route }: Props) => {
                     placeholder="Nombre del cliente"
                     control={control}
                     rules={{
-                        required: "Necesitas agregar un nombre",
-                        minLength: {
-                            value: 3,
-                            message: "El nombre debe tener al menos 3 caracteres",
-                        }
+                        // required: "Necesitas agregar un nombre",
+                        // minLength: {
+                        //     value: 3,
+                        //     message: "El nombre debe tener al menos 3 caracteres",
+                        // }
                     }}
                     error={errors.name?.message || ''}
                     isDirty={dirtyFields.name}
@@ -100,11 +112,11 @@ export const EditClientScreen = ({ route }: Props) => {
                     placeholder="ej. Miscelanea el rayo"
                     control={control}
                     rules={{
-                        required: "Necesitas agregar un nombre",
-                        minLength: {
-                            value: 3,
-                            message: "El nombre debe tener al menos 3 caracteres",
-                        }
+                        // required: "Necesitas agregar un nombre",
+                        // minLength: {
+                        //     value: 3,
+                        //     message: "El nombre debe tener al menos 3 caracteres",
+                        // }
                     }}
                     error={errors.businessName?.message || ''}
                     isDirty={dirtyFields.businessName}
@@ -115,15 +127,15 @@ export const EditClientScreen = ({ route }: Props) => {
                     label="Teléfono"
                     control={control}
                     rules={{
-                        required: "Necesitas agregar un número telefónico",
-                        minLength: {
-                            value: 10,
-                            message: "El número debe tener al menos 10 digitos"
-                        },
-                        maxLength: {
-                            value: 10,
-                            message: "El número debe tener al menos 10 digitos"
-                        }
+                        // required: "Necesitas agregar un número telefónico",
+                        // minLength: {
+                        //     value: 10,
+                        //     message: "El número debe tener al menos 10 digitos"
+                        // },
+                        // maxLength: {
+                        //     value: 10,
+                        //     message: "El número debe tener al menos 10 digitos"
+                        // }
                     }}
                     contrast
                     keyboardType="number-pad"
