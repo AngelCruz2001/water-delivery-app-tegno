@@ -221,22 +221,26 @@ export const GooglePlacesInput = ({ handleOnPress }: { handleOnPress: (data: Goo
                 textInput: {
                     fontSize: fontSizeMap.base,
                     backgroundColor: colors.white,
-                    color: colors.primary,
-                    paddingHorizontal: paddingMap.horizontalCard
+                    paddingHorizontal: paddingMap.horizontalCard,
+                    color: colors.text,
+
                 },
                 listView: {
                     position: 'absolute',
                     top: 40,  // Ajusta según sea necesario
-                    zIndex: 2,
+                    zIndex: 50,
                     backgroundColor: colors.white,
+                    color: colors.primary,
                 },
-
+                description: {
+                    zIndex: 50,
+                    color: colors.primary,
+                },
             }}
             fetchDetails
             ref={ref}
             placeholder='Buscar ubicación'
             onPress={(data, details = null) => {
-                Alert.alert('Location Selected', JSON.stringify(data));
                 handleOnPress(data, details);
             }}
             onNotFound={() => console.log('not found')}

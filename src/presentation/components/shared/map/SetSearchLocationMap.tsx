@@ -93,10 +93,10 @@ export const SetSearchLocationMap = ({
 
     return (
         <>
-            <Card style={{ padding: 0, marginTop: 5, position: 'relative', height }}>
+            <Card style={{ padding: 0, marginTop: 5, position: 'relative', height, zIndex: 1000 }}>
                 {
                     showInput &&
-                    <View style={{ backgroundColor: colors.white, position: 'absolute', width: '100%', top: 0, zIndex: 2, borderRadius: roundedMap.md }}>
+                    <View style={{ backgroundColor: colors.white, position: 'absolute', width: '100%', top: 0, zIndex: 15, borderRadius: roundedMap.md }}>
                         <GooglePlacesInput handleOnPress={handleOnPress} />
                     </View>
                 }

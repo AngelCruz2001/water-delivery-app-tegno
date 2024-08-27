@@ -19,11 +19,11 @@ axios.interceptors.request.use(
   },
 );
 
-export const api = axios.create({
-  // baseURL: Config.API_URL || 'https://water-delivery-backend-production.up.railway.app',
-  baseURL: Config.API_URL || 'http://192.168.3.106:8080',
+export const api = axios.create ({
+  baseURL: Config.API_URL || 'https://water-delivery-backend-production.up.railway.app',
+  // baseURL: Config.API_URL || 'http://192.168.3.106:8080',
 });
-
+324
 export const saveToken = async (token: string) => {
   try {
     await AsyncStorage.setItem('token', token);

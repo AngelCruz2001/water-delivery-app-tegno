@@ -1,7 +1,7 @@
 
 
 import { PropsWithChildren, useState } from 'react'
-import { StyleProp, ViewStyle, ScrollView, KeyboardAvoidingView, Platform, View } from 'react-native'
+import { StyleProp, ViewStyle, ScrollView, KeyboardAvoidingView, Platform, View, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { paddingMap } from '../../../config/theme/globalstyle'
 import { RefreshControl } from 'react-native-gesture-handler'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
@@ -39,25 +39,27 @@ export const ScreenScrollContainer = ({ children, style, onRefresh, containerSty
                 paddingBottom: 20
             }}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-            <ScrollView
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isRefreshing}
-                        onRefresh={onRefreshHandler}
-                    // progressViewOffset={top}
-                    />
-                }
-                style={[{
-                    // marginTop: 20,
-                    paddingHorizontal: paddingMap.horizontalContainer,
-                    paddingTop: paddingMap.verticalContainer,
-                }, style]}
-                contentContainerStyle={containerStyle}
-            >
-                <View style={{ height: 20 }} />
-                {children}
-                <View style={{ height: 100 }} />
-            </ScrollView>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefreshing}
+                            onRefresh={onRefreshHandler}
+                        // progressViewOffset={top}
+                        />
+                    }
+                    style={[{
+                        // marginTop: 20,
+                        paddingHorizontal: paddingMap.horizontalContainer,
+                        paddingTop: paddingMap.verticalContainer,
+                    }, style]}
+                    contentContainerStyle={containerStyle}
+                >
+                    <View style={{ height: 20 }} />
+                    {children}
+                    <View style={{ height: 100 }} />
+                </ScrollView>
+            </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
     )
 }

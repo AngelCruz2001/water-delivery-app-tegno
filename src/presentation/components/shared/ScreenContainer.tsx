@@ -4,29 +4,33 @@
 
 
 import { PropsWithChildren } from 'react'
-import { StyleProp, ViewStyle, View, KeyboardAvoidingView, Platform } from 'react-native'
+import { StyleProp, ViewStyle, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { paddingMap } from '../../../config/theme/globalstyle'
 
 
 type Props = PropsWithChildren & {
     style?: StyleProp<ViewStyle>
+    withPadding?: boolean
 }
 
-export const ScreenContainer = ({ children, style }: Props) => {
+export const ScreenContainer = ({ children, style, withPadding = true }: Props) => {
     return (
         <KeyboardAvoidingView
+
             style={{
                 flex: 1,
-                paddingBottom: 20
+                paddingBottom: withPadding ? 20 : 0
             }}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-            <View style={[{
-                flex: 1,
-                paddingHorizontal: paddingMap.horizontalContainer,
-                paddingTop: paddingMap.verticalContainer,
-            }, style]}>
-                {children}
-            </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={[{
+                    flex: 1,
+                    paddingHorizontal: paddingMap.horizontalContainer,
+                    paddingTop: paddingMap.verticalContainer,
+                }, style]}>
+                    {children}
+                </View>
+            </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
     )
 }

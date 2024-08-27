@@ -112,7 +112,7 @@ export const CreateClientScreen = () => {
 
     return (
 
-        <ScreenContainer>
+        <ScreenContainer withPadding={false}>
 
             <SetSearchLocationMap
                 setLocation={setLocation}
